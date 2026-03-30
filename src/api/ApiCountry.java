@@ -1,4 +1,4 @@
-package Api;
+package api;
 
 public class ApiCountry {
     private String name;

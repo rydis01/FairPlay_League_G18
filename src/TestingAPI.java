@@ -1,6 +1,6 @@
-import Api.ApiController;
+import api.ApiController;
 
-public class Main {
+public class TestingAPI {
     public static void main(String[] args) {
         ApiController controller = new ApiController();
 
