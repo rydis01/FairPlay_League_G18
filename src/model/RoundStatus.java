@@ -1,6 +1,4 @@
 package model;
 
-public enum RoundStatus {
-    Open,
-    Closed,
+public class RoundStatus {
 }

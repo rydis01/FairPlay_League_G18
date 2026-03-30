@@ -1,4 +1,4 @@
-package database;
+package DB;
 
 public class Db {
 }
