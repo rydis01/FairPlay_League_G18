@@ -22,7 +22,7 @@ CREATE TABLE Leauge(
     Admin_User SERIAL FOREIGN KEY,
     Invite_Code VARCHAR (10) UNIQUE NOT NULL
 
-    CONSTRAINT 
+    CONSTRAINT
 );
 
 -- Kopplar ihop användare med ligor
