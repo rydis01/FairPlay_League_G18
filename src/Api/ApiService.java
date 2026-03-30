@@ -13,7 +13,7 @@ public class ApiService {
     private final HttpClient httpClient;
     private final String apiKey; // Nu är denna inte hårdkodad längre
 
-    public ApiFootballService() {
+    public ApiService() {
         this.httpClient = HttpClient.newHttpClient();
         this.apiKey = loadApiKey(); // Laddar nyckeln säkert från filen
     }
