@@ -26,3 +26,5 @@ public class Coupon {
 
     public int getUserId() { return userId; }
 }
+
+//Va fan händer med git asså
