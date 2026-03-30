@@ -1,47 +1,27 @@
 package model;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class User {
-    private int id;
-    private String name;
-    private String password;
-    private String epost;
+    private final int id;
+    private final String username;
+    private final List<Coupon> coupons = new ArrayList<>();
 
-    public User(int id, String name, String password, String epost) {
+    public User(int id, String username) {
         this.id = id;
-        this.name = name;
-        this.password = password;
-        this.epost = epost;
+        this.username = username;
     }
 
-    public int getId() {
-        return id;
+    public void addCoupon(Coupon coupon) {
+        coupons.add(coupon);
     }
 
-    public String getName() {
-        return name;
+    public List<Coupon> getCoupons() {
+        return coupons;
     }
 
-    public String getPassword() {
-        return password;
-    }
+    public int getId() { return id; }
 
-    public String getEpost() {
-        return epost;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setEpost(String epost) {
-        this.epost = epost;
-    }
+    public String getUsername() { return username; }
 }
