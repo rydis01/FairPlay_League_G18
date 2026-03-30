@@ -1,28 +1,61 @@
 package model;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Coupon {
-    private final int couponId;
-    private final int userId;
-    private final List<Match> matches;
-    private final Map<Integer, List<String>> tips = new HashMap<>();
+    private Long id;
+    private Long userId;
+    private Long roundId;
+    private Map<Integer, String> tips;
+    private int correctCount;
 
-    public Coupon(int couponId, int userId, List<Match> matches) {
-        this.couponId = couponId;
-        this.userId = userId;
-        this.matches = matches;
+    public Coupon() {
+        this.tips = new HashMap<>();
     }
 
-    public void setTip(int matchNumber, List<String> tip) {
+    //Skapa ny kupong (en användares tips för en omgång)
+    public Coupon(Long userId, Long roundId) {
+        this.userId = userId;
+        this.roundId = roundId;
+        this.tips = new HashMap<>();
+        this.correctCount = 0;
+    }
+
+    //läsafrån databasen
+    public Coupon(Long id, Long userId, Long roundId, Map<Integer, String> tips, int correctCount) {
+        this.id = id;
+        this.userId = userId;
+        this.roundId = roundId;
+        this.tips = tips;
+        this.correctCount = correctCount;
+    }
+
+    public void setTip(int matchNumber, String tip) {
         tips.put(matchNumber, tip);
     }
 
-    public List<Match> getMatches() {
-        return matches;
+    public String getTip(int matchNumber) {
+        return tips.get(matchNumber);
     }
 
-    public int getCouponId() { return couponId; }
+    public Long getId() { return id; }
 
-    public int getUserId() { return userId; }
+    public void setId(Long id) { this.id = id; }
+
+    public Long getUserId() { return userId; }
+
+    public void setUserId(Long userId) { this.userId = userId; }
+
+    public Long getRoundId() { return roundId; }
+
+    public void setRoundId(Long roundId) { this.roundId = roundId; }
+
+    public Map<Integer, String> getTips() { return tips; }
+
+    public void setTips(Map<Integer, String> tips) { this.tips = tips; }
+
+    public int getCorrectCount() { return correctCount; }
+
+    public void setCorrectCount(int correctCount) { this.correctCount = correctCount; }
 }
