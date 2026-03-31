@@ -21,11 +21,11 @@ public class ApiService {
     // Ny säker metod för att läsa in nyckeln
     private String loadApiKey() {
         Properties properties = new Properties();
-        try (FileInputStream fis = new FileInputStream("config.properties")) {
+        try (FileInputStream fis = new FileInputStream("configDatabase.properties")) {
             properties.load(fis);
             return properties.getProperty("api_key");
         } catch (Exception e) {
-            System.out.println("Varning: Kunde inte läsa config.properties. Felet: " + e.getMessage());
+            System.out.println("Varning: Kunde inte läsa configDatabase.properties. Felet: " + e.getMessage());
             return "";
         }
     }
