@@ -7,7 +7,7 @@ public class CouponService {
     private GetDataFromDatabase couponQuery;
 
     public CouponService() {
-        this.couponQuery = new CouponDAO();
+        //this.couponQuery = new CouponDAO();
     }
 
     // Skapa en ny kupong för en användare i en specifik round
