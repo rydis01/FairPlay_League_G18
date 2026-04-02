@@ -11,14 +11,14 @@ public class ApiService {
 
     private static final String BASE_URL = "https://v3.football.api-sports.io/";
     private final HttpClient httpClient;
-    private final String apiKey; // Nu är denna inte hårdkodad längre
+    private final String apiKey;
 
     public ApiService() {
         this.httpClient = HttpClient.newHttpClient();
         this.apiKey = loadApiKey(); // Laddar nyckeln säkert från filen
     }
 
-    // Ny säker metod för att läsa in nyckeln
+    // säker metod för att läsa in nyckeln
     private String loadApiKey() {
         Properties properties = new Properties();
         try (FileInputStream fis = new FileInputStream("configDatabase.properties")) {
@@ -34,6 +34,27 @@ public class ApiService {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "countries"))
                 .header("x-apisports-key", this.apiKey) // Använder den inlästa nyckeln
+                .GET()
+                .build();
+
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return response.body();
+            } else {
+                return "HTTP Fel: " + response.statusCode();
+            }
+        } catch (Exception e) {
+            return "Nätverksfel: " + e.getMessage();
+        }
+    }
+
+    public String fetchAllsvenskanTeams() {
+        // skickar med league=113 (Allsvenskan) och season=2024
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "teams?league=113&season=2024"))
+                .header("x-apisports-key", this.apiKey)
                 .GET()
                 .build();
 
