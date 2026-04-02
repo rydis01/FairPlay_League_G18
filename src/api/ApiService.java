@@ -21,7 +21,7 @@ public class ApiService {
     // säker metod för att läsa in nyckeln
     private String loadApiKey() {
         Properties properties = new Properties();
-        try (FileInputStream fis = new FileInputStream("configDatabase.properties")) {
+        try (FileInputStream fis = new FileInputStream("config.properties")) {
             properties.load(fis);
             return properties.getProperty("api_key");
         } catch (Exception e) {
