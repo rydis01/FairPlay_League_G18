@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class CouponDAO {
 
     // Tar emot en kopong och bryter ner den till 8 rader av "picks" till databasen
-    public void saveCoupon (Coupon coupon) {
+    /*public void saveCoupon(Coupon coupon) {
 
         // Lägger in EN i tabellen Picks i DB
         String sql = "INSERT INTO Picks (User_ID, Match_ID, Guess) VALUES (?, ?, ?";
@@ -25,10 +25,10 @@ public class CouponDAO {
             conn.setAutoCommit(false);
 
             // Vi loopar igenom kupongens alla gissningar:
-            for(Pick picks : Coupon.getPicks()) {
-                stmt.setInt(1, Coupon.getUserID());
-                stmt.setInt(2, Coupon.getMatchID());
-                stmt.setInt(1, Coupon.getGuess());
+            for(Pick picks : coupon.getPicks()) {
+                stmt.setInt(1, coupon.getUserID());
+                stmt.setInt(2, coupon.getMatchID());
+                stmt.setInt(1, coupon.getGuess());
 
                 // Lägger till "batchen" i bunten
                 stmt.addBatch();
@@ -43,5 +43,5 @@ public class CouponDAO {
         } catch (SQLException e) {
             System.out.println("Kunde inte spara data i databasen. Fel: " + e.getMessage());
         }
-    }
+    }*/
 }
