@@ -11,7 +11,7 @@ public class ApiService {
 
     private static final String BASE_URL = "https://v3.football.api-sports.io/";
     private final HttpClient httpClient;
-    private final String apiKey; // Nu är denna inte hårdkodad längre
+    private final String apiKey;
 
     public ApiService() {
         this.httpClient = HttpClient.newHttpClient();
