@@ -6,7 +6,7 @@ public class ApiResponse<T> {
     private String get;
     private List<String> errors;
     private int results;
-    private ApiPaging paging; // Ändrad till den nya ApiPaging-klassen
+    private ApiPaging paging;
     private List<T> response;
 
     public String getGet() { return get; }
