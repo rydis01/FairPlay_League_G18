@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Coupon {
-    private Long id;
-    private Long userId;
-    private Long roundId;
+    private int id;
+    private int userId;
+    private int roundId;
     private Map<Integer, String> tips;
     private int correctCount;
 
@@ -15,7 +15,7 @@ public class Coupon {
     }
 
     //Skapa ny kupong (en användares tips för en omgång)
-    public Coupon(Long userId, Long roundId) {
+    public Coupon(int userId, int roundId) {
         this.userId = userId;
         this.roundId = roundId;
         this.tips = new HashMap<>();
@@ -23,7 +23,7 @@ public class Coupon {
     }
 
     //läsafrån databasen
-    public Coupon(Long id, Long userId, Long roundId, Map<Integer, String> tips, int correctCount) {
+    public Coupon(int id, int userId, int roundId, Map<Integer, String> tips, int correctCount) {
         this.id = id;
         this.userId = userId;
         this.roundId = roundId;
@@ -39,17 +39,17 @@ public class Coupon {
         return tips.get(matchNumber);
     }
 
-    public Long getId() { return id; }
+    public int getId() { return id; }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(int id) { this.id = id; }
 
-    public Long getUserId() { return userId; }
+    public int getUserId() { return userId; }
 
-    public void setUserId(Long userId) { this.userId = userId; }
+    public void setUserId(int userId) { this.userId = userId; }
 
-    public Long getRoundId() { return roundId; }
+    public int getRoundId() { return roundId; }
 
-    public void setRoundId(Long roundId) { this.roundId = roundId; }
+    public void setRoundId(int roundId) { this.roundId = roundId; }
 
     public Map<Integer, String> getTips() { return tips; }
 

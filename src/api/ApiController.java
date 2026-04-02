@@ -11,4 +11,8 @@ public class ApiController {
     public String getCountriesData() {
         return apiService.fetchCountries();
     }
+
+    public String getAllsvenskanTeams() {
+        return apiService.fetchAllsvenskanTeams();
+    }
 }
