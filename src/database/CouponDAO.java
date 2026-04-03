@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class CouponDAO {
 
     // Tar emot en kopong och bryter ner den till 8 rader av "picks" till databasen
-    /*public void saveCoupon(Coupon coupon) {
+    public void saveCoupon(Coupon coupon) {
 
         // Lägger in EN i tabellen Picks i DB
         String sql = "INSERT INTO Picks (User_ID, Match_ID, Guess) VALUES (?, ?, ?";
@@ -43,5 +43,5 @@ public class CouponDAO {
         } catch (SQLException e) {
             System.out.println("Kunde inte spara data i databasen. Fel: " + e.getMessage());
         }
-    }*/
+    }
 }
