@@ -10,6 +10,7 @@ import java.sql.SQLException;
  * DAO står för Data Access Object
  *      Namn för systemet där en service-klass skickar en beställning denna klass för att komma åt data från DB
  */
+
 public class CouponDAO {
 
     // Tar emot en kopong och bryter ner den till 8 rader av "picks" till databasen
