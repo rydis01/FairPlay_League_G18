@@ -22,6 +22,7 @@ CREATE TABLE Leagues(
     League_Name VARCHAR (20) NOT NULL,
     Admin_User INT,
     Invite_Code VARCHAR (10) UNIQUE NOT NULL,
+    Created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_admin FOREIGN KEY (Admin_user) REFERENCES Users(User_ID)
 );
