@@ -84,6 +84,6 @@ CREATE TABLE Gameweek_scores(
     Points_earned INT,
 
     CONSTRAINT fk_user FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
-    CONSTRAINT fk_leauge FOREIGN KEY (Leauge_ID) REFERENCES Leauges(Leauge_ID),
+    CONSTRAINT fk_league FOREIGN KEY (Leauge_ID) REFERENCES Leauges(Leauge_ID),
     CONSTRAINT fk_gameweek FOREIGN KEY (Gameweek_ID) REFERENCES Gameweeks(Gameweek_ID)
 );
