@@ -44,7 +44,7 @@ CREATE TABLE User_Leagues(
 CREATE TABLE Gameweeks(
     Gameweek_ID SERIAL PRIMARY KEY,
     Round_number INT UNIQUE,
-    Lock_time TIMESTAMP,
+    Lock_time TIMESTAMP
 );
 
 -- Spelschemat och verkligheten
@@ -81,7 +81,7 @@ CREATE TABLE Gameweek_scores(
     Leauge_ID INT,
     Gameweek_ID INT,
     Correct_picks_count INT NOT NULL,
-    Points_earned INT
+    Points_earned INT,
 
     CONSTRAINT fk_user FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
     CONSTRAINT fk_leauge FOREIGN KEY (Leauge_ID) REFERENCES Leauges(Leauge_ID),
