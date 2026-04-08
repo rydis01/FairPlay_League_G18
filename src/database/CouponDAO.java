@@ -5,6 +5,7 @@ import model.Pick;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * DAO står för Data Access Object
@@ -25,11 +26,13 @@ public class CouponDAO {
             // Vi vill skicka hela batches av gissningar istället för att skicka en i taget, alltså ingen automatisk:
             conn.setAutoCommit(false);
 
-            // Vi loopar igenom kupongens alla gissningar:
-            for(Pick picks : coupon.getPicks()) {
-                stmt.setInt(1, coupon.getUserID());
-                stmt.setInt(2, coupon.getMatchID());
-                stmt.setInt(1, coupon.getGuess());
+            // Vi loopar igenom kupongens alla gissningar (i vår Map):
+            // Map.Entry låter oss plocka ut både Match_ID (Key) och Gissningen (Value) samtidigt
+            for (Map.Entry<Integer, String> tip : coupon.getTips().entrySet()) {
+
+                stmt.setInt(1, coupon.getUserId());  // 1:a frågetecknet = Användarens ID
+                stmt.setInt(2, tip.getKey());        // 2:a frågetecknet = Match_ID (Nyckeln i Map:en)
+                stmt.setString(3, tip.getValue());   // 3:e frågetecknet = Gissningen (Värdet i Map:en)
 
                 // Lägger till "batchen" i bunten
                 stmt.addBatch();
@@ -40,7 +43,7 @@ public class CouponDAO {
 
             // Bekräftar och sparar kupongen
             conn.commit();
-            System.out.println("Kupongen sparades framgångsrikt i databasen!");
+            System.out.println("Kupongen sparades i databasen!");
         } catch (SQLException e) {
             System.out.println("Kunde inte spara data i databasen. Fel: " + e.getMessage());
         }
