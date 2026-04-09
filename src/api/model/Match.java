@@ -5,10 +5,9 @@ public class Match {
     private String awayTeam;
     private String homeScore;
     private String awayScore;
-    private String matchStatus; // T.ex. "FT" (Full Time) eller "NS" (Not Started)
-    private String matchTime;   // T.ex. "20260404150000"
+    private String matchStatus;
+    private String matchTime;
 
-    // --- Konstruktor ---
     public Match(String homeTeam, String awayTeam, String homeScore, String awayScore, String matchStatus, String matchTime) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
@@ -18,17 +17,11 @@ public class Match {
         this.matchTime = matchTime;
     }
 
-    // --- Getters (så att vi kan läsa datan senare) ---
+    // Getters behövs för att Gson ska kunna läsa av objekten och göra JSON av dem
     public String getHomeTeam() { return homeTeam; }
     public String getAwayTeam() { return awayTeam; }
     public String getHomeScore() { return homeScore; }
     public String getAwayScore() { return awayScore; }
     public String getMatchStatus() { return matchStatus; }
     public String getMatchTime() { return matchTime; }
-
-    // --- toString (för att snyggt kunna skriva ut matchen i konsolen) ---
-    @Override
-    public String toString() {
-        return homeTeam + " " + homeScore + " - " + awayScore + " " + awayTeam + " (" + matchStatus + ")";
-    }
 }
