@@ -1,12 +1,8 @@
 package api;
 
 import api.model.Match;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import database.MatchDAO;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -17,13 +13,12 @@ public class LiveScoreManager {
 
     private final LiveScoreService service;
     private final ScheduledExecutorService scheduler;
-    private final Gson gson;
+    private final MatchDAO matchDao; // Vår koppling till databasen
 
     public LiveScoreManager() {
         this.service = new LiveScoreService();
         this.scheduler = Executors.newScheduledThreadPool(1);
-        // GsonBuilder sätter upp så att JSON-filen blir radbruten och snygg ("Pretty Print")
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
+        this.matchDao = new MatchDAO(); // Initierar databaskopplingen
     }
 
     public void startAutoUpdate() {
@@ -38,27 +33,20 @@ public class LiveScoreManager {
 
     private void fetchAndProcessData() {
         try {
-            // 1. Hämta rörig data från nätet
+            // 1. Hämta data från nätet
             String rawJsonData = service.fetchAllsvenskanData();
 
             if (rawJsonData != null) {
                 // 2. Mappa om det till en lista med våra snygga Java-objekt
                 List<Match> cleanMatches = api.LiveScoreMapper.parseMatches(rawJsonData);
 
-                // 3. Gör om vår snygga Java-lista tillbaka till JSON
-                String cleanJsonOutput = gson.toJson(cleanMatches);
+                // 3. Skicka Java-objekten direkt till Hugos databas
+                matchDao.saveMatches(cleanMatches);
 
-                // 4. Spara ner den tvättade datan till filen
-                Path filePath = Paths.get("src/api/allsvenskan_livescore.json");
-                if (filePath.getParent() != null) {
-                    Files.createDirectories(filePath.getParent());
-                }
-                Files.writeString(filePath, cleanJsonOutput);
-
-                System.out.println("-> Sparade " + cleanMatches.size() + " tvättade matcher till API:et.");
+                System.out.println("-> Skickade " + cleanMatches.size() + " matcher till databasen.");
             }
         } catch (Exception e) {
-            System.out.println("-> Ett fel uppstod: " + e.getMessage());
+            System.out.println("-> Ett fel uppstod vid skrapning/sparning: " + e.getMessage());
         }
     }
 }

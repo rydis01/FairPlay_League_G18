@@ -1,6 +1,6 @@
 package controller;
 
-import api.LiveScoreManager; // Se till att importerna stämmer med dina mappar
+import api.LiveScoreManager;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
