@@ -3,8 +3,8 @@ package model;
 import java.time.LocalDateTime;
 
 public class Match {
-    private Long id;
-    private Long roundId;
+    private int id;
+    private int roundId;
     private String externalMatchId;
     private int matchNumber;
     private String homeTeam;
@@ -16,7 +16,7 @@ public class Match {
     }
 
     // Skapa ny match (hämtad från TheSportsDB)
-    public Match(Long roundId, String externalMatchId, int matchNumber, String homeTeam, String awayTeam, LocalDateTime kickOff) {
+    public Match(int roundId, String externalMatchId, int matchNumber, String homeTeam, String awayTeam, LocalDateTime kickOff) {
         this.roundId = roundId;
         this.externalMatchId = externalMatchId;
         this.matchNumber = matchNumber;
@@ -27,7 +27,7 @@ public class Match {
     }
 
     // Läsa från databasen
-    public Match(Long id, Long roundId, String externalMatchId, int matchNumber, String homeTeam, String awayTeam, LocalDateTime kickOff, String result) {
+    public Match(int id, int roundId, String externalMatchId, int matchNumber, String homeTeam, String awayTeam, LocalDateTime kickOff, String result) {
         this.id = id;
         this.roundId = roundId;
         this.externalMatchId = externalMatchId;
@@ -38,13 +38,13 @@ public class Match {
         this.result = result;
     }
 
-    public Long getId() { return id; }
+    public int getId() { return id; }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(int id) { this.id = id; }
 
-    public Long getRoundId() { return roundId; }
+    public int getRoundId() { return roundId; }
 
-    public void setRoundId(Long roundId) { this.roundId = roundId; }
+    public void setRoundId(int roundId) { this.roundId = roundId; }
 
     public String getExternalMatchId() { return externalMatchId; }
 

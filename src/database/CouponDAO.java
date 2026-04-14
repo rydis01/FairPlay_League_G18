@@ -18,7 +18,7 @@ public class CouponDAO {
     public void saveCoupon(Coupon coupon) {
 
         // Lägger in EN i tabellen Picks i DB
-        String sql = "INSERT INTO Picks (User_ID, Match_ID, Guess) VALUES (?, ?, ?";
+        String sql = "INSERT INTO Picks (User_ID, Match_ID, Guess) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

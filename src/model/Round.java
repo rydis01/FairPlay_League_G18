@@ -3,7 +3,7 @@ package model;
 import java.time.LocalDateTime;
 
 public class Round {
-    private Long id;
+    private int id;
     private int leagueId;
     private int gameweek;
     private RoundStatus status;
@@ -23,7 +23,7 @@ public class Round {
     }
 
     //Läsa från databasen
-    public Round(Long id, int leagueId, int gameweek, RoundStatus status, LocalDateTime deadline, LocalDateTime createdAt) {
+    public Round(int id, int leagueId, int gameweek, RoundStatus status, LocalDateTime deadline, LocalDateTime createdAt) {
         this.id = id;
         this.leagueId = leagueId;
         this.gameweek = gameweek;
@@ -32,8 +32,8 @@ public class Round {
         this.createdAt = createdAt;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public int getLeagueId() { return leagueId; }
     public void setLeagueId(int leagueId) { this.leagueId = leagueId; }

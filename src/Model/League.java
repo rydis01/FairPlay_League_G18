@@ -3,17 +3,17 @@ package model;
 import java.time.LocalDateTime;
 
 public class League {
-    private Long id;
+    private int id;
     private String name;
     private String inviteCode;
-    private Long createdBy;
+    private int createdBy;
     private LocalDateTime createdAt;
 
     public League() {
     }
 
     // Skapa ny liga
-    public League(String name, String inviteCode, Long createdBy) {
+    public League(String name, String inviteCode, int createdBy) {
         this.name = name;
         this.inviteCode = inviteCode;
         this.createdBy = createdBy;
@@ -21,7 +21,7 @@ public class League {
     }
 
     // Läsa från databasen
-    public League(Long id, String name, String inviteCode, Long createdBy, LocalDateTime createdAt) {
+    public League(int id, String name, String inviteCode, int createdBy, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.inviteCode = inviteCode;
@@ -29,9 +29,9 @@ public class League {
         this.createdAt = createdAt;
     }
 
-    public Long getId() { return id; }
+    public int getId() { return id; }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(int id) { this.id = id; }
 
     public String getName() { return name; }
 
@@ -41,9 +41,9 @@ public class League {
 
     public void setInviteCode(String inviteCode) { this.inviteCode = inviteCode; }
 
-    public Long getCreatedBy() { return createdBy; }
+    public int getCreatedBy() { return createdBy; }
 
-    public void setCreatedBy(Long createdBy) { this.createdBy = createdBy; }
+    public void setCreatedBy(int createdBy) { this.createdBy = createdBy; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
 

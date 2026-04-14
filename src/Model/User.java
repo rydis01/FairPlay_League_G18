@@ -3,7 +3,7 @@ package model;
 import java.time.LocalDateTime;
 
 public class User {
-    private Long id;
+    private int id;
     private String username;
     private String email;
     private String passwordHash;
@@ -23,7 +23,7 @@ public class User {
     }
 
     // Läsa från databasen (alla fält)
-    public User(Long id, String username, String email, String passwordHash, Role role, LocalDateTime createdAt) {
+    public User(int id, String username, String email, String passwordHash, Role role, LocalDateTime createdAt) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -32,9 +32,9 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public Long getId() { return id; }
+    public int getId() { return id; }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(int id) { this.id = id; }
 
     public String getUsername() { return username; }
 
