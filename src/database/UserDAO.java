@@ -65,7 +65,7 @@ public class UserDAO {
 
                 // Skapar användare-objektet som ska returneras
                user = new User (
-                   rs.getLong("User_ID"),
+                   rs.getInt("User_ID"),
                    rs.getString("Username"),
                    rs.getString("Email"),
                    rs.getString("Password_Hash"),

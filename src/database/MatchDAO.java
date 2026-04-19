@@ -68,6 +68,11 @@ public class MatchDAO {
         }
     }
 
+    public String[] getMatchresults(int roundId){
+        return new String[]{"Actual_result", "Actual_result"};
+        // TODO givetvis är denna inte fullständig. Syftet är att hämta alla rätt för att kunna göra en rättning i CouponService.
+    }
+
     // --- Hjälpmetoder ---
 
     // Konverterar er matchScore (t.ex. "2" och "1") till tipstecken (1, X eller 2)

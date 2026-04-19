@@ -1,8 +1,6 @@
 package database;
 
 import model.League;
-import model.User;
-import model.Role;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,42 +13,44 @@ import java.util.List;
  * Data Access Object för att hantera Ligor (Leagues).
  * Sköter all kommunikation med tabellerna Leagues och User_Leagues.
  */
-public class LeaugeDAO {
+public class LeagueDAO {
 
     /**
      * Skapar och sparar en ny liga i databasen och lägger automatiskt till skaparen (Admin)
      * som medlem i kopplingstabellen User_Leagues.
      */
-    public void createLeague(String leagueName, Long adminUserId, String inviteCode) {
+    public void createLeague(String leagueName, int adminUserId, String inviteCode) {
         String insertLeagueSql = "INSERT INTO Leagues (League_Name, Admin_User, Invite_Code) VALUES (?, ?, ?)";
         String insertMemberSql = "INSERT INTO User_Leagues (User_ID, League_ID) VALUES (?, ?)";
 
         try (Connection conn = DatabaseManager.getConnection()) {
 
-            // AutoCommit stängs av då två saker saker måste lyckas TILLSAMMANS
-            conn.setAutoCommit(false);
+            if (conn == null) {
+                System.out.println("Kunde inte ansluta till databasen!");
+                return;
+            }
 
-            long generatedLeagueId = -1;
+            int generatedLeagueId = -1;
 
             // 1. Skapar själva ligan. Statement.RETURN_GENERATED_KEYS ger oss det nya ID:t direkt
             try (PreparedStatement leagueStmt = conn.prepareStatement(insertLeagueSql, Statement.RETURN_GENERATED_KEYS)) {
                 leagueStmt.setString(1, leagueName);
-                leagueStmt.setLong(2, adminUserId);
+                leagueStmt.setInt(2, adminUserId);
                 leagueStmt.setString(3, inviteCode);
                 leagueStmt.executeUpdate();
 
                 // Hämtar det nya League_Id som databasen precis skapade med SERIAL
                 ResultSet rs = leagueStmt.getGeneratedKeys();
                 if (rs.next()) {
-                    generatedLeagueId = rs.getLong(1);
+                    generatedLeagueId = rs.getInt(1);
                 }
             }
 
             // 2. Lägger in admin som första spelaren i ligan via kopplingstabellen
             if (generatedLeagueId != -1) {
                 try (PreparedStatement memberStmt = conn.prepareStatement(insertMemberSql)) {
-                    memberStmt.setLong(1, adminUserId);
-                    memberStmt.setLong(2, generatedLeagueId);
+                    memberStmt.setInt(1, adminUserId);
+                    memberStmt.setInt(2, generatedLeagueId);
                     memberStmt.executeUpdate();
                 }
             }
@@ -64,48 +64,35 @@ public class LeaugeDAO {
     }
 
     /**
-     * Hämtar en specifik liga och en lista på ALLA dess medlemmar med hjälp av en LEFT JOIN.
+     * Hämtar en specifik liga från databasen.
      */
-    public League getLeagueById(Long leagueId) {
+    public League getLeagueById(int leagueId) {
         League league = null;
-        List<User> members = new ArrayList<>();
 
         String sql =
-                "SELECT l.*, u.User_ID AS Member_ID, u.Username, u.Email, u.Role " +
-                        "FROM Leagues l " +
-                        "LEFT JOIN User_Leagues ul ON l.League_Id = ul.League_ID " +
-                        "LEFT JOIN Users u ON ul.User_ID = u.User_ID " +
-                        "WHERE l.League_Id = ?";
+                "SELECT League_Id, League_Name, Admin_User, Invite_Code, Created_at " +
+                        "FROM Leagues " +
+                        "WHERE League_Id = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseManager.getConnection()) {
 
-            stmt.setLong(1, leagueId);
-            ResultSet rs = stmt.executeQuery();
+            if (conn == null) {
+                System.out.println("Kunde inte ansluta till databasen!");
+                return null;
+            }
 
-            while (rs.next()) {
-                // Skapar League-objektet på första varvet
-                if (league == null) {
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, leagueId);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
                     league = new League(
-                            rs.getLong("League_Id"),
+                            rs.getInt("League_Id"),
                             rs.getString("League_Name"),
-                            rs.getLong("Admin_User"),
                             rs.getString("Invite_Code"),
-                            members
+                            rs.getInt("Admin_User"),
+                            rs.getTimestamp("Created_at").toLocalDateTime()
                     );
-                }
-
-                // Bygg ihop medlemmarna om det finns några
-                if (rs.getLong("Member_ID") != 0) {
-                    User member = new User(
-                            rs.getLong("Member_ID"),
-                            rs.getString("Username"),
-                            rs.getString("Email"),
-                            null,
-                            Role.valueOf(rs.getString("Role")),
-                            null
-                    );
-                    members.add(member);
                 }
             }
 
@@ -119,30 +106,36 @@ public class LeaugeDAO {
     /**
      * Hämtar en lista på alla ligor som en specifik användare är medlem i.
      */
-    public List<League> getLeaguesByUserId(Long userId) {
+    public List<League> getLeaguesByUserId(int userId) {
         List<League> userLeagues = new ArrayList<>();
 
         String sql =
-                "SELECT l.* " +
+                "SELECT l.League_Id, l.League_Name, l.Admin_User, l.Invite_Code, l.Created_at " +
                         "FROM Leagues l " +
                         "JOIN User_Leagues ul ON l.League_Id = ul.League_ID " +
                         "WHERE ul.User_ID = ?";
 
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseManager.getConnection()) {
 
-            stmt.setLong(1, userId);
-            ResultSet rs = stmt.executeQuery();
+            if (conn == null) {
+                System.out.println("Kunde inte ansluta till databasen!");
+                return userLeagues;
+            }
 
-            while (rs.next()) {
-                League league = new League(
-                        rs.getLong("League_Id"),
-                        rs.getString("League_Name"),
-                        rs.getLong("Admin_User"),
-                        rs.getString("Invite_Code"),
-                        new ArrayList<>() // Tom lista för medlemmar
-                );
-                userLeagues.add(league);
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, userId);
+                ResultSet rs = stmt.executeQuery();
+
+                while (rs.next()) {
+                    League league = new League(
+                            rs.getInt("League_Id"),
+                            rs.getString("League_Name"),
+                            rs.getString("Invite_Code"),
+                            rs.getInt("Admin_User"),
+                            rs.getTimestamp("Created_at").toLocalDateTime()
+                    );
+                    userLeagues.add(league);
+                }
             }
 
         } catch (SQLException e) {

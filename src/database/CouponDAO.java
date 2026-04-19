@@ -48,4 +48,28 @@ public class CouponDAO {
             System.out.println("Kunde inte spara data i databasen. Fel: " + e.getMessage());
         }
     }
+
+    public Coupon getCoupon(int userId, int couponId){
+        return null;
+    }
+
+    // Uppdaterar en kupong med rätt antal poäng // Carl
+    public void updateCorrectCountCoupon(Coupon coupon) {
+        String sql = "UPDATE Coupons SET Correct_count = ? WHERE User_ID = ? AND Round_ID = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, coupon.getCorrectCount()); // Rätt antal
+            stmt.setInt(2, coupon.getUserId()); // Användar-ID
+            stmt.setInt(3, coupon.getRoundId()); // Omgångs-ID
+
+            stmt.executeUpdate();
+            conn.commit();
+            System.out.println("Kupongen uppdaterades med " + coupon.getCorrectCount() + " rätt!");
+
+        } catch (SQLException e) {
+            System.out.println("Kunde inte uppdatera kupongen. Fel: " + e.getMessage());
+        }
+    }
 }
