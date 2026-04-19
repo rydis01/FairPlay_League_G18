@@ -1,9 +1,6 @@
 package service;
 
-import database.CouponDAO;
 import database.LeagueDAO;
-import model.League;
-import model.User;
 
 /**
  * Hanterar ligor och medlemskap.

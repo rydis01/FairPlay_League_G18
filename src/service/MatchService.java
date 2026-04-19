@@ -1,10 +1,9 @@
 package service;
 
-import database.MatchDAO;
-
 /**
  * Hanterar matcher från API:et och matchresultat.
  * Ansvarar för att hämta matcher, spara dem i databasen och uppdatera resultat.
  */
 public class MatchService {
+    //Här ska kanske theos API-service ska hända
 }
