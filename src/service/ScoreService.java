@@ -3,6 +3,8 @@ package service;
 import database.CouponDAO;
 import database.MatchDAO;
 import model.Coupon;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,18 +21,22 @@ public class ScoreService {
     }
 
     // Rätta en kupong och returnera antalet rätt
-    public int gradeCoupon(int userId, int roundId) {
+    public void gradeCoupon(int userId, int roundId) {
         Coupon userCoupon = couponDAO.getCoupon(userId, roundId);
 
-        String[] correctCoupon = matchesDAO.getMatchresults(roundId);
+        if(userCoupon.getGraded()){
+            return;
+        }
+
+        List <String> correctCoupon = matchesDAO.getResultsFromRound(roundId);
 
         // Jämför användarens tips med de rätta resultaten
         int correctCount = 0;
         Map<Integer, String> tips = userCoupon.getTips();
 
-        for (int i = 0; i < correctCoupon.length; i++) {
+        for (int i = 0; i < correctCoupon.size(); i++) {
             String userTip = tips.get(i);
-            String correctResult = correctCoupon[i];
+            String correctResult = correctCoupon.get(i);
 
             // Om tippet matchar det rätta resultatet, öka räknaren
             if (userTip != null && userTip.equals(correctResult)) {
@@ -38,10 +44,8 @@ public class ScoreService {
             }
         }
 
-        // Spara det rätta antalet på kupongen
+        userCoupon.setGraded(true);
         userCoupon.setCorrectCount(correctCount);
         couponDAO.updateCorrectCountCoupon(userCoupon);
-
-        return correctCount;
     }
 }

@@ -9,6 +9,7 @@ public class Coupon {
     private int roundId;
     private Map<Integer, String> tips;
     private int correctCount;
+    private boolean graded = false;
 
     public Coupon() {
         this.tips = new HashMap<>();
@@ -58,4 +59,8 @@ public class Coupon {
     public int getCorrectCount() { return correctCount; }
 
     public void setCorrectCount(int correctCount) { this.correctCount = correctCount; }
+
+    public boolean getGraded() { return graded; }
+
+    public void setGraded(boolean graded) { this.graded = graded; }
 }
