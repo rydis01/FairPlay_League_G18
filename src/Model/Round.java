@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Round {
     private int id;
@@ -9,6 +10,7 @@ public class Round {
     private RoundStatus status;
     private LocalDateTime deadline;
     private LocalDateTime createdAt;
+    private List<Match> matches;
 
     public Round() {
     }
@@ -20,6 +22,7 @@ public class Round {
         this.status = RoundStatus.Open;
         this.deadline = deadline;
         this.createdAt = LocalDateTime.now();
+        this.matches = null;
     }
 
     //Läsa från databasen
@@ -49,4 +52,7 @@ public class Round {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public List<Match> getMatches() { return matches; }
+    public void setMatches(List<Match> matches) { this.matches = matches; }
 }

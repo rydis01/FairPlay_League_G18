@@ -1,6 +1,7 @@
 package service;
 
-import database.MatchDAO;
+import database.RoundDAO;
+import model.Round;
 
 import java.util.List;
 
@@ -9,12 +10,15 @@ import java.util.List;
  * Ansvarar för att skapa omgångar, kolla deadline och hantera status.
  */
 public class RoundService {
-    private MatchDAO matchDAO;
+    private RoundDAO roundDAO;
 
     public RoundService(){
-        this.matchDAO = new MatchDAO();
+        this.roundDAO = new RoundDAO();
     }
     public List<String> getMatchResults(int roundId){
-        return matchDAO.getResultsFromRound(roundId);
+        return roundDAO.getResultsFromRound(roundId);
+    }
+    public Round getRound(int roundId){
+        return roundDAO.getRound(roundId);
     }
 }

@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MatchDAO {
@@ -67,29 +66,6 @@ public class MatchDAO {
         } catch (Exception e) {
             System.out.println("Fel vid databaskoppling: " + e.getMessage());
         }
-    }
-
-    public List<String> getResultsFromRound(int roundId){
-        List<String> results = new ArrayList<>();
-
-        String sql = "SELECT Actual_result FROM Matches WHERE Gameweek_ID = ? ORDER BY Match_ID";
-
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, roundId);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                String result = rs.getString("Actual_result");
-                results.add(result);
-            }
-
-        } catch (Exception e) {
-            System.out.println("Kunde inte hämta matchresultat för omgång " + roundId + ". Fel: " + e.getMessage());
-        }
-
-        return results;
     }
 
     // --- Hjälpmetoder ---

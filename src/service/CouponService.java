@@ -14,6 +14,10 @@ public class CouponService {
 
     // Skapa och spara en kupong med alla 8 tips
     public void submitCoupon(int userId, int roundId, Map<Integer, String> tips) {
+        // F-KUP-1.4, Deadline för inlämning, Must
+        // Kupongen ska inte kunna lämnas in eller ändras efter omgångens deadline.
+
+
         //Validera att det är exakt 8 tips
         if (tips.size() != 8) {
             System.out.println("En kupong måste ha exakt 8 tips!");

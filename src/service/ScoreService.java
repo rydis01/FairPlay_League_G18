@@ -2,6 +2,7 @@ package service;
 
 import database.CouponDAO;
 import database.MatchDAO;
+import database.RoundDAO;
 import model.Coupon;
 
 import java.util.List;
@@ -13,11 +14,11 @@ import java.util.Map;
  */
 public class ScoreService {
     private CouponDAO couponDAO;
-    private MatchDAO matchesDAO;
+    private RoundDAO roundDAO;
 
     public ScoreService() {
         this.couponDAO = new CouponDAO();
-        this.matchesDAO = new MatchDAO();
+        this.roundDAO = new RoundDAO();
     }
 
     // Rätta en kupong och returnera antalet rätt
@@ -28,7 +29,7 @@ public class ScoreService {
             return;
         }
 
-        List <String> correctCoupon = matchesDAO.getResultsFromRound(roundId);
+        List <String> correctCoupon = roundDAO.getResultsFromRound(roundId);
 
         // Jämför användarens tips med de rätta resultaten
         int correctCount = 0;
