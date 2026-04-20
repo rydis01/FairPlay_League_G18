@@ -1,6 +1,7 @@
 package service;
 
 import database.LeagueDAO;
+import model.League;
 
 /**
  * Hanterar ligor och medlemskap.
@@ -13,8 +14,8 @@ public class LeagueService {
         this.leagueDAO = new LeagueDAO();
     }
     // Skapa en ny liga
-    public void createLeague(String leagueName, String creator) {
-        // Logik för att skapa en liga och spara den i databasen
+    public void createLeague(String leagueName, int creatorId) {
+        League newLeague = new League(leagueName, generateInviteCode(), creatorId);
     }
 
     // Generera en invite code för en liga
@@ -25,5 +26,9 @@ public class LeagueService {
     // Lägg till en medlem i ligan med en invite code
     public void removeMemberFromLeague(int leagueId, int userId) {
         // Logik för att ta bort en medlem från ligan
+    }
+
+    public String generateInviteCode(){
+        return "1";
     }
 }

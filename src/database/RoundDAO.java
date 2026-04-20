@@ -46,82 +46,45 @@ public class RoundDAO {
     }
 
     public Round getRound(int roundId) {
-        Round round = null;
+        Round round = new Round();
         List<Match> matches = new ArrayList<>();
 
-        // Fetch round data from Rounds table
-        String roundSql = "SELECT id, League_ID, Gameweek, Status, Deadline, Created_At FROM Rounds WHERE id = ?";
-
-        // Fetch matches for this round
+        // Fetch all matches for this gameweek
         String matchesSql = "SELECT Match_ID, Gameweek_ID, External_Match_ID, Match_Number, Home_team, Away_team, Kickoff_time, Actual_result " +
                             "FROM Matches WHERE Gameweek_ID = ? ORDER BY Match_Number";
 
-        try (Connection conn = DatabaseManager.getConnection()) {
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement matchesStmt = conn.prepareStatement(matchesSql)) {
 
-            // 1. Fetch round data
-            try (PreparedStatement roundStmt = conn.prepareStatement(roundSql)) {
-                roundStmt.setInt(1, roundId);
-                ResultSet rs = roundStmt.executeQuery();
+            matchesStmt.setInt(1, roundId);
+            ResultSet rs = matchesStmt.executeQuery();
 
-                if (rs.next()) {
-                    int id = rs.getInt("id");
-                    int leagueId = rs.getInt("League_ID");
-                    int gameweek = rs.getInt("Gameweek");
-                    RoundStatus status = RoundStatus.valueOf(rs.getString("Status"));
-                    Timestamp deadlineTs = rs.getTimestamp("Deadline");
-                    Timestamp createdAtTs = rs.getTimestamp("Created_At");
+            while (rs.next()) {
+                int id = rs.getInt("Match_ID");
+                int gameweekId = rs.getInt("Gameweek_ID");
+                String externalMatchId = rs.getString("External_Match_ID");
+                int matchNumber = rs.getInt("Match_Number");
+                String homeTeam = rs.getString("Home_team");
+                String awayTeam = rs.getString("Away_team");
+                Timestamp kickoffTime = rs.getTimestamp("Kickoff_time");
+                String result = rs.getString("Actual_result");
 
-                    LocalDateTime deadline;
-                    if (deadlineTs != null) {
-                        deadline = deadlineTs.toLocalDateTime();
-                    } else {
-                        deadline = null;
-                    }
-
-                    LocalDateTime createdAt;
-                    if (createdAtTs != null) {
-                        createdAt = createdAtTs.toLocalDateTime();
-                    } else {
-                        createdAt = null;
-                    }
-
-                    round = new Round(id, leagueId, gameweek, status, deadline, createdAt);
-                }
-            }
-
-            // 2. Fetch all matches for this round
-            if (round != null) {
-                try (PreparedStatement matchesStmt = conn.prepareStatement(matchesSql)) {
-                    matchesStmt.setInt(1, round.getGameweek());
-                    ResultSet rs = matchesStmt.executeQuery();
-
-                    while (rs.next()) {
-                        int id = rs.getInt("Match_ID");
-                        int gameweekId = rs.getInt("Gameweek_ID");
-                        String externalMatchId = rs.getString("External_Match_ID");
-                        int matchNumber = rs.getInt("Match_Number");
-                        String homeTeam = rs.getString("Home_team");
-                        String awayTeam = rs.getString("Away_team");
-                        Timestamp kickoffTime = rs.getTimestamp("Kickoff_time");
-                        String result = rs.getString("Actual_result");
-
-                        LocalDateTime kickOff;
-                        if (kickoffTime != null) {
-                            kickOff = kickoffTime.toLocalDateTime();
-                        } else {
-                            kickOff = null;
-                        }
-
-                        Match match = new Match(id, gameweekId, externalMatchId, matchNumber, homeTeam, awayTeam, kickOff, result);
-                        matches.add(match);
-                    }
+                LocalDateTime kickOff;
+                if (kickoffTime != null) {
+                    kickOff = kickoffTime.toLocalDateTime();
+                } else {
+                    kickOff = null;
                 }
 
-                round.setMatches(matches);
+                Match match = new Match(id, gameweekId, externalMatchId, matchNumber, homeTeam, awayTeam, kickOff, result);
+                matches.add(match);
             }
+
+            // Add matches to the Round object
+            round.setMatches(matches);
 
         } catch (Exception e) {
-            System.out.println("Could not fetch round " + roundId + ". Error: " + e.getMessage());
+            System.out.println("Could not fetch matches for gameweek " + roundId + ". Error: " + e.getMessage());
         }
 
         return round;

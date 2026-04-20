@@ -6,26 +6,26 @@ public class League {
     private int id;
     private String name;
     private String inviteCode;
-    private int createdBy;
+    private int createdByUserId;
     private LocalDateTime createdAt;
 
     public League() {
     }
 
     // Skapa ny liga
-    public League(String name, String inviteCode, int createdBy) {
+    public League(String name, String inviteCode, int createdByUserId) {
         this.name = name;
         this.inviteCode = inviteCode;
-        this.createdBy = createdBy;
+        this.createdByUserId = createdByUserId;
         this.createdAt = LocalDateTime.now();
     }
 
     // Läsa från databasen
-    public League(int id, String name, String inviteCode, int createdBy, LocalDateTime createdAt) {
+    public League(int id, String name, String inviteCode, int createdByUserId, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.inviteCode = inviteCode;
-        this.createdBy = createdBy;
+        this.createdByUserId = createdByUserId;
         this.createdAt = createdAt;
     }
 
@@ -41,9 +41,9 @@ public class League {
 
     public void setInviteCode(String inviteCode) { this.inviteCode = inviteCode; }
 
-    public int getCreatedBy() { return createdBy; }
+    public int getCreatedBy() { return createdByUserId; }
 
-    public void setCreatedBy(int createdBy) { this.createdBy = createdBy; }
+    public void setCreatedBy(int createdBy) { this.createdByUserId = createdBy; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
 

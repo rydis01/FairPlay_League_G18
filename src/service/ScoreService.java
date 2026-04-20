@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Hanterar poängberäkning och leaderboards.
- * Ansvarar för att räkna ut poäng efter varje omgång och visa topplistan.
+ * Handles score calculation and leaderboards.
+ * Responsible for counting points after each round and displaying the top list.
+ *
+ * @author Carl
  */
 public class ScoreService {
     private CouponDAO couponDAO;
@@ -21,7 +23,16 @@ public class ScoreService {
         this.roundDAO = new RoundDAO();
     }
 
-    // Rätta en kupong och returnera antalet rätt
+    // Grade a coupon and return the number of correct guesses
+
+    /**
+     * Grades a user's coupon by comparing their tips with the correct results from a round.
+     * If the coupon has already been graded, the method returns without making changes.
+     *
+     * @param userId The ID of the user whose coupon will be graded
+     * @param roundId The ID of the round to grade the coupon for
+     * @author Carl
+     */
     public void gradeCoupon(int userId, int roundId) {
         Coupon userCoupon = couponDAO.getCoupon(userId, roundId);
 

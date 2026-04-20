@@ -34,6 +34,7 @@ public class CouponService {
 
         Coupon coupon = new Coupon(userId, roundId);
         coupon.setTips(tips);
+        coupon.setSubmitted(true);
         couponDAO.saveCoupon(coupon);
     }
 

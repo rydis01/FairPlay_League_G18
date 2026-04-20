@@ -90,7 +90,7 @@ public class UserService {
      * @author Carl
      */
     public String viewUserProfile(int userId) {
-        User user = userDAO.getUserByID(userId);
+        User user = getUserById(userId);
         if (user != null) {
             return "Användarprofil:\n" +
                     "ID: " + user.getId() + "\n" +
@@ -123,7 +123,7 @@ public class UserService {
      * @author Carl
      */
     public boolean userExists(int userId) {
-        User user = userDAO.getUserByID(userId);
+        User user = getUserById(userId);
         return user != null;
     }
 }

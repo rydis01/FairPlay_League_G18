@@ -9,6 +9,7 @@ public class Coupon {
     private int roundId;
     private Map<Integer, String> tips;
     private int correctCount;
+    private boolean submitted = false;
     private boolean graded = false;
 
     public Coupon() {
@@ -63,4 +64,8 @@ public class Coupon {
     public boolean getGraded() { return graded; }
 
     public void setGraded(boolean graded) { this.graded = graded; }
+
+    public boolean isSubmitted() { return submitted; }
+
+    public void setSubmitted(boolean submitted) { this.submitted = submitted; }
 }
