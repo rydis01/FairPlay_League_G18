@@ -32,7 +32,8 @@ public class UserDAO {
             System.out.println("Användaren " + user.getUsername() + " lades till i databsen!");
 
         } catch (SQLException e) {
-            System.out.println("Användaren kunde inte sparas. Fel: " + e.getMessage());
+            // System.out.println("Användaren kunde inte sparas. Fel: " + e.getMessage()); <– Avkommenterat för att skicka throw istället:
+            throw new RuntimeException("Kunde inte spara användare: " + e.getMessage(), e);
         }
     }
     public void updateUser(User user) {
