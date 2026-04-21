@@ -1,10 +1,11 @@
 package api;
 
-import api.model.Match;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import model.Match; // <-- NY IMPORT HÄR!
+
 import java.util.ArrayList;
 import java.util.List;
 
