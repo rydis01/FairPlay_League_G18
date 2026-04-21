@@ -1,5 +1,7 @@
 package database;
 
+import model.Match;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
