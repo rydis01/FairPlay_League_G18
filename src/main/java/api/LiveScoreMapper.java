@@ -4,11 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-<<<<<<<< HEAD:src/FairplayLeagueG18/api/LiveScoreMapper.java
-import FairplayLeagueG18.model.Match; // <-- NY IMPORT HÄR!
-========
+
 import model.Match;
->>>>>>>> carl_after_springboot:src/main/java/api/LiveScoreMapper.java
 
 import java.util.ArrayList;
 import java.util.List;
