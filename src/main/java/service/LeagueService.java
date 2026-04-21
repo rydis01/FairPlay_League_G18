@@ -1,8 +1,8 @@
-package FairplayLeagueG18.service;
+package service;
 
-import FairplayLeagueG18.database.LeagueDAO;
-import FairplayLeagueG18.model.League;
-import FairplayLeagueG18.model.LeagueMember;
+import database.LeagueDAO;
+import model.League;
+import model.LeagueMember;
 
 import java.util.List;
 import java.util.UUID;

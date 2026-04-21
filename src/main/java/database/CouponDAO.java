@@ -1,6 +1,6 @@
 package database;
 
-import FairplayLeagueG18.model.Coupon;
+import model.Coupon;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

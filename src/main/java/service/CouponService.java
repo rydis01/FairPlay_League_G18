@@ -1,7 +1,7 @@
-package FairplayLeagueG18.service;
+package service;
 
-import FairplayLeagueG18.database.CouponDAO;
-import FairplayLeagueG18.model.Coupon;
+import database.CouponDAO;
+import model.Coupon;
 import java.util.Map;
 
 public class CouponService {

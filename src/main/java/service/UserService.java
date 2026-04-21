@@ -1,8 +1,8 @@
-package FairplayLeagueG18.service;
+package service;
 
-import FairplayLeagueG18.database.UserDAO;
-import FairplayLeagueG18.model.User;
-import FairplayLeagueG18.model.Role;
+import database.UserDAO;
+import model.User;
+import model.Role;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
