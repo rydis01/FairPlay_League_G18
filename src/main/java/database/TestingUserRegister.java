@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 import model.User;
 import model.Role;
-import database.UserDAO;
 
 import org.mindrot.jbcrypt.BCrypt;
 
