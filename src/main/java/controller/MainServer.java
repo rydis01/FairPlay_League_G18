@@ -1,9 +1,9 @@
-package FairplayLeagueG18.controller;
+package controller;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import FairplayLeagueG18.service.MatchService;
+import service.MatchService;
 
 import java.io.IOException;
 import java.io.OutputStream;

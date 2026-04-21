@@ -1,4 +1,4 @@
-import FairplayLeagueG18.database.DatabaseManager;
+import database.DatabaseManager;
 
 public class TestingDatabase {
     public static void main(String[] args) {

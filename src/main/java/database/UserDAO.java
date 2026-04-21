@@ -1,7 +1,7 @@
-package FairplayLeagueG18.database;
+package database;
 
-import FairplayLeagueG18.model.User;
-import FairplayLeagueG18.model.Role;
+import model.User;
+import model.Role;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

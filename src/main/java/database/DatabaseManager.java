@@ -1,4 +1,4 @@
-package FairplayLeagueG18.database;
+package database;
 
 import java.io.FileInputStream;
 import java.io.IOException;

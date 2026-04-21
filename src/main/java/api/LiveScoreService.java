@@ -1,4 +1,6 @@
-package FairplayLeagueG18.api;
+package api;
+
+import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.net.http.HttpClient;

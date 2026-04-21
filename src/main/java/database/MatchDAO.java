@@ -1,6 +1,7 @@
-package FairplayLeagueG18.database;
+package database;
 
-import FairplayLeagueG18.model.Match;
+import model.Match;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

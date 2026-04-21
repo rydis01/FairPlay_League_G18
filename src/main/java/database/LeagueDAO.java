@@ -1,4 +1,4 @@
-package FairplayLeagueG18.database;
+package database;
 
 import FairplayLeagueG18.model.League;
 import FairplayLeagueG18.model.LeagueMember;

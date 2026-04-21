@@ -1,4 +1,4 @@
-package FairplayLeagueG18.database;
+package database;
 
 import FairplayLeagueG18.model.Coupon;
 
