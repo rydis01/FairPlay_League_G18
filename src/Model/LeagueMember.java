@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class LeagueMember {
     private int userId;
     private int leagueId;
+    private String username;
     private int totalScore;
     private LocalDateTime joinedAt;
 
@@ -20,9 +21,10 @@ public class LeagueMember {
     }
 
     // Läsa från databasen
-    public LeagueMember(int userId, int leagueId, int totalScore, LocalDateTime joinedAt) {
+    public LeagueMember(int userId, int leagueId, String username, int totalScore, LocalDateTime joinedAt) {
         this.userId = userId;
         this.leagueId = leagueId;
+        this.username = username;
         this.totalScore = totalScore;
         this.joinedAt = joinedAt;
     }
@@ -32,6 +34,9 @@ public class LeagueMember {
 
     public int getLeagueId() { return leagueId; }
     public void setLeagueId(int leagueId) { this.leagueId = leagueId; }
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
     public int getTotalScore() { return totalScore; }
     public void setTotalScore(int totalScore) { this.totalScore = totalScore; }
