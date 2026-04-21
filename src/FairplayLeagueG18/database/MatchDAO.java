@@ -1,6 +1,6 @@
-package database;
+package FairplayLeagueG18.database;
 
-import model.Match;
+import FairplayLeagueG18.model.Match;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.List;
 
+@Repository
 public class MatchDAO {
 
     public void saveMatches(List<Match> matches) {

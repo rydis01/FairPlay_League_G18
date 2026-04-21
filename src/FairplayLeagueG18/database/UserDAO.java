@@ -1,7 +1,7 @@
-package database;
+package FairplayLeagueG18.database;
 
-import model.User;
-import model.Role;
+import FairplayLeagueG18.model.User;
+import FairplayLeagueG18.model.Role;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,12 +10,12 @@ import java.sql.Timestamp;
 
 /**
  * DAO står för Data Access Object
- *      Namn för systemet där en service-klass skickar en beställning denna klass för att komma åt data från DB
+ *      Namn för systemet där en FairplayLeagueG18.service-klass skickar en beställning denna klass för att komma åt data från DB
  */
 
 public class UserDAO {
 
-    // Metod för att skapa ny användare (INSERT into database)
+    // Metod för att skapa ny användare (INSERT into FairplayLeagueG18.database)
     public void saveUser(User user) {
 
         String sql = "INSERT INTO Users (Username, Email, Password_Hash, Role) VALUES (?, ?, ?, ?)";
@@ -56,7 +56,7 @@ public class UserDAO {
         }
     }
 
-    // Metod för att hämta en användare (SELECT from database)
+    // Metod för att hämta en användare (SELECT from FairplayLeagueG18.database)
     public User getUserByID(int userID) {
 
         String sql = "SELECT * FROM Users WHERE User_ID = ?";

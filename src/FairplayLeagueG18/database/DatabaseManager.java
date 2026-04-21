@@ -1,4 +1,4 @@
-package database;
+package FairplayLeagueG18.database;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class DatabaseManager {
             System.out.println("Database connection established.");
             return conn;
         } catch (Exception e) {
-            System.out.println("Failed to connect to database.");
+            System.out.println("Failed to connect to FairplayLeagueG18.database.");
             e.printStackTrace();
             return null;
         }

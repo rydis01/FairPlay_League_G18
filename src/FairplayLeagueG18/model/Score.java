@@ -1,4 +1,4 @@
-package model;
+package FairplayLeagueG18.model;
 
 public class Score {
     private int id;

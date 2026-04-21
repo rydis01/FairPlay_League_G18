@@ -1,7 +1,7 @@
-package service;
+package FairplayLeagueG18.service;
 
-import database.RoundDAO;
-import model.Round;
+import FairplayLeagueG18.database.RoundDAO;
+import FairplayLeagueG18.model.Round;
 
 import java.util.List;
 

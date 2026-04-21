@@ -1,4 +1,4 @@
-package model;
+package FairplayLeagueG18.model;
 
 import java.time.LocalDateTime;
 

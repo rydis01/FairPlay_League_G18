@@ -1,9 +1,8 @@
-package service;
+package FairplayLeagueG18.service;
 
-import database.CouponDAO;
-import database.MatchDAO;
-import database.RoundDAO;
-import model.Coupon;
+import FairplayLeagueG18.database.CouponDAO;
+import FairplayLeagueG18.database.RoundDAO;
+import FairplayLeagueG18.model.Coupon;
 
 import java.util.List;
 import java.util.Map;

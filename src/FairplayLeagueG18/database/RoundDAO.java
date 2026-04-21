@@ -1,8 +1,8 @@
-package database;
+package FairplayLeagueG18.database;
 
-import model.Match;
-import model.Round;
-import model.RoundStatus;
+import FairplayLeagueG18.model.Match;
+import FairplayLeagueG18.model.Round;
+import FairplayLeagueG18.model.RoundStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,7 +1,7 @@
-package database;
+package FairplayLeagueG18.database;
 
-import model.Coupon;
-import model.Pick;
+import FairplayLeagueG18.model.Coupon;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 /**
  * DAO står för Data Access Object
- *      Namn för systemet där en service-klass skickar en beställning till denna klass för att komma åt data från DB
+ *      Namn för systemet där en FairplayLeagueG18.service-klass skickar en beställning till denna klass för att komma åt data från DB
  */
 
 public class CouponDAO {

@@ -1,8 +1,8 @@
-package service;
+package FairplayLeagueG18.service;
 
-import database.UserDAO;
-import model.User;
-import model.Role;
+import FairplayLeagueG18.database.UserDAO;
+import FairplayLeagueG18.model.User;
+import FairplayLeagueG18.model.Role;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -50,7 +50,7 @@ public class UserService {
         System.out.println("Lösenordet är hashat!");
 
 
-        // TODO: Add check so email doesn't already exist in database since email is unique.
+        // TODO: Add check so email doesn't already exist in FairplayLeagueG18.database since email is unique.
         // Fixas här nedan:
 
         try {
@@ -80,7 +80,7 @@ public class UserService {
     public boolean loginUser(String email, String password) {
         User user = userDAO.getUserByEmail(email);
         if (user != null) {
-            // TODO: Hash the entered password and compare it with the hashed password in the database
+            // TODO: Hash the entered password and compare it with the hashed password in the FairplayLeagueG18.database
             return user.getPasswordHash().equals(password);
         }
         return false;

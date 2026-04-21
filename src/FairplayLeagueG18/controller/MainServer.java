@@ -1,9 +1,9 @@
-package controller;
+package FairplayLeagueG18.controller;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import service.MatchService;
+import FairplayLeagueG18.service.MatchService;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,7 +22,7 @@ public class MainServer {
         // 2. Skapa en webbserver på port 8080
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
 
-        // 3. Skapa länken "/api/matches"
+        // 3. Skapa länken "/FairplayLeagueG18.api/matches"
         server.createContext("/api/matches", new HttpHandler() {
             @Override
             public void handle(HttpExchange exchange) throws IOException {
@@ -33,7 +33,7 @@ public class MainServer {
                 // Läs in datan från filen din scraper sparar till
                 String responseData = "[]";
                 try {
-                    Path filePath = Paths.get("src/api/allsvenskan_livescore.json");
+                    Path filePath = Paths.get("src/FairplayLeagueG18.api/allsvenskan_livescore.json");
                     if (Files.exists(filePath)) {
                         responseData = Files.readString(filePath);
                     } else {

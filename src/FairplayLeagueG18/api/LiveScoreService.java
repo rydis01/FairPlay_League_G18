@@ -1,4 +1,4 @@
-package api;
+package FairplayLeagueG18.api;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -6,6 +6,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
+@Service
 public class LiveScoreService {
 
     private static final String ALLSVENSKAN_URL = "https://prod-public-api.livescore.com/v1/api/app/competition/302/details/2?locale=en";

@@ -1,10 +1,9 @@
-package database;
+package FairplayLeagueG18.database;
 
 import java.util.Scanner;
 
-import model.User;
-import model.Role;
-import database.UserDAO;
+import FairplayLeagueG18.model.User;
+import FairplayLeagueG18.model.Role;
 
 import org.mindrot.jbcrypt.BCrypt;
 
