@@ -1,9 +1,9 @@
 package controller;
 
-import api.LiveScoreManager;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import service.MatchService;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,8 +16,8 @@ public class MainServer {
 
     public static void main(String[] args) throws IOException {
         // 1. Starta skrapare i bakgrunden
-        LiveScoreManager manager = new LiveScoreManager();
-        manager.startAutoUpdate();
+        MatchService matchService = new MatchService();
+        matchService.startAutoUpdate();
 
         // 2. Skapa en webbserver på port 8080
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);

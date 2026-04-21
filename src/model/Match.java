@@ -3,19 +3,40 @@ package model;
 import java.time.LocalDateTime;
 
 public class Match {
+
+    // --- Fält från grabbarnas databaslogik ---
     private int id;
     private int roundId;
     private String externalMatchId;
     private int matchNumber;
-    private String homeTeam;
-    private String awayTeam;
     private LocalDateTime kickOff;
     private String result;
 
+    // --- Gemensamma fält ---
+    private String homeTeam;
+    private String awayTeam;
+
+    // --- Fält från din API-skrapning ---
+    private String homeScore;
+    private String awayScore;
+    private String matchStatus;
+    private String matchTime;
+
+    // 1. Tom konstruktor (behövs ofta för ramverk/databas)
     public Match() {
     }
 
-    // Skapa ny match (hämtad från TheSportsDB)
+    // 2. Konstruktor för DIN API-skrapare (används i LiveScoreMapper)
+    public Match(String homeTeam, String awayTeam, String homeScore, String awayScore, String matchStatus, String matchTime) {
+        this.homeTeam = homeTeam;
+        this.awayTeam = awayTeam;
+        this.homeScore = homeScore;
+        this.awayScore = awayScore;
+        this.matchStatus = matchStatus;
+        this.matchTime = matchTime;
+    }
+
+    // 3. Konstruktor: Skapa ny match (grabbarnas kod)
     public Match(int roundId, String externalMatchId, int matchNumber, String homeTeam, String awayTeam, LocalDateTime kickOff) {
         this.roundId = roundId;
         this.externalMatchId = externalMatchId;
@@ -23,10 +44,9 @@ public class Match {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.kickOff = kickOff;
-        this.result = null;
     }
 
-    // Läsa från databasen
+    // 4. Konstruktor: Läsa från databasen (grabbarnas kod)
     public Match(int id, int roundId, String externalMatchId, int matchNumber, String homeTeam, String awayTeam, LocalDateTime kickOff, String result) {
         this.id = id;
         this.roundId = roundId;
@@ -38,35 +58,41 @@ public class Match {
         this.result = result;
     }
 
-    public int getId() { return id; }
+    // --- Getters & Setters för alla fält ---
 
+    public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
     public int getRoundId() { return roundId; }
-
     public void setRoundId(int roundId) { this.roundId = roundId; }
 
     public String getExternalMatchId() { return externalMatchId; }
-
     public void setExternalMatchId(String externalMatchId) { this.externalMatchId = externalMatchId; }
 
     public int getMatchNumber() { return matchNumber; }
-
     public void setMatchNumber(int matchNumber) { this.matchNumber = matchNumber; }
 
-    public String getHomeTeam() { return homeTeam; }
-
-    public void setHomeTeam(String homeTeam) { this.homeTeam = homeTeam; }
-
-    public String getAwayTeam() { return awayTeam; }
-
-    public void setAwayTeam(String awayTeam) { this.awayTeam = awayTeam; }
-
     public LocalDateTime getKickOff() { return kickOff; }
-
     public void setKickOff(LocalDateTime kickOff) { this.kickOff = kickOff; }
 
     public String getResult() { return result; }
-
     public void setResult(String result) { this.result = result; }
+
+    public String getHomeTeam() { return homeTeam; }
+    public void setHomeTeam(String homeTeam) { this.homeTeam = homeTeam; }
+
+    public String getAwayTeam() { return awayTeam; }
+    public void setAwayTeam(String awayTeam) { this.awayTeam = awayTeam; }
+
+    public String getHomeScore() { return homeScore; }
+    public void setHomeScore(String homeScore) { this.homeScore = homeScore; }
+
+    public String getAwayScore() { return awayScore; }
+    public void setAwayScore(String awayScore) { this.awayScore = awayScore; }
+
+    public String getMatchStatus() { return matchStatus; }
+    public void setMatchStatus(String matchStatus) { this.matchStatus = matchStatus; }
+
+    public String getMatchTime() { return matchTime; }
+    public void setMatchTime(String matchTime) { this.matchTime = matchTime; }
 }
