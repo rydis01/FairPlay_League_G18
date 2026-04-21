@@ -52,7 +52,7 @@ public class LiveScoreMapper {
                     }
                 }
 
-                // Uppdatera hur många matcher lagen spelat (så uträknaren vet till nästa gång)
+                // Uppdatera hur många matcher lagen spelat
                 teamMatchCount.put(homeTeam, gameweek);
                 teamMatchCount.put(awayTeam, gameweek);
 

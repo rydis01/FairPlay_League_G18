@@ -30,7 +30,7 @@ public class MainServer {
                 exchange.getResponseHeaders().add("Content-Type", "application/json; charset=UTF-8");
                 exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
 
-                // Läs in datan från filen din scraper sparar till
+                // Läs in data från filen som skraparen uppdaterar
                 String responseData = "[]";
                 try {
                     Path filePath = Paths.get("src/FairplayLeagueG18.api/allsvenskan_livescore.json");

@@ -2,7 +2,7 @@ package service;
 
 import api.LiveScoreService;
 import api.LiveScoreMapper;
-import model.Match; // Import från er gemensamma model-mapp
+import model.Match;
 import database.MatchDAO;
 
 import java.time.LocalDateTime;

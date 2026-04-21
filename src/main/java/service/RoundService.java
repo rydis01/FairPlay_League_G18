@@ -2,8 +2,8 @@ package service;
 
 import database.RoundDAO;
 import model.Round;
-import org.springframework.beans.factory.annotation.Autowired; // <-- Ny import
-import org.springframework.stereotype.Service; // <-- Ny import
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 

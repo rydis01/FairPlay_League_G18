@@ -73,7 +73,7 @@ public class MatchDAO {
 
     // --- Hjälpmetoder ---
 
-    // Konverterar er matchScore (t.ex. "2" och "1") till tipstecken (1, X eller 2)
+    // Konverterar matchScore
     private String determineResult(Match match) {
         if ("NS".equals(match.getMatchStatus()) || "-".equals(match.getHomeScore())) {
             return null; // Matchen har inte spelats än

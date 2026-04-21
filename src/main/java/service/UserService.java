@@ -28,43 +28,22 @@ public class UserService {
      * @param password The password for the new user
      * @author Carl & Hugo
      */
-    public void registerUser(String username, String email, String password) {
-        // TODO:  Add password check - must be at least 8 characters long.
-        // Fixas här nedan:
-
+    public String registerUser(String username, String email, String password) {
         if (password.length() < 8) {
-            System.out.println("TEST MISSLYCKADES: Lösenordet måste vara minst 8 tecken långt.");
-            return;
+            return "MISSLYCKADES: Lösenordet måste vara minst 8 tecken långt.";
         }
 
-
-        // TODO: Password hashing.
-        // Fixas här nedan:
-
-        // Vi ber BCrypt att generera en unik "salt" och hasha lösenordet.
+        // Vi ber BCrypt att generera en unik salt och hasha lösenordet.
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-
-        System.out.println("Det riktiga lösenordet var: " + password);
-        System.out.println("Det som (ska) sparas i databasen är: " + hashedPassword);
-
-        System.out.println("Lösenordet är hashat!");
-
-
-        // TODO: Add check so email doesn't already exist in FairplayLeagueG18.database since email is unique.
-        // Fixas här nedan:
 
         try {
             User newUser = new User(username, email, hashedPassword, Role.Player);
             userDAO.saveUser(newUser);
-            System.out.println("TEST GODKÄNT: Användaren skapades i databasen!");
+            return "GODKÄNT: Användaren '" + username + "' skapades i databasen!";
 
         } catch (Exception e) {
-            System.out.println("TEST MISSLYCKADES (Databasfel): " + e.getMessage());
-            // Om e.getMessage() klagar på "duplicate key value violates unique constraint",
-            // –> Krav F-REG-1.1 = Godkänt!
+            return "MISSLYCKADES (Databasfel): E-posten kanske redan finns?\nInfo: " + e.getMessage();
         }
-
-
     }
 
     // Login
@@ -80,8 +59,8 @@ public class UserService {
     public boolean loginUser(String email, String password) {
         User user = userDAO.getUserByEmail(email);
         if (user != null) {
-            // TODO: Hash the entered password and compare it with the hashed password in the FairplayLeagueG18.database
-            return user.getPasswordHash().equals(password);
+            // Använder BCrypt för att jämföra inmatat lösenord med det krypterade i databasen
+            return BCrypt.checkpw(password, user.getPasswordHash());
         }
         return false;
     }
@@ -107,7 +86,9 @@ public class UserService {
     public void changePassword(int userId, String newPassword) {
         User user = userDAO.getUserByID(userId);
         if (user != null) {
-            user.setPasswordHash(newPassword);
+            // Hasha det Nya lösenordet innan det sparas!
+            String hashedNewPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            user.setPasswordHash(hashedNewPassword);
             userDAO.updateUser(user);
         }
     }

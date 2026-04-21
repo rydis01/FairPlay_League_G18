@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class Match {
 
-    // --- Fält från grabbarnas databaslogik ---
+    // Databasfält
     private int id;
     private int roundId;
     private String externalMatchId;
@@ -12,21 +12,21 @@ public class Match {
     private LocalDateTime kickOff;
     private String result;
 
-    // --- Gemensamma fält ---
+    // Gemensamma fält
     private String homeTeam;
     private String awayTeam;
 
-    // --- Fält från din API-skrapning ---
+    // Fält från API-skrapning
     private String homeScore;
     private String awayScore;
     private String matchStatus;
     private String matchTime;
 
-    // 1. Tom konstruktor (behövs ofta för ramverk/databas)
+    // 1. Tom konstruktor
     public Match() {
     }
 
-    // 2. Konstruktor för DIN API-skrapare (används i LiveScoreMapper)
+    // 2. Konstruktor för API-skrapare
     public Match(String homeTeam, String awayTeam, String homeScore, String awayScore, String matchStatus, String matchTime) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
@@ -36,7 +36,7 @@ public class Match {
         this.matchTime = matchTime;
     }
 
-    // 3. Konstruktor: Skapa ny match (grabbarnas kod)
+    // 3. Konstruktor: Skapa ny match
     public Match(int roundId, String externalMatchId, int matchNumber, String homeTeam, String awayTeam, LocalDateTime kickOff) {
         this.roundId = roundId;
         this.externalMatchId = externalMatchId;
@@ -46,7 +46,7 @@ public class Match {
         this.kickOff = kickOff;
     }
 
-    // 4. Konstruktor: Läsa från databasen (grabbarnas kod)
+    // 4. Konstruktor: Läsa från databasen
     public Match(int id, int roundId, String externalMatchId, int matchNumber, String homeTeam, String awayTeam, LocalDateTime kickOff, String result) {
         this.id = id;
         this.roundId = roundId;
@@ -58,7 +58,7 @@ public class Match {
         this.result = result;
     }
 
-    // --- Getters & Setters för alla fält ---
+    // getters and setters
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
