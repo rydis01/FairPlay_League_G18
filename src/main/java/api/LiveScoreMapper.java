@@ -1,4 +1,4 @@
-package FairplayLeagueG18.api;
+package api;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
