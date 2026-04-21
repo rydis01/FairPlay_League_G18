@@ -2,8 +2,13 @@ package FairplayLeagueG18.database;
 
 import java.util.Scanner;
 
+<<<<<<<< HEAD:src/FairplayLeagueG18/database/TestingUserRegister.java
 import FairplayLeagueG18.model.User;
 import FairplayLeagueG18.model.Role;
+========
+import model.User;
+import model.Role;
+>>>>>>>> carl_after_springboot:src/main/java/database/TestingUserRegister.java
 
 import org.mindrot.jbcrypt.BCrypt;
 
