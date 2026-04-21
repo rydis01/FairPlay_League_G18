@@ -2,18 +2,13 @@ package database;
 
 import java.util.Scanner;
 
-import database.UserDAO;
-import database.CouponDAO;
-import database.LeagueDAO;
-import database.MatchDAO;
-import database.RoundDAO;
-
 import model.User;
 import model.Role;
+import database.UserDAO;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-public class TestingDatabase {
+public class TestingUserRegister {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);

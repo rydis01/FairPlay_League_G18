@@ -3,6 +3,7 @@ package service;
 import database.UserDAO;
 import model.User;
 import model.Role;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * Handles users and authentication.
@@ -25,14 +26,45 @@ public class UserService {
      * @param username The username for the new user
      * @param email The email address for the new user (must be unique)
      * @param password The password for the new user
-     * @author Carl
+     * @author Carl & Hugo
      */
     public void registerUser(String username, String email, String password) {
+        // TODO:  Add password check - must be at least 8 characters long.
+        // Fixas här nedan:
+
+        if (password.length() < 8) {
+            System.out.println("TEST MISSLYCKADES: Lösenordet måste vara minst 8 tecken långt.");
+            return;
+        }
+
+
+        // TODO: Password hashing.
+        // Fixas här nedan:
+
+        // Vi ber BCrypt att generera en unik "salt" och hasha lösenordet.
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
+        System.out.println("Det riktiga lösenordet var: " + password);
+        System.out.println("Det som (ska) sparas i databasen är: " + hashedPassword);
+
+        System.out.println("Lösenordet är hashat!");
+
+
         // TODO: Add check so email doesn't already exist in database since email is unique.
-        // TODO: Add password check - must be at least 8 characters long.
-        // TODO: Password hashing will come later
-        User newUser = new User(username, email, password, Role.Player);
-        userDAO.saveUser(newUser);
+        // Fixas här nedan:
+
+        try {
+            User newUser = new User(username, email, hashedPassword, Role.Player);
+            userDAO.saveUser(newUser);
+            System.out.println("TEST GODKÄNT: Användaren skapades i databasen!");
+
+        } catch (Exception e) {
+            System.out.println("TEST MISSLYCKADES (Databasfel): " + e.getMessage());
+            // Om e.getMessage() klagar på "duplicate key value violates unique constraint",
+            // –> Krav F-REG-1.1 = Godkänt!
+        }
+
+
     }
 
     // Login
