@@ -18,8 +18,7 @@ public class MatchDAO {
         // SQL för att uppdatera en befintlig match
         String updateSql = "UPDATE Matches SET Actual_result = ?, Kickoff_time = ? WHERE Match_ID = ?";
         // SQL för att lägga till en helt ny match
-        String insertSql = "INSERT INTO Matches (Home_team, Away_team, Kickoff_time, Actual_result) VALUES (?, ?, ?, ?)";
-
+        String insertSql = "INSERT INTO Matches (Home_team, Away_team, Kickoff_time, Actual_result, Gameweek_ID) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection()) {
             // Vi slår av AutoCommit för att spara alla 240 matcher i ett svep
             conn.setAutoCommit(false);
@@ -50,6 +49,7 @@ public class MatchDAO {
                         insertStmt.setString(2, match.getAwayTeam());
                         insertStmt.setTimestamp(3, kickoff);
                         insertStmt.setString(4, result);
+                        insertStmt.setInt(5, match.getRoundId());
                         insertStmt.addBatch();
                     }
                 }

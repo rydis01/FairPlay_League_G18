@@ -2,6 +2,7 @@ package database;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
@@ -9,8 +10,13 @@ import java.util.Properties;
 public class DatabaseManager {
     public static Connection getConnection() {
         Properties props = new Properties();
-        try {
-            props.load(new FileInputStream("configDatabase.properties"));
+
+        try (InputStream input = DatabaseManager.class.getClassLoader().getResourceAsStream("configDatabase.properties")) {
+            if (input == null) {
+                System.out.println("Failed to load configDatabase.properties");
+                return null;
+            }
+            props.load(input);
         } catch (IOException e) {
             System.out.println("Failed to load configDatabase.properties");
             e.printStackTrace();

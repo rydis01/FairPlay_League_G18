@@ -126,4 +126,19 @@ public class RoundDAO {
 
         return round;
     }
+
+    public void deleteAllMatches() {
+        String sql = "DELETE FROM Matches";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            // Kör SQL-kommandot och få tillbaka hur många rader som raderades
+            int deletedRows = stmt.executeUpdate();
+            System.out.println("-> Succé! Tog bort " + deletedRows + " gamla matcher från databasen.");
+
+        } catch (Exception e) {
+            System.out.println("-> Fel vid tömning av databasen: " + e.getMessage());
+        }
+    }
 }
