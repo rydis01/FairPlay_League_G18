@@ -1,7 +1,7 @@
-package gui;
+package FairplayLeagueG18.controller;
 
-import database.DatabaseManager;
-import service.UserService;
+import FairplayLeagueG18.service.UserService;
+import FairplayLeagueG18.database.DatabaseManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -126,14 +126,14 @@ public class FairplayGUI {
                 return;
             }
 
-            String result = new UserService().registerUser(user, email, pass);
-            feedbackArea.setText(result);
+            //String result = new UserService().registerUser(user, email, pass);
+            //feedbackArea.setText(result);
 
-            if (result.startsWith("GODKÄNT")) {
+            //if (result.startsWith("GODKÄNT")) {
                 userField.setText("");
                 emailField.setText("");
                 passField.setText("");
-            }
+            //}
         });
 
         return panel;
