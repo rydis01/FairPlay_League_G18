@@ -20,7 +20,7 @@ public class MainServer {
         matchService.startAutoUpdate();
 
         // 2. Skapa en webbserver på port 8080
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(8082), 0);
 
         // 3. Skapa länken "/api/matches"
         server.createContext("/api/matches", new HttpHandler() {
