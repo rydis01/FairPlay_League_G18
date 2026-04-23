@@ -46,73 +46,68 @@ public class RoundDAO {
     }
 
     public Round getRound(int roundId) {
+
         Round round = null;
         List<Match> matches = new ArrayList<>();
 
-        // Fetch round data from Rounds table
-        String roundSql = "SELECT id, League_ID, Gameweek, Status, Deadline, Created_At FROM Rounds WHERE id = ?";
+        // Hämta gameweek
+        String roundSql =
+                "SELECT gameweek_id, round_number, lock_time " +
+                        "FROM gameweeks WHERE gameweek_id = ?";
 
-        // Fetch matches for this round
-        String matchesSql = "SELECT Match_ID, Gameweek_ID, External_Match_ID, Match_Number, Home_team, Away_team, Kickoff_time, Actual_result " +
-                            "FROM Matches WHERE Gameweek_ID = ? ORDER BY Match_Number";
+        // Hämta matcherna
+        String matchesSql =
+                "SELECT match_id, gameweek_id, home_team, away_team, kickoff_time, actual_result " +
+                        "FROM matches WHERE gameweek_id = ? ORDER BY match_id";
 
         try (Connection conn = DatabaseManager.getConnection()) {
 
-            // 1. Fetch round data
-            try (PreparedStatement roundStmt = conn.prepareStatement(roundSql)) {
-                roundStmt.setInt(1, roundId);
-                ResultSet rs = roundStmt.executeQuery();
+            // 1. Hämta gameweek
+            try (PreparedStatement stmt = conn.prepareStatement(roundSql)) {
+                stmt.setInt(1, roundId);
+                ResultSet rs = stmt.executeQuery();
 
                 if (rs.next()) {
-                    int id = rs.getInt("id");
-                    int leagueId = rs.getInt("League_ID");
-                    int gameweek = rs.getInt("Gameweek");
-                    RoundStatus status = RoundStatus.valueOf(rs.getString("Status"));
-                    Timestamp deadlineTs = rs.getTimestamp("Deadline");
-                    Timestamp createdAtTs = rs.getTimestamp("Created_At");
 
-                    LocalDateTime deadline;
-                    if (deadlineTs != null) {
-                        deadline = deadlineTs.toLocalDateTime();
-                    } else {
-                        deadline = null;
-                    }
+                    int id = rs.getInt("gameweek_id");
+                    int roundNumber = rs.getInt("round_number");
 
-                    LocalDateTime createdAt;
-                    if (createdAtTs != null) {
-                        createdAt = createdAtTs.toLocalDateTime();
-                    } else {
-                        createdAt = null;
-                    }
+                    Timestamp lockTs = rs.getTimestamp("lock_time");
+                    LocalDateTime lockTime = lockTs != null ? lockTs.toLocalDateTime() : null;
 
-                    round = new Round(id, leagueId, gameweek, status, deadline, createdAt);
+                    round = new Round(id, 0, roundNumber, RoundStatus.Open, lockTime, null);
                 }
             }
 
-            // 2. Fetch all matches for this round
+            // 2. Hämta matcherna
             if (round != null) {
-                try (PreparedStatement matchesStmt = conn.prepareStatement(matchesSql)) {
-                    matchesStmt.setInt(1, round.getGameweek());
-                    ResultSet rs = matchesStmt.executeQuery();
+                try (PreparedStatement stmt = conn.prepareStatement(matchesSql)) {
+                    stmt.setInt(1, round.getId());
+                    ResultSet rs = stmt.executeQuery();
 
                     while (rs.next()) {
-                        int id = rs.getInt("Match_ID");
-                        int gameweekId = rs.getInt("Gameweek_ID");
-                        String externalMatchId = rs.getString("External_Match_ID");
-                        int matchNumber = rs.getInt("Match_Number");
-                        String homeTeam = rs.getString("Home_team");
-                        String awayTeam = rs.getString("Away_team");
-                        Timestamp kickoffTime = rs.getTimestamp("Kickoff_time");
-                        String result = rs.getString("Actual_result");
 
-                        LocalDateTime kickOff;
-                        if (kickoffTime != null) {
-                            kickOff = kickoffTime.toLocalDateTime();
-                        } else {
-                            kickOff = null;
-                        }
+                        int id = rs.getInt("match_id");
+                        int gameweekId = rs.getInt("gameweek_id");
+                        String homeTeam = rs.getString("home_team");
+                        String awayTeam = rs.getString("away_team");
 
-                        Match match = new Match(id, gameweekId, externalMatchId, matchNumber, homeTeam, awayTeam, kickOff, result);
+                        Timestamp kickoffTs = rs.getTimestamp("kickoff_time");
+                        LocalDateTime kickOff = kickoffTs != null ? kickoffTs.toLocalDateTime() : null;
+
+                        String result = rs.getString("actual_result");
+
+                        Match match = new Match(
+                                id,
+                                gameweekId,
+                                null, // externalMatchId finns inte
+                                0,    // matchNumber finns inte → sätt 0
+                                homeTeam,
+                                awayTeam,
+                                kickOff,
+                                result
+                        );
+
                         matches.add(match);
                     }
                 }
@@ -125,20 +120,5 @@ public class RoundDAO {
         }
 
         return round;
-    }
-
-    public void deleteAllMatches() {
-        String sql = "DELETE FROM Matches";
-
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            // Kör SQL-kommandot och få tillbaka hur många rader som raderades
-            int deletedRows = stmt.executeUpdate();
-            System.out.println("-> Succé! Tog bort " + deletedRows + " gamla matcher från databasen.");
-
-        } catch (Exception e) {
-            System.out.println("-> Fel vid tömning av databasen: " + e.getMessage());
-        }
     }
 }

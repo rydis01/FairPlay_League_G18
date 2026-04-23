@@ -1,5 +1,3 @@
- console.log("javascript.js LOADED");
-
 document.getElementById("loginBtn").onclick = function () {
     const email = document.getElementById("email").value;
     const pass = document.getElementById("password").value;

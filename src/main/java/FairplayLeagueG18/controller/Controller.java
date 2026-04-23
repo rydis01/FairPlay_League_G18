@@ -30,8 +30,8 @@ public class Controller {
     }
 
     @GetMapping("/gameweek")
-    public Round gameweekinfo() {
-        return roundService.getRound(2);
+    public Round gameweekInfo() {
+        return roundService.getRound(4);
     }
 
     @GetMapping("/userinfo")

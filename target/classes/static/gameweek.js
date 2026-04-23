@@ -1,3 +1,4 @@
+console.log("gameweek.js LOADED");
 window.onload = function () {
 
     fetch("/api/gameweek")
@@ -18,7 +19,8 @@ window.onload = function () {
 
                 container.appendChild(card);
             });
-        });
+        })
+        .catch(err => console.error("Kunde inte hämta gameweek:", err));
 };
 
 function formatKickoff(raw) {
