@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil</title>
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+
+<div class="profile-container">
+    <h1>Din profil</h1>
+
+    <div class="profile-card">
+        <p><strong>Användarnamn:</strong> <span id="username"></span></p>
+        <p><strong>Email:</strong> <span id="email"></span></p>
+        <p><strong>Roll:</strong> <span id="role"></span></p>
+        <p><strong>Skapad:</strong> <span id="createdAt"></span></p>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">Logga ut</button>
+</div>
+
+<div class="bottom-nav">
+    <a href="gameweek.html" class="nav-item">
+        <img src="dogecoin.png" alt="">
+        <span>Kupong</span>
+    </a>
+
+    <a href="ligor.html" class="nav-item">
+        <img src="dogecoin.png" alt="">
+        <span>Ligor</span>
+    </a>
+
+    <a href="profile.html" class="nav-item">
+        <img src="dogecoin.png" alt="">
+        <span>Profil</span>
+    </a>
+
+    <a href="settings.html" class="nav-item">
+        <img src="dogecoin.png" alt="">
+        <span>Inställningar</span>
+    </a>
+
+    <a href="more.html" class="nav-item">
+        <img src="dogecoin.png" alt="">
+        <span>Mer</span>
+    </a>
+</div>
+
+<script src="profile.js"></script>
+</body>
+</html>
