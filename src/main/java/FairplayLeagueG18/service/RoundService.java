@@ -17,9 +17,11 @@ public class RoundService {
     public RoundService(){
         this.roundDAO = new RoundDAO();
     }
+
     public List <String> getMatchResults(int roundId){
         return roundDAO.getResultsFromRound(roundId);
     }
+
     public Round getRound(int roundId){
         return roundDAO.getRound(roundId);
     }

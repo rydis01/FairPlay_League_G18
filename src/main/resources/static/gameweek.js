@@ -1,148 +1,142 @@
 console.log("gameweek.js LOADED");
 
-let currentMatchIds = []; // Sparar ID:n
+window.onload = function () {
+    document.getElementById("getRoundBtn").onclick = loadRound;
+    document.getElementById("submitTipsBtn").onclick = submitTips;
+};
 
-document.addEventListener("DOMContentLoaded", function () {
-    const fetchBtn = document.getElementById("fetchRoundBtn");
-    const submitBtn = document.getElementById("submitCouponBtn");
+let currentMatches = [];
 
-    // Lyssna på klick för att hämta omgång
-    fetchBtn.addEventListener("click", fetchRound);
-
-    // Lyssna på klick för inlämning
-    submitBtn.addEventListener("click", submitCoupon);
-});
-
-function fetchRound() {
-    const roundId = document.getElementById("roundInput").value;
-    const container = document.getElementById("matches");
-    const statusLabel = document.getElementById("statusMessage");
-    const submitBtn = document.getElementById("submitCouponBtn");
-
-    statusLabel.textContent = "Hämtar...";
-    statusLabel.className = "status-message";
-
-    // Anropa er Spring Boot Backend
-    // vi måste bygga en GET-endpoint i Spring Boot som heter t.ex. /api/gameweek/{roundId}
-    fetch(`/api/gameweek/${roundId}`)
-        .then(response => {
-            if (!response.ok) throw new Error("Kunde inte hämta omgången");
-            return response.json();
-        })
-        .then(data => {
-            container.innerHTML = "";
-            currentMatchIds = []; // Rensa gamla ID:n
-
-            const isRoundOpen = data.status === "Open";
-
-            if (!isRoundOpen) {
-                statusLabel.textContent = `Omgång ${roundId} är stängd för inlämning!`;
-                statusLabel.className = "status-message error";
-                submitBtn.disabled = true;
-            } else {
-                statusLabel.textContent = "";
-                submitBtn.disabled = false;
-            }
-
-            // Loopa igenom matcherna
-            data.matches.forEach((m, index) => {
-                currentMatchIds.push(m.id); // Spara match ID
-
-                const card = document.createElement("div");
-                card.className = "match-card";
-
-                // Avgör om radioknapparna ska vara klickbara
-                const disabledState = isRoundOpen ? "" : "disabled";
-
-                card.innerHTML = `
-                    <div class="match-time">${formatKickoff(m.kickOff)}</div>
-                    <div class="match-teams">${index + 1}. ${m.homeTeam} vs ${m.awayTeam}</div>
-
-                    <div class="bet-options">
-                        <label class="bet-option">
-                            <span>1</span>
-                            <input type="radio" name="match_${m.id}" value="1" ${disabledState}>
-                        </label>
-                        <label class="bet-option">
-                            <span>X</span>
-                            <input type="radio" name="match_${m.id}" value="X" ${disabledState}>
-                        </label>
-                        <label class="bet-option">
-                            <span>2</span>
-                            <input type="radio" name="match_${m.id}" value="2" ${disabledState}>
-                        </label>
-                    </div>
-                `;
-
-                container.appendChild(card);
-            });
-
-            if (data.matches.length === 0) {
-                statusLabel.textContent = "Inga matcher hittades.";
-                submitBtn.disabled = true;
-            }
-
-        })
-        .catch(err => {
-            console.error(err);
-            statusLabel.textContent = "Fel vid hämtning av data.";
-            statusLabel.className = "status-message error";
-        });
-}
-
-function submitCoupon() {
-    const roundId = document.getElementById("roundInput").value;
-    const statusLabel = document.getElementById("statusMessage");
-    const tips = {};
-
-    // Gå igenom alla sparade match-ID:n och hitta vilken radioknapp som är ikryssad
-    for (let matchId of currentMatchIds) {
-        const selectedRadio = document.querySelector(`input[name="match_${matchId}"]:checked`);
-        if (selectedRadio) {
-            tips[matchId] = selectedRadio.value;
-        }
-    }
-
-    // Validering
-    if (Object.keys(tips).length !== 8) {
-        statusLabel.textContent = "Du måste tippa alla 8 matcher innan du lämnar in!";
-        statusLabel.className = "status-message error";
+function loadRound() {
+    const roundId = document.getElementById("roundid").value;
+    if (!roundId) {
+        alert("Ange omgång först");
         return;
     }
 
-    // Skicka datan till Spring Boot
-    // vi måste bygga en POST-endpoint i Spring Boot på /api/gameweek/submit
-    fetch(`/api/gameweek/submit`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            roundId: parseInt(roundId),
-            userId: 1, // Ändra till inloggad användare senare
-            tips: tips
+    fetch("/api/gameweek?roundId=" + roundId, { method: "GET" })
+        .then(r => r.json())
+        .then(round => {
+            currentMatches = round.matches || [];
+            renderMatches(currentMatches);
         })
-    })
-    .then(response => {
-        if (!response.ok) throw new Error("Inlämning misslyckades");
-        statusLabel.textContent = "Kupong inlämnad! Lycka till.";
-        statusLabel.className = "status-message success";
-        document.getElementById("submitCouponBtn").disabled = true;
-    })
-    .catch(err => {
-        console.error(err);
-        statusLabel.textContent = "Något gick fel vid inlämning.";
-        statusLabel.className = "status-message error";
+        .catch(err => console.error("Kunde inte hämta gameweek:", err));
+}
+
+function renderMatches(matches) {
+    const container = document.getElementById("matches");
+    container.innerHTML = "";
+
+    const now = new Date();
+
+    matches.forEach((m, index) => {
+        const card = document.createElement("div");
+        card.className = "match-card";
+
+        const timeDiv = document.createElement("div");
+        timeDiv.className = "match-time";
+        timeDiv.textContent = formatKickoff(m.kickOff);
+        card.appendChild(timeDiv);
+
+        const teamsDiv = document.createElement("div");
+        teamsDiv.className = "match-teams";
+        teamsDiv.textContent = `${m.homeTeam} vs ${m.awayTeam}`;
+        card.appendChild(teamsDiv);
+
+        const kickoffDate = new Date(m.kickOff);
+        const isPassed = kickoffDate < now;
+
+        if (isPassed) {
+            card.classList.add("match-passed");
+
+            const resultDiv = document.createElement("div");
+            resultDiv.className = "match-result";
+
+            let resultText = "Resultat saknas";
+
+            if (m.homeScore && m.awayScore) {
+                resultText = `Resultat: ${m.homeScore}-${m.awayScore}`;
+            } else if (m.result) {
+                resultText = `Resultat: ${m.result}`;
+            }
+
+            resultDiv.textContent = resultText;
+            card.appendChild(resultDiv);
+        } else {
+            const tipBox = document.createElement("div");
+            tipBox.className = "tip-box";
+
+            const label = document.createElement("label");
+            label.textContent = "Tips:";
+            tipBox.appendChild(label);
+
+            const select = document.createElement("select");
+            select.className = "tip-input";
+            select.dataset.matchIndex = index;
+
+            const values = ["-", "1", "X", "2"];
+            values.forEach(val => {
+                const opt = document.createElement("option");
+                opt.value = val === "-" ? "" : val;
+                opt.textContent = val;
+                select.appendChild(opt);
+            });
+
+            tipBox.appendChild(select);
+            card.appendChild(tipBox);
+        }
+
+        container.appendChild(card);
     });
+}
+
+function submitTips() {
+    const selects = Array.from(document.querySelectorAll(".tip-input"));
+
+    if (selects.length !== 8) {
+        alert("Det måste finnas exakt 8 matcher att tippa i omgången.");
+        return;
+    }
+
+    const tips = selects.map(sel => sel.value || "-");
+
+    if (tips.some(t => t === "-")) {
+        alert("Du måste tippa alla 8 matcher.");
+        return;
+    }
+
+    const roundId = document.getElementById("roundid").value;
+
+    const params = new URLSearchParams({
+        roundId: roundId,
+        tip1: tips[0],
+        tip2: tips[1],
+        tip3: tips[2],
+        tip4: tips[3],
+        tip5: tips[4],
+        tip6: tips[5],
+        tip7: tips[6],
+        tip8: tips[7]
+    });
+
+    fetch("/api/submitTips?" + params.toString(), {
+        method: "POST"
+    })
+        .then(r => r.text())
+        .then(msg => alert(msg))
+        .catch(err => console.error("Kunde inte skicka tips:", err));
 }
 
 function formatKickoff(raw) {
     if (!raw) return "Ingen tid";
     const date = new Date(raw);
+
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, "0");
     const dd = String(date.getDate()).padStart(2, "0");
+
     const hh = String(date.getHours()).padStart(2, "0");
     const min = String(date.getMinutes()).padStart(2, "0");
+
     return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
 }

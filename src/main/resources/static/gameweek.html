@@ -3,33 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lägg Tips - Fairplay League</title>
+    <title>Omgångsmatcher</title>
     <link rel="stylesheet" href="gameweek.css">
 </head>
 <body>
 
 <div class="gw-container">
-    <h1>Kupong</h1>
+    <h1>Omgångsmatcher</h1>
 
-    <div class="search-container">
-        <label for="roundInput">Välj omgång (1-30):</label>
-        <input type="number" id="roundInput" min="1" max="30" value="1">
-        <button id="fetchRoundBtn" class="btn">Hämta Kupong</button>
-    </div>
+    <input id="roundid" type="number" placeholder="Ange omgång">
+    <button id="getRoundBtn">Hämta omgång</button>
 
-    <p id="statusMessage" class="status-message"></p>
+    <div id="matches" class="matches-list"></div>
 
-    <div id="matches" class="matches-list">
-
-    </div>
-
-    <div class="submit-container">
-        <button id="submitCouponBtn" class="btn btn-success" disabled>Lämna in Kupong</button>
-    </div>
+    <button id="submitTipsBtn">Skicka tips</button>
 </div>
 
 <div class="bottom-nav">
-    <a href="gameweek.html" class="nav-item active">
+    <a href="gameweek.html" class="nav-item">
         <img src="dogecoin.png" alt="">
         <span>Kupong</span>
     </a>

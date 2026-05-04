@@ -10,6 +10,7 @@ public class Coupon {
     private Map<Integer, String> tips;
     private int correctCount;
     private boolean graded = false;
+    private boolean locked = false;
 
     public Coupon() {
         this.tips = new HashMap<>();
@@ -63,4 +64,13 @@ public class Coupon {
     public boolean getGraded() { return graded; }
 
     public void setGraded(boolean graded) { this.graded = graded; }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
 }

@@ -16,6 +16,35 @@ h1 {
     margin-bottom: 20px;
 }
 
+#roundid {
+    width: 90%;
+    padding: 10px;
+    margin: 10px auto 15px;
+    display: block;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: white;
+    font-size: 16px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+#getRoundBtn {
+    width: 100%;
+    padding: 12px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#getRoundBtn:hover {
+    background: #005fcc;
+}
+
 .matches-list {
     display: flex;
     flex-direction: column;
@@ -39,6 +68,52 @@ h1 {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 10px;
+}
+
+.match-passed {
+    background: #ffe5e5;
+    border-left: 6px solid #d9534f;
+}
+
+.match-result {
+    font-size: 16px;
+    font-weight: bold;
+    color: #d9534f;
+    margin-top: 8px;
+}
+
+.tip-box {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tip-box label {
+    font-size: 14px;
+}
+
+.tip-input {
+    padding: 6px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+#submitTipsBtn {
+    width: 100%;
+    padding: 12px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+#submitTipsBtn:hover {
+    background: #218838;
 }
 
 .bottom-nav {
@@ -69,82 +144,4 @@ h1 {
     height: 24px;
     margin-bottom: 4px;
     opacity: 0.8;
-}
-
-.nav-item.active img {
-    opacity: 1;
-}
-
-.nav-item.active span {
-    font-weight: bold;
-    color: #007bff;
-}
-
-.search-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    justify-content: center;
-    align-items: center;
-}
-
-.search-container input {
-    width: 60px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    text-align: center;
-}
-
-.btn {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 6px;
-    background: #007bff;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.btn:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-}
-
-.btn-success {
-    background: #28a745;
-    width: 100%;
-    margin-top: 20px;
-    font-size: 16px;
-    padding: 15px;
-}
-
-.status-message {
-    text-align: center;
-    font-weight: bold;
-    min-height: 20px;
-}
-
-.error { color: #d9534f; }
-.success { color: #28a745; }
-
-.bet-options {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-    border-top: 1px solid #eee;
-    padding-top: 10px;
-}
-
-.bet-option {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    font-weight: bold;
-}
-
-.bet-option input[type="radio"] {
-    transform: scale(1.5);
-    cursor: pointer;
 }
