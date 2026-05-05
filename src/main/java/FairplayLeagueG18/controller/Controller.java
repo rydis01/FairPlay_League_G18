@@ -1,12 +1,12 @@
 package FairplayLeagueG18.controller;
 
-import FairplayLeagueG18.model.Coupon;
 import FairplayLeagueG18.model.Round;
 import FairplayLeagueG18.model.User;
 import FairplayLeagueG18.service.CouponService;
 import FairplayLeagueG18.service.RoundService;
-import org.springframework.web.bind.annotation.*;
 import FairplayLeagueG18.service.UserService;
+
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -25,7 +25,7 @@ public class Controller {
         this.couponService = couponService;
     }
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public boolean login(@RequestParam String email, @RequestParam String password) {
         boolean answer = userService.loginUser(email, password);
 
@@ -35,17 +35,16 @@ public class Controller {
         return answer;
     }
 
-    @PostMapping("/submitTips")
-    public String submitTips(
-            @RequestParam int roundId,
-            @RequestParam String tip1,
-            @RequestParam String tip2,
-            @RequestParam String tip3,
-            @RequestParam String tip4,
-            @RequestParam String tip5,
-            @RequestParam String tip6,
-            @RequestParam String tip7,
-            @RequestParam String tip8
+    @GetMapping("/submitTips")
+    public String submitTips(@RequestParam int roundId,
+                             @RequestParam String tip1,
+                             @RequestParam String tip2,
+                             @RequestParam String tip3,
+                             @RequestParam String tip4,
+                             @RequestParam String tip5,
+                             @RequestParam String tip6,
+                             @RequestParam String tip7,
+                             @RequestParam String tip8
     ) {
         if (currentUser == null) {
             return "Ingen användare inloggad";
@@ -66,8 +65,6 @@ public class Controller {
 
         return "Kupong sparad!";
     }
-
-
 
     @GetMapping("/gameweek")
     public Round gameweekInfo(@RequestParam int roundId) {

@@ -3,7 +3,7 @@ document.getElementById("loginBtn").onclick = function () {
     const pass = document.getElementById("password").value;
 
     fetch("/api/login?email=" + email + "&password=" + pass, {
-    method: "POST"
+    method: "GET"
     })
         .then(response => response.json())
         .then(success => {

@@ -120,7 +120,7 @@ function submitTips() {
     });
 
     fetch("/api/submitTips?" + params.toString(), {
-        method: "POST"
+        method: "GET"
     })
         .then(r => r.text())
         .then(msg => alert(msg))
