@@ -46,7 +46,7 @@ public class User {
 
     public String getPasswordHash() { return passwordHash; }
 
-    public void setPasswordHash(String password) { this.passwordHash = passwordHash; }
+    public void setPasswordHash(String password) { this.passwordHash = password; }
 
     public FairplayLeagueG18.model.Role getRole() { return role; }
 

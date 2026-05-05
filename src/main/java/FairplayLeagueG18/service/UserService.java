@@ -37,7 +37,7 @@ public class UserService {
         // Fixas här nedan:
 
         if (password.length() < 8) {
-            System.out.println("TEST MISSLYCKADES: Lösenordet måste vara minst 8 tecken långt.");
+            System.out.println("Lösenordet måste vara minst 8 tecken långt.");
             return;
         }
 
@@ -47,11 +47,6 @@ public class UserService {
 
         // Vi ber BCrypt att generera en unik "salt" och hasha lösenordet.
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-
-        System.out.println("Det riktiga lösenordet var: " + password);
-        System.out.println("Det som (ska) sparas i databasen är: " + hashedPassword);
-
-        System.out.println("Lösenordet är hashat!");
 
 
         // TODO: Add check so email doesn't already exist in database since email is unique.
@@ -111,7 +106,8 @@ public class UserService {
     public void changePassword(int userId, String newPassword) {
         User user = userDAO.getUserByID(userId);
         if (user != null) {
-            user.setPasswordHash(newPassword);
+            String hashed = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            user.setPasswordHash(hashed);
             userDAO.updateUser(user);
         }
     }
