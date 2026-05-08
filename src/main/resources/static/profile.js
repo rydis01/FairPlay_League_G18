@@ -1,22 +1,15 @@
 window.onload = function () {
-    fetch("/api/userinfo")
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById("username").textContent = extract(data, "username='", "'");
-            document.getElementById("email").textContent = extract(data, "email='", "'");
-            document.getElementById("role").textContent = extract(data, "role=", ",");
-            document.getElementById("createdAt").textContent = formatDate(extract(data, "createdAt=", "}"));
-
+    fetch("/api/userinfo", {
+        credentials: "include"
+    })
+        .then(response => response.json())
+        .then(user => {
+            document.getElementById("username").textContent = user.username;
+            document.getElementById("email").textContent = user.email;
+            document.getElementById("role").textContent = user.role;
+            document.getElementById("createdAt").textContent = formatDate(user.createdAt);
         });
 };
-
-function extract(text, start, end) {
-    let s = text.indexOf(start);
-    if (s === -1) return "";
-    s += start.length;
-    let e = text.indexOf(end, s);
-    return text.substring(s, e);
-}
 
 function formatDate(raw) {
     const date = new Date(raw);
@@ -28,11 +21,9 @@ function formatDate(raw) {
     const hh = String(date.getHours()).padStart(2, "0");
     const min = String(date.getMinutes()).padStart(2, "0");
 
-    return `Tid: ${yyyy}-${mm}-${dd}, ${hh}:${min}`;
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
 }
-
 
 function logout() {
     window.location.href = "/login.html";
 }
-

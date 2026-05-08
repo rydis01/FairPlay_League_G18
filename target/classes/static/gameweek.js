@@ -106,7 +106,7 @@ function submitTips() {
     }
 
     const roundId = document.getElementById("roundid").value;
-    
+
     const params = new URLSearchParams({
         roundId: roundId,
         tip1: tips[0],
@@ -120,7 +120,7 @@ function submitTips() {
     });
 
     fetch("/api/submitTips?" + params.toString(), {
-        method: "POST"
+        method: "GET"
     })
         .then(r => r.text())
         .then(msg => alert(msg))

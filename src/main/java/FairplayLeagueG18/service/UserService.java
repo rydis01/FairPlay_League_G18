@@ -154,12 +154,13 @@ public class UserService {
     /**
      * Checks if a user exists in the system.
      *
-     * @param userId The ID of the user to check
+     * @param email The email of the user to check
      * @return true if the user exists, false otherwise
      * @author Carl
      */
-    public boolean userExists(int userId) {
-        User user = userDAO.getUserByID(userId);
+
+    public boolean userExists(String email) {
+        User user = userDAO.getUserByEmail(email);
         return user != null;
     }
 

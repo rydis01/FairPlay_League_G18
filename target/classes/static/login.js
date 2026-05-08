@@ -3,7 +3,8 @@ document.getElementById("loginBtn").onclick = function () {
     const pass = document.getElementById("password").value;
 
     fetch("/api/login?email=" + email + "&password=" + pass, {
-    method: "POST"
+    method: "GET",
+    credentials: "include"
     })
         .then(response => response.json())
         .then(success => {
@@ -23,4 +24,8 @@ document.getElementById("loginBtn").onclick = function () {
                 document.getElementById("password").value = "";
             }
     });
+};
+
+document.getElementById("registerBtn").onclick = function () {
+    window.location.href = "registerUser.html";
 };

@@ -1,11 +1,13 @@
 package FairplayLeagueG18.controller;
 
+import FairplayLeagueG18.model.Role;
 import FairplayLeagueG18.model.Round;
 import FairplayLeagueG18.model.User;
 import FairplayLeagueG18.service.CouponService;
 import FairplayLeagueG18.service.RoundService;
 import FairplayLeagueG18.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -17,7 +19,6 @@ public class Controller {
     private final UserService userService;
     private final RoundService roundService;
     private final CouponService couponService;
-    private User currentUser;
 
     public Controller(UserService userService, RoundService roundService, CouponService couponService) {
         this.userService = userService;
@@ -25,18 +26,42 @@ public class Controller {
         this.couponService = couponService;
     }
 
-    @GetMapping("/login")
-    public boolean login(@RequestParam String email, @RequestParam String password) {
-        boolean answer = userService.loginUser(email, password);
+    //LOGIN
 
-        if (answer) {
-            currentUser = userService.getUserByEmail(email);
+    @GetMapping("/login")
+    public boolean login(HttpSession session,
+                         @RequestParam String email,
+                         @RequestParam String password) {
+
+        boolean ok = userService.loginUser(email, password);
+
+        if (ok) {
+            session.setAttribute("user", userService.getUserByEmail(email));
         }
-        return answer;
+
+        return ok;
     }
 
+    // REGISTER
+
+    @GetMapping("/register")
+    public boolean register(@RequestParam String username,
+                            @RequestParam String email,
+                            @RequestParam String password) {
+
+        if (userService.getUserByEmail(email) != null) {
+            return false;
+        }
+        userService.registerUser(username, email, password);
+
+        return true;
+    }
+
+    // GAMEWEEK
+
     @GetMapping("/submitTips")
-    public String submitTips(@RequestParam int roundId,
+    public String submitTips(HttpSession session,
+                             @RequestParam int roundId,
                              @RequestParam String tip1,
                              @RequestParam String tip2,
                              @RequestParam String tip3,
@@ -44,9 +69,11 @@ public class Controller {
                              @RequestParam String tip5,
                              @RequestParam String tip6,
                              @RequestParam String tip7,
-                             @RequestParam String tip8
-    ) {
-        if (currentUser == null) {
+                             @RequestParam String tip8) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
             return "Ingen användare inloggad";
         }
 
@@ -61,7 +88,7 @@ public class Controller {
                 8, tip8
         );
 
-        couponService.submitCoupon(currentUser.getId(), roundId, tips);
+        couponService.submitCoupon(user.getId(), roundId, tips);
 
         return "Kupong sparad!";
     }
@@ -71,9 +98,11 @@ public class Controller {
         return roundService.getRound(roundId);
     }
 
+    // PROFILE
     @GetMapping("/userinfo")
-    public String userInfo() {
-        return currentUser.toString();
+    public User userInfo(HttpSession session) {
+        return (User) session.getAttribute("user");
     }
 }
+
 
