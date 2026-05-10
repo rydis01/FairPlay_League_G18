@@ -1,5 +1,6 @@
 package FairplayLeagueG18.controller;
 
+import FairplayLeagueG18.model.Coupon;
 import FairplayLeagueG18.model.Role;
 import FairplayLeagueG18.model.Round;
 import FairplayLeagueG18.model.User;
@@ -10,6 +11,7 @@ import FairplayLeagueG18.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,7 +28,7 @@ public class Controller {
         this.couponService = couponService;
     }
 
-    //LOGIN
+    //LOGIN & REGISTER
 
     @GetMapping("/login")
     public boolean login(HttpSession session,
@@ -41,8 +43,6 @@ public class Controller {
 
         return ok;
     }
-
-    // REGISTER
 
     @GetMapping("/register")
     public boolean register(@RequestParam String username,
@@ -99,9 +99,31 @@ public class Controller {
     }
 
     // PROFILE
+    @GetMapping("/getCoupons")
+    public List<Coupon> couponsList(HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return List.of();
+        }
+
+        return couponService.getCouponsByUserId(user.getId());
+    }
+
+    @GetMapping("/getCoupon")
+    public Map<String, Object> getCoupon(@RequestParam int couponId) {
+        return couponService.getCouponDetails(couponId);
+    }
+
     @GetMapping("/userinfo")
     public User userInfo(HttpSession session) {
         return (User) session.getAttribute("user");
+    }
+
+    @GetMapping("/logout")
+    public void logout(HttpSession session) {
+        session.invalidate();
     }
 }
 

@@ -14,7 +14,8 @@ function loadRound() {
         return;
     }
 
-    fetch("/api/gameweek?roundId=" + roundId, { method: "GET" })
+    fetch("/api/gameweek?roundId=" + roundId, {
+    method: "GET" })
         .then(r => r.json())
         .then(round => {
             currentMatches = round.matches || [];

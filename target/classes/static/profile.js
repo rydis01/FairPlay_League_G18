@@ -1,4 +1,80 @@
+console.log("profile.js LOADED");
+
 window.onload = function () {
+    loadCoupons();
+    loadUserinfo();
+};
+
+function loadCoupons() {
+
+    fetch("/api/getCoupons", {
+        method: "GET",
+        credentials: "include"
+    })
+        .then(response => response.json())
+        .then(coupons => {
+
+            const select = document.getElementById("couponSelect");
+            select.innerHTML = "";
+
+            coupons.forEach(c => {
+                const option = document.createElement("option");
+                option.value = c.id;
+                option.textContent = "Omgång " + c.roundId;
+                select.appendChild(option);
+            });
+
+            if (coupons.length > 0) {
+                loadCouponDetails(coupons[0].id);
+            }
+        });
+}
+
+document.getElementById("couponSelect").onchange = function () {
+    loadCouponDetails(this.value);
+};
+
+function loadCouponDetails(couponId) {
+
+    fetch("/api/getCoupon?couponId=" + couponId, {
+        method: "GET",
+        credentials: "include"
+    })
+        .then(response => response.json())
+        .then(coupon => {
+            renderCouponMatches(coupon.tips);
+        });
+}
+
+function renderCouponMatches(tips) {
+    const container = document.getElementById("couponDetails");
+    container.innerHTML = "";
+
+    tips.forEach(tip => {
+
+        const card = document.createElement("div");
+        card.className = "match-card";
+
+        const teamsDiv = document.createElement("div");
+        teamsDiv.className = "match-teams";
+        teamsDiv.textContent = tip.match;
+        card.appendChild(teamsDiv);
+
+        const yourTip = document.createElement("div");
+        yourTip.className = "match-time";
+        yourTip.textContent = "Ditt tips: " + tip.choice;
+        card.appendChild(yourTip);
+
+        const resultDiv = document.createElement("div");
+        resultDiv.className = "match-result";
+        resultDiv.textContent = "Rätt resultat: " + (tip.correctResult ?? "Ej klart");
+        card.appendChild(resultDiv);
+
+        container.appendChild(card);
+    });
+}
+
+function loadUserinfo() {
     fetch("/api/userinfo", {
         credentials: "include"
     })
@@ -9,7 +85,7 @@ window.onload = function () {
             document.getElementById("role").textContent = user.role;
             document.getElementById("createdAt").textContent = formatDate(user.createdAt);
         });
-};
+}
 
 function formatDate(raw) {
     const date = new Date(raw);
@@ -25,5 +101,8 @@ function formatDate(raw) {
 }
 
 function logout() {
-    window.location.href = "/login.html";
+    fetch("/api/logout", { method: "GET", credentials: "include" })
+        .then(() => {
+            window.location.href = "/login.html";
+        });
 }

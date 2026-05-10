@@ -30,31 +30,40 @@ public class ScoreService {
     }
 
     // Rätta en kupong och returnera antalet rätt
-    public void gradeCoupon(int userId, int roundId) {
-        Coupon userCoupon = couponDAO.getCoupon(userId, roundId);
+    public void gradeCoupon(int couponId) {
 
-        if(userCoupon.getGraded()){
+        // 1. Hämta kupongen
+        Coupon userCoupon = couponDAO.getCoupon(couponId);
+
+        if (userCoupon == null) {
+            System.out.println("Kupong saknas");
             return;
         }
 
-        List <String> correctCoupon = roundDAO.getResultsFromRound(roundId);
+        if (userCoupon.getGraded()) {
+            return;
+        }
 
-        // Jämför användarens tips med de rätta resultaten
-        int correctCount = 0;
+        int roundId = userCoupon.getRoundId();
+
+        List<String> correctResults = roundDAO.getResultsFromRound(roundId);
+
         Map<Integer, String> tips = userCoupon.getTips();
 
-        for (int i = 0; i < correctCoupon.size(); i++) {
-            String userTip = tips.get(i);
-            String correctResult = correctCoupon.get(i);
+        int correctCount = 0;
 
-            // Om tippet matchar det rätta resultatet, öka räknaren
-            if (userTip != null && userTip.equals(correctResult)) {
+        for (int i = 1; i <= correctResults.size(); i++) {
+            String userTip = tips.get(i);
+            String correct = correctResults.get(i - 1);
+
+            if (userTip != null && userTip.equals(correct)) {
                 correctCount++;
             }
         }
 
-        userCoupon.setGraded(true);
         userCoupon.setCorrectCount(correctCount);
+        userCoupon.setGraded(true);
+
         couponDAO.updateCorrectCountCoupon(userCoupon);
     }
     // Rättar alla kuponger i en omgång och fördelar potten för en liga
@@ -67,22 +76,32 @@ public class ScoreService {
         int playerCount = members.size();
         int pot = playerCount * 100;
 
-        // 2. Rätta varje spelares kupong
-        for (LeagueMember member : members) {
-            gradeCoupon(member.getUserId(), roundId);
-        }
+        // 2. Hämta alla kuponger för omgången
+        Map<Integer, Integer> userToCoupon = couponDAO.getCouponIdsForRound(roundId);
 
-        // 3. Gruppera spelare efter antal rätt
-        Map<Integer, List<Integer>> groups = new HashMap<>();
         for (LeagueMember member : members) {
-            Coupon coupon = couponDAO.getCoupon(member.getUserId(), roundId);
-            if (coupon != null) {
-                int correct = coupon.getCorrectCount();
-                groups.computeIfAbsent(correct, k -> new ArrayList<>()).add(member.getUserId());
+            int userId = member.getUserId();
+
+            if (userToCoupon.containsKey(userId)) {
+                int couponId = userToCoupon.get(userId);
+                gradeCoupon(couponId);
             }
         }
 
-        // 4. Fördela potten: 8 rätt → 60%, 7 rätt → 30%, 6 rätt → 10%
+        Map<Integer, List<Integer>> groups = new HashMap<>();
+
+        for (LeagueMember member : members) {
+            int userId = member.getUserId();
+
+            if (userToCoupon.containsKey(userId)) {
+                int couponId = userToCoupon.get(userId);
+                Coupon coupon = couponDAO.getCoupon(couponId);
+
+                int correct = coupon.getCorrectCount();
+                groups.computeIfAbsent(correct, k -> new ArrayList<>()).add(userId);
+            }
+        }
+
         Map<Integer, Integer> tierPercent = Map.of(8, 60, 7, 30, 6, 10);
 
         for (Map.Entry<Integer, Integer> tier : tierPercent.entrySet()) {
@@ -100,6 +119,4 @@ public class ScoreService {
             }
         }
     }
-
-
 }

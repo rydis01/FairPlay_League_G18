@@ -8,19 +8,39 @@
 </head>
 <body>
 
-<div class="profile-container">
-    <h1>Din profil</h1>
+<div class="layout">
+    <div class="left-column">
 
-    <div class="profile-card">
-        <p><strong>Användarnamn:</strong> <span id="username"></span></p>
-        <p><strong>Email:</strong> <span id="email"></span></p>
-        <p><strong>Roll:</strong> <span id="role"></span></p>
-        <p><strong>Skapad:</strong> <span id="createdAt"></span></p>
+        <h2>Dina kuponger</h2>
+
+        <select id="couponSelect" class="coupon-select">
+            <option value="">Välj kupong...</option>
+        </select>
+
+        <div id="couponDetails" class="matches-list"></div>
+
     </div>
 
-    <button class="logout-btn" onclick="logout()">Logga ut</button>
+    <div class="right-column">
+
+        <div class="profile-container">
+            <h1>Din profil</h1>
+
+            <div class="profile-card">
+                <p><strong>Användarnamn:</strong> <span id="username"></span></p>
+                <p><strong>Email:</strong> <span id="email"></span></p>
+                <p><strong>Roll:</strong> <span id="role"></span></p>
+                <p><strong>Skapad:</strong> <span id="createdAt"></span></p>
+            </div>
+
+            <button class="logout-btn" onclick="logout()">Logga ut</button>
+        </div>
+
+    </div>
+
 </div>
 
+<!-- BOTTOM NAV -->
 <div class="bottom-nav">
     <a href="gameweek.html" class="nav-item">
         <img src="dogecoin.png" alt="">
@@ -32,7 +52,7 @@
         <span>Ligor</span>
     </a>
 
-    <a href="profile.html" class="nav-item">
+    <a href="profile.html" class="nav-item active">
         <img src="dogecoin.png" alt="">
         <span>Profil</span>
     </a>

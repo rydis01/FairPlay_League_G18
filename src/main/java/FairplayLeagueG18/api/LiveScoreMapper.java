@@ -58,7 +58,7 @@ public class LiveScoreMapper {
 
                 // Skapa matchen och lägg till omgången (RoundId)
                 Match match = new Match(homeTeam, awayTeam, homeScore, awayScore, status, time);
-                match.setRoundId(gameweek); // Sätter omgången för databasen
+                match.setGameweekId(gameweek); // Sätter omgången för databasen
 
                 matchesList.add(match);
             }

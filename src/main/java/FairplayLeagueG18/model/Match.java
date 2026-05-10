@@ -6,7 +6,7 @@ public class Match {
 
     // Databasfält
     private int id;
-    private int roundId;
+    private int gameweekId;
     private String externalMatchId;
     private int matchNumber;
     private LocalDateTime kickOff;
@@ -38,7 +38,7 @@ public class Match {
 
     // 3. Konstruktor: Skapa ny match
     public Match(int roundId, String externalMatchId, int matchNumber, String homeTeam, String awayTeam, LocalDateTime kickOff) {
-        this.roundId = roundId;
+        this.gameweekId = roundId;
         this.externalMatchId = externalMatchId;
         this.matchNumber = matchNumber;
         this.homeTeam = homeTeam;
@@ -49,7 +49,7 @@ public class Match {
     // 4. Konstruktor: Läsa från databasen
     public Match(int id, int roundId, String externalMatchId, int matchNumber, String homeTeam, String awayTeam, LocalDateTime kickOff, String result) {
         this.id = id;
-        this.roundId = roundId;
+        this.gameweekId = roundId;
         this.externalMatchId = externalMatchId;
         this.matchNumber = matchNumber;
         this.homeTeam = homeTeam;
@@ -63,8 +63,8 @@ public class Match {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getRoundId() { return roundId; }
-    public void setRoundId(int roundId) { this.roundId = roundId; }
+    public int getGameweekId() { return gameweekId; }
+    public void setGameweekId(int gameweekId) { this.gameweekId = gameweekId; }
 
     public String getExternalMatchId() { return externalMatchId; }
     public void setExternalMatchId(String externalMatchId) { this.externalMatchId = externalMatchId; }

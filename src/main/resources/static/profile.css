@@ -1,39 +1,103 @@
-body {
+html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
     font-family: Arial, sans-serif;
     background: #f5f5f5;
 }
 
-.profile-container {
-    max-width: 400px;
-    margin: 40px auto;
-    padding: 20px;
-    text-align: center;
+.layout {
+    display: flex;
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    padding-bottom: 20px;
 }
 
-.profile-card {
+.left-column {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.right-column {
+    flex: 1;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+
+.matches-list {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#couponSelect {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.match-card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.match-teams {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.match-time {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.match-result {
+    font-size: 16px;
+    font-weight: bold;
+    color: #d9534f;
+    margin-top: 8px;
+}
+
+.profile-container {
     background: white;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    text-align: left;
+
+    width: 100%;
+    max-width: 300px;
+    margin-top: 67px;
 }
 
-.profile-card p {
-    font-size: 16px;
-    margin: 10px 0;
-}
 
 .logout-btn {
-    margin-top: 20px;
-    padding: 12px 20px;
+    width: 100%;
+    padding: 12px;
     background: #d9534f;
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
+    margin-top: 15px;
 }
 
 .logout-btn:hover {
@@ -51,7 +115,7 @@ body {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    z-index: 999;
+    z-index: 9999;
 }
 
 .nav-item {
@@ -68,13 +132,4 @@ body {
     height: 24px;
     margin-bottom: 4px;
     opacity: 0.8;
-}
-
-.nav-item.active img {
-    opacity: 1;
-}
-
-.nav-item.active span {
-    font-weight: bold;
-    color: #007bff;
 }

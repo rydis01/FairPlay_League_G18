@@ -64,13 +64,14 @@ CREATE TABLE Matches(
 -- Används även för att räkna ut spelarnas totala antal rätt
 CREATE TABLE Picks(
     Pick_ID SERIAL PRIMARY KEY,
-    User_ID INT,
-    Match_ID INT,
-    Guess CHAR (1) NOT NULL,
+    Coupon_ID INT NOT NULL,
+    Match_ID INT NOT NULL,
+    Guess CHAR(1) NOT NULL,
 
-    CONSTRAINT fk_user FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
-    CONSTRAINT fk_match FOREIGN KEY (Match_ID) REFERENCES Matches(Match_ID)
+    CONSTRAINT fk_pick_coupon FOREIGN KEY (Coupon_ID) REFERENCES Coupons(Coupon_ID),
+    CONSTRAINT fk_pick_match FOREIGN KEY (Match_ID) REFERENCES Matches(Match_ID)
 );
+
 
 -- Poängutdelning
 -- Efter en gameweeks slut kollar java-koden hur många antal rätt en spelare har,
@@ -87,3 +88,15 @@ CREATE TABLE Gameweek_scores(
     CONSTRAINT fk_league FOREIGN KEY (Leauge_ID) REFERENCES Leagues(League_ID),
     CONSTRAINT fk_gameweek FOREIGN KEY (Gameweek_ID) REFERENCES Gameweeks(Gameweek_ID)
 );
+
+CREATE TABLE Coupons (
+    Coupon_ID SERIAL PRIMARY KEY,
+    User_ID INT NOT NULL,
+    Gameweek_ID INT NOT NULL,
+    Correct_count INT DEFAULT 0,
+    Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_coupon_user FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
+    CONSTRAINT fk_coupon_gameweek FOREIGN KEY (Gameweek_ID) REFERENCES Gameweeks(Gameweek_ID)
+);
+

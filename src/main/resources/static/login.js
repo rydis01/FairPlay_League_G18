@@ -26,6 +26,19 @@ document.getElementById("loginBtn").onclick = function () {
     });
 };
 
+document.getElementById("togglePassword").onclick = function () {
+    const passField = document.getElementById("password");
+
+    if (passField.type === "password") {
+        passField.type = "text";
+        this.src = "allsvenskan.png";
+    } else {
+        passField.type = "password";
+        this.src = "allsvenskan.png";
+    }
+};
+
+
 document.getElementById("registerBtn").onclick = function () {
     window.location.href = "registerUser.html";
 };
