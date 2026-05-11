@@ -11,13 +11,13 @@
 <div class="layout">
     <div class="left-column">
 
-        <h2>Dina kuponger</h2>
+        <h2>League-Service</h2>
 
         <select id="couponSelect" class="coupon-select">
-            <option value="">Välj kupong...</option>
+            <option value="">Välj bland dina ligor...</option>
         </select>
 
-        <div id="couponDetails" class="matches-list"></div>
+        <div id="leftDynamicContent" class="dynamic-content"></div>
 
     </div>
 
@@ -27,13 +27,12 @@
             <h1>Din profil</h1>
 
             <div class="profile-card">
-                <p><strong>Användarnamn:</strong> <span id="username"></span></p>
-                <p><strong>Email:</strong> <span id="email"></span></p>
-                <p><strong>Roll:</strong> <span id="role"></span></p>
-                <p><strong>Skapad:</strong> <span id="createdAt"></span></p>
+                <button id="btnCreateLeague" class="logout-btn">Skapa ny liga</button>
+                <button id="btnJoinLeague" class="logout-btn">Gå med i liga</button>
+                <button id="btnMyLeagues" class="logout-btn">Mina ligor</button>
+                <button id="btnLeaderboard" class="logout-btn">Visa leaderbord</button>
             </div>
 
-            <button class="logout-btn" onclick="logout()">Logga ut</button>
         </div>
 
     </div>
@@ -67,6 +66,6 @@
     </a>
 </div>
 
-<script src="profile.js"></script>
+<script src="league.js"></script>
 </body>
 </html>

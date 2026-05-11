@@ -1,10 +1,8 @@
 package FairplayLeagueG18.controller;
 
-import FairplayLeagueG18.model.Coupon;
-import FairplayLeagueG18.model.Role;
-import FairplayLeagueG18.model.Round;
-import FairplayLeagueG18.model.User;
+import FairplayLeagueG18.model.*;
 import FairplayLeagueG18.service.CouponService;
+import FairplayLeagueG18.service.LeagueService;
 import FairplayLeagueG18.service.RoundService;
 import FairplayLeagueG18.service.UserService;
 
@@ -21,11 +19,13 @@ public class Controller {
     private final UserService userService;
     private final RoundService roundService;
     private final CouponService couponService;
+    private final LeagueService leagueService;
 
-    public Controller(UserService userService, RoundService roundService, CouponService couponService) {
+    public Controller(UserService userService, RoundService roundService, CouponService couponService, LeagueService leagueService) {
         this.userService = userService;
         this.roundService = roundService;
         this.couponService = couponService;
+        this.leagueService = leagueService;
     }
 
     //LOGIN & REGISTER
@@ -52,9 +52,7 @@ public class Controller {
         if (userService.getUserByEmail(email) != null) {
             return false;
         }
-        userService.registerUser(username, email, password);
-
-        return true;
+        return userService.registerUser(username, email, password);
     }
 
     // GAMEWEEK
@@ -96,6 +94,26 @@ public class Controller {
     @GetMapping("/gameweek")
     public Round gameweekInfo(@RequestParam int roundId) {
         return roundService.getRound(roundId);
+    }
+
+    // LEAGUE
+
+    @GetMapping("/createLeague")
+    public boolean createLeague(HttpSession session, @RequestParam String leagueName) {
+        User user = (User) session.getAttribute("user");
+
+        if(leagueName == null || leagueService.leagueExists(leagueName)){
+            return false;
+        }
+        leagueService.createLeague(leagueName, user.getId());
+
+        return true;
+    }
+    @GetMapping("/joinLeague")
+    public boolean joinLeague(HttpSession session, @RequestParam String inviteCode) {
+        User user = (User) session.getAttribute("user");
+
+        return leagueService.joinLeague(inviteCode, user.getId());
     }
 
     // PROFILE

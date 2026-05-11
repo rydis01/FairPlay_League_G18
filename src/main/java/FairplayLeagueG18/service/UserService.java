@@ -32,13 +32,13 @@ public class UserService {
      * @param password The password for the new user
      * @author Carl & Hugo
      */
-    public void registerUser(String username, String email, String password) {
+    public boolean registerUser(String username, String email, String password) {
         // TODO:  Add password check - must be at least 8 characters long.
         // Fixas här nedan:
 
         if (password.length() < 8) {
             System.out.println("Lösenordet måste vara minst 8 tecken långt.");
-            return;
+            return false;
         }
 
 
@@ -59,11 +59,11 @@ public class UserService {
 
         } catch (Exception e) {
             System.out.println("TEST MISSLYCKADES (Databasfel): " + e.getMessage());
+            return false;
             // Om e.getMessage() klagar på "duplicate key value violates unique constraint",
             // –> Krav F-REG-1.1 = Godkänt!
         }
-
-
+        return true;
     }
 
     // Login

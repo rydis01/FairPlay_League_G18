@@ -1,6 +1,8 @@
 package FairplayLeagueG18.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class League {
     private int id;
@@ -8,6 +10,7 @@ public class League {
     private String inviteCode;
     private int createdBy;
     private LocalDateTime createdAt;
+    private List<LeagueMember> members;
 
     public League() {
     }
@@ -18,6 +21,7 @@ public class League {
         this.inviteCode = inviteCode;
         this.createdBy = createdBy;
         this.createdAt = LocalDateTime.now();
+        this.members = new ArrayList<>();
     }
 
     // Läsa från databasen
@@ -48,4 +52,12 @@ public class League {
     public LocalDateTime getCreatedAt() { return createdAt; }
 
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public void setMembers(List<LeagueMember> members){
+        this.members = members;
+    }
+
+    public List<LeagueMember> getMembers(){
+        return members;
+    }
 }

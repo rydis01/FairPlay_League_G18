@@ -80,6 +80,11 @@ public class LeagueDAO {
                             rs.getInt("Admin_User"),
                             rs.getTimestamp("Created_at").toLocalDateTime()
                     );
+
+                    List<LeagueMember> members =
+                            getMembersByLeagueIdSortedByScore(leagueId);
+
+                    league.setMembers(members);
                 }
             }
         } catch (SQLException e) {
@@ -113,6 +118,11 @@ public class LeagueDAO {
                             rs.getInt("Admin_User"),
                             rs.getTimestamp("Created_at").toLocalDateTime()
                     );
+
+                    List<LeagueMember> members =
+                            getMembersByLeagueIdSortedByScore(rs.getInt("League_Id"));
+
+                    league.setMembers(members);
                 }
             }
         } catch (SQLException e) {
@@ -147,6 +157,7 @@ public class LeagueDAO {
                             rs.getInt("Admin_User"),
                             rs.getTimestamp("Created_at").toLocalDateTime()
                     );
+                    league.setMembers(getMembersByLeagueIdSortedByScore(rs.getInt("League_Id")));
                     userLeagues.add(league);
                 }
             }
@@ -192,6 +203,25 @@ public class LeagueDAO {
             conn.commit();
         } catch (SQLException e) {
             System.out.println("Kunde inte ta bort medlem. Fel: " + e.getMessage());
+        }
+    }
+
+    public boolean leagueExists(String leagueName) {
+        String sql = "SELECT 1 FROM Leagues WHERE League_Name = ?";
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            if (conn == null) return false;
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, leagueName);
+                ResultSet rs = stmt.executeQuery();
+
+                return rs.next();
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Kunde inte kontrollera om liga finns. Fel: " + e.getMessage());
+            return false;
         }
     }
 

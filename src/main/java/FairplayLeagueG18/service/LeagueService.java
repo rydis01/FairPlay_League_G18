@@ -41,6 +41,11 @@ public class LeagueService {
         return true;
     }
 
+    // Kolla om liga existerar
+    public boolean leagueExists(String leagueName){
+        return leagueDAO.leagueExists(leagueName);
+    }
+
     // Tar bort en användare från en liga
     public void removeMember(int leagueId, int userId) {
         leagueDAO.removeMember(leagueId, userId);
