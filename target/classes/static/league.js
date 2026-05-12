@@ -7,87 +7,92 @@ document.getElementById("btnLeaderboard").addEventListener("click", showLeaderbo
 
 function showCreateLeagueView() {
     leftContent.innerHTML = `
-        <h3>Skapa ny liga</h3>
-        <input id="leagueName" class="input-field" placeholder="Liganamn">
-        <button class="action-btn" onclick="createLeague()">Skapa</button>
-        <p id="result"></p>
-    `;
-}
-function createLeague() {
-    const leagueName = document.getElementById("leagueName").value;
+        <div class="input-box">
+            <h2>Skapa liga</h2>
 
-    fetch("/api/createLeague?leagueName=" + leagueName, {
+            <input id="leagueName" type="text" placeholder="Liganamn">
+
+            <button id="createLeagueBtn">Skapa liga</button>
+
+            <p id="result"></p>
+        </div>
+    `;
+
+    document.getElementById("createLeagueBtn").onclick = function () {
+        const leagueName = document.getElementById("leagueName").value;
+
+        fetch("/api/createLeague?leagueName=" + leagueName, {
             method: "GET",
             credentials: "include"
         })
-            .then(response => response.json())
+            .then(r => r.json())
             .then(success => {
-
                 const result = document.getElementById("result");
 
                 if (success) {
                     result.style.color = "green";
-                    result.textContent = "League skapat!";
-
+                    result.textContent = "Ligan skapades!";
                 } else {
                     result.style.color = "red";
-                    result.textContent = "League kunde inte skapas!";
+                    result.textContent = "Ligan kunde inte skapas.";
                 }
             });
+    };
 }
 
 function showJoinLeagueView() {
     leftContent.innerHTML = `
-        <h3>Gå med i liga</h3>
-        <input id="inviteCode" class="input-field" placeholder="Invite-kod">
-        <button class="action-btn" onclick="joinLeague()">Gå med</button>
+        <div class="input-box">
+            <h2>Gå med i liga</h2>
+
+            <input id="inviteCode" type="text" placeholder="Invite-kod">
+
+            <button id="joinLeagueBtn">Gå med</button>
+
+            <p id="result"></p>
+        </div>
     `;
+
+    document.getElementById("joinLeagueBtn").onclick = function () {
+        const inviteCode = document.getElementById("inviteCode").value;
+
+        fetch("/api/joinLeague?inviteCode=" + inviteCode, {
+            method: "GET",
+            credentials: "include"
+        })
+            .then(r => r.json())
+            .then(success => {
+                const result = document.getElementById("result");
+
+                if (success) {
+                    result.style.color = "green";
+                    result.textContent = "Du gick med i ligan!";
+                } else {
+                    result.style.color = "red";
+                    result.textContent = "Fel kod eller du är redan medlem.";
+                }
+            });
+    };
 }
 
-function joinLeague() {
-    const inviteCode = document.getElementById("inviteCode").value;
-
-    fetch("/api/joinLeague?inviteCode=" + inviteCode, {
-                method: "GET",
-                credentials: "include"
-            })
-                .then(response => response.json())
-                .then(success => {
-
-                    const result = document.getElementById("result");
-
-                    if (success) {
-                        result.style.color = "green";
-                        result.textContent = "Du blev medlem!";
-
-                    } else {
-                        result.style.color = "red";
-                        result.textContent = "Du kunde inte bli medlem";
-                    }
-                });
-}
 
 function showMyLeaguesView() {
     leftContent.innerHTML = `
         <div class="gw-container">
-            <h1>Alla ligor</h1>
             <div id="Leagues" class="matches-list"></div>
         </div>
     `;
-    loadAllLeagues();
-}
 
-function loadAllLeagues() {
     fetch("/api/loadAllLeagues", {
-        credentials: "include"
+    credentials: "include"
     })
         .then(r => r.json())
         .then(leagues => {
             renderLeagues(leagues);
         })
         .catch(err => console.error("Kunde inte hämta ligor:", err));
-}
 
+}
 
 function renderLeagues(leagues) {
     const container = document.getElementById("Leagues");

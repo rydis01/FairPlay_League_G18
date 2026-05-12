@@ -1,14 +1,24 @@
+:root {
+    --gw-width: 500px;
+}
+
 body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
     background: #f5f5f5;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .gw-container {
-    max-width: 500px;
+    width: var(--gw-width);
+    max-width: 90vw;
     margin: 20px auto 100px;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 h1 {
@@ -17,57 +27,88 @@ h1 {
 }
 
 #roundid {
-    width: 90%;
+    width: var(--gw-width);
+    max-width: 90vw;
     padding: 10px;
     margin: 10px auto 15px;
-    display: block;
+
     border-radius: 6px;
     border: 1px solid #ccc;
     background: white;
     font-size: 16px;
     box-shadow: 0 0 8px rgba(0,0,0,0.1);
+
+    box-sizing: border-box;
+    display: block;
 }
 
-#getRoundBtn {
-    width: 100%;
-    padding: 12px 20px;
-    background: #007bff;
-    color: white;
+#getRoundBtn,
+#submitTipsBtn {
+    width: var(--gw-width);
+    max-width: 90vw;
+
+    padding: 12px;
     border: none;
     border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    color: white;
+
+    box-sizing: border-box;
+    display: block;
+    margin: 0 auto 20px;
 }
 
+#getRoundBtn {
+    background: #007bff;
+}
 #getRoundBtn:hover {
     background: #005fcc;
 }
 
+#submitTipsBtn {
+    background: #28a745;
+    margin-top: 20px;
+}
+#submitTipsBtn:hover {
+    background: #218838;
+}
+
 .matches-list {
+    width: var(--gw-width);
+    max-width: 90vw;
+
     display: flex;
     flex-direction: column;
     gap: 15px;
+    margin: 0 auto;
 }
 
 .match-card {
+    width: var(--gw-width);
+    max-width: 90vw;
+
     background: white;
     padding: 15px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+    height: 150px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .match-time {
     font-size: 14px;
     color: #666;
-    margin-bottom: 6px;
 }
 
 .match-teams {
     font-size: 18px;
     font-weight: bold;
-    margin-bottom: 10px;
 }
 
 .match-passed {
@@ -79,41 +120,41 @@ h1 {
     font-size: 16px;
     font-weight: bold;
     color: #d9534f;
-    margin-top: 8px;
 }
 
 .tip-box {
     margin-top: 10px;
     display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.tip-choice {
+    width: 70px;
+    height: 70px;
+    background: #eaeaea;
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 8px;
-}
 
-.tip-box label {
-    font-size: 14px;
-}
-
-.tip-input {
-    padding: 6px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
-
-#submitTipsBtn {
-    width: 100%;
-    padding: 12px;
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    margin-top: 20px;
+    font-size: 26px;
+    font-weight: bold;
     cursor: pointer;
+
+    border: 2px solid transparent;
+    transition: 0.2s;
 }
 
-#submitTipsBtn:hover {
-    background: #218838;
+.tip-choice:hover {
+    background: #dcdcdc;
+}
+
+.tip-choice.active {
+    background: #007bff;
+    color: white;
+    border-color: #005fcc;
 }
 
 .bottom-nav {
@@ -124,9 +165,11 @@ h1 {
     height: 70px;
     background: #ffffff;
     border-top: 1px solid #ddd;
+
     display: flex;
     justify-content: space-around;
     align-items: center;
+
     z-index: 999;
 }
 

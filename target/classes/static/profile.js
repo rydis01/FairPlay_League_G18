@@ -1,5 +1,3 @@
-console.log("profile.js LOADED");
-
 window.onload = function () {
     loadCoupons();
     loadUserinfo();

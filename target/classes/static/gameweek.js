@@ -6,6 +6,7 @@ window.onload = function () {
 };
 
 let currentMatches = [];
+let tips = []; // här lagras 1/X/2 för varje match
 
 function loadRound() {
     const roundId = document.getElementById("roundid").value;
@@ -15,10 +16,12 @@ function loadRound() {
     }
 
     fetch("/api/gameweek?roundId=" + roundId, {
-    method: "GET" })
+        method: "GET"
+    })
         .then(r => r.json())
         .then(round => {
             currentMatches = round.matches || [];
+            tips = []; // nollställ tips
             renderMatches(currentMatches);
         })
         .catch(err => console.error("Kunde inte hämta gameweek:", err));
@@ -67,23 +70,18 @@ function renderMatches(matches) {
             const tipBox = document.createElement("div");
             tipBox.className = "tip-box";
 
-            const label = document.createElement("label");
-            label.textContent = "Tips:";
-            tipBox.appendChild(label);
+            ["1", "X", "2"].forEach(choice => {
+                const btn = document.createElement("div");
+                btn.className = "tip-choice";
+                btn.textContent = choice;
+                btn.dataset.matchIndex = index;
+                btn.dataset.value = choice;
 
-            const select = document.createElement("select");
-            select.className = "tip-input";
-            select.dataset.matchIndex = index;
+                btn.onclick = () => selectTip(index, choice);
 
-            const values = ["-", "1", "X", "2"];
-            values.forEach(val => {
-                const opt = document.createElement("option");
-                opt.value = val === "-" ? "" : val;
-                opt.textContent = val;
-                select.appendChild(opt);
+                tipBox.appendChild(btn);
             });
 
-            tipBox.appendChild(select);
             card.appendChild(tipBox);
         }
 
@@ -91,18 +89,20 @@ function renderMatches(matches) {
     });
 }
 
+function selectTip(matchIndex, value) {
+    tips[matchIndex] = value;
+
+    document.querySelectorAll(`.tip-choice[data-match-index="${matchIndex}"]`)
+        .forEach(btn => btn.classList.remove("active"));
+
+    document.querySelector(
+        `.tip-choice[data-match-index="${matchIndex}"][data-value="${value}"]`
+    ).classList.add("active");
+}
+
 function submitTips() {
-    const selects = Array.from(document.querySelectorAll(".tip-input"));
-
-    if (selects.length !== 8) {
-        alert("Det måste finnas exakt 8 matcher att tippa i omgången.");
-        return;
-    }
-
-    const tips = selects.map(sel => sel.value || "-");
-
-    if (tips.some(t => t === "-")) {
-        alert("Du måste tippa alla 8 matcher.");
+    if (tips.length !== 8 || tips.includes(undefined)) {
+        alert("Du måste välja 1/X/2 för alla 8 matcher.");
         return;
     }
 

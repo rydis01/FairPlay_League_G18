@@ -206,7 +206,7 @@ public class LeagueDAO {
 
     // Lägger till en användare som medlem med 0 poäng
     public void addMember(int leagueId, int userId) {
-        String sql = "INSERT INTO User_Leagues (User_ID, League_ID, Total_Score) VALUES (?, ?, 0)";
+        String sql = "INSERT INTO User_Leagues (User_ID, League_ID) VALUES (?, ?)";
 
         try (Connection conn = DatabaseManager.getConnection()) {
             if (conn == null) return;
