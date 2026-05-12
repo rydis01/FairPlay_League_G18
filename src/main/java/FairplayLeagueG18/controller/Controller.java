@@ -9,6 +9,7 @@ import FairplayLeagueG18.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -114,6 +115,11 @@ public class Controller {
         User user = (User) session.getAttribute("user");
 
         return leagueService.joinLeague(inviteCode, user.getId());
+    }
+
+    @GetMapping("/loadAllLeagues")
+    public List<League> userInfo() {
+        return leagueService.getAllLeagues();
     }
 
     // PROFILE

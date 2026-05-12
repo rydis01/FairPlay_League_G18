@@ -58,22 +58,60 @@ function joinLeague() {
 
                     if (success) {
                         result.style.color = "green";
-                        result.textContent = "League skapat!";
+                        result.textContent = "Du blev medlem!";
 
                     } else {
                         result.style.color = "red";
-                        result.textContent = "League kunde inte skapas!";
+                        result.textContent = "Du kunde inte bli medlem";
                     }
                 });
 }
 
 function showMyLeaguesView() {
     leftContent.innerHTML = `
-        <h3>Dina ligor</h3>
-        <div id="myLeaguesList"></div>
+        <div class="gw-container">
+            <h1>Alla ligor</h1>
+            <div id="Leagues" class="matches-list"></div>
+        </div>
     `;
-    loadUserLeagues();
+    loadAllLeagues();
 }
+
+function loadAllLeagues() {
+    fetch("/api/loadAllLeagues", {
+        credentials: "include"
+    })
+        .then(r => r.json())
+        .then(leagues => {
+            renderLeagues(leagues);
+        })
+        .catch(err => console.error("Kunde inte hämta ligor:", err));
+}
+
+
+function renderLeagues(leagues) {
+    const container = document.getElementById("Leagues");
+    container.innerHTML = "";
+
+    leagues.forEach(league => {
+        const card = document.createElement("div");
+        card.className = "match-card league-card";
+
+        const nameDiv = document.createElement("div");
+        nameDiv.className = "match-teams";
+        nameDiv.textContent = league.name;
+        card.appendChild(nameDiv);
+
+        const inviteDiv = document.createElement("div");
+        inviteDiv.className = "match-time";
+        inviteDiv.textContent = "Invite-kod: " + league.inviteCode;
+        card.appendChild(inviteDiv);
+
+        container.appendChild(card);
+    });
+}
+
+
 
 function showLeaderboardView() {
     const leagueId = document.getElementById("leagueSelect").value;

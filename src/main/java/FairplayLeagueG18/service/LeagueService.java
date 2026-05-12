@@ -41,6 +41,10 @@ public class LeagueService {
         return true;
     }
 
+    public List<League> getAllLeagues(){
+        return leagueDAO.getAllLeagues();
+    }
+
     // Kolla om liga existerar
     public boolean leagueExists(String leagueName){
         return leagueDAO.leagueExists(leagueName);

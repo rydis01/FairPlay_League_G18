@@ -55,6 +55,42 @@ public class LeagueDAO {
             System.out.println("Kunde inte skapa ligan. Fel: " + e.getMessage());
         }
     }
+    //Hämtar alla ligor.
+
+    public List<League> getAllLeagues() {
+        List<League> leagues = new ArrayList<>();
+
+        String sql =
+                "SELECT League_Id, League_Name, Admin_User, Invite_Code, Created_at " +
+                        "FROM Leagues";
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            if (conn == null) return leagues;
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                ResultSet rs = stmt.executeQuery();
+
+                while (rs.next()) {
+                    int leagueId = rs.getInt("League_Id");
+
+                    League league = new League(
+                            leagueId,
+                            rs.getString("League_Name"),
+                            rs.getString("Invite_Code"),
+                            rs.getInt("Admin_User"),
+                            rs.getTimestamp("Created_at").toLocalDateTime()
+                    );
+
+                    leagues.add(league);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Kunde inte hämta ligorna. Fel: " + e.getMessage());
+        }
+
+        return leagues;
+    }
+
 
     // Hämtar en liga baserat på id
     public League getLeagueById(int leagueId) {
