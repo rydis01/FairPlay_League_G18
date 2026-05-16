@@ -2,10 +2,7 @@ package FairplayLeagueG18.database;
 
 import FairplayLeagueG18.model.Match;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -162,5 +159,18 @@ public class MatchDAO {
                 timeStr.substring(0, 4), timeStr.substring(4, 6), timeStr.substring(6, 8),
                 timeStr.substring(8, 10), timeStr.substring(10, 12), timeStr.substring(12, 14));
         return Timestamp.valueOf(formatted);
+    }
+    public void clearMatches() {
+        String sql = "TRUNCATE TABLE Matches RESTART IDENTITY CASCADE";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             Statement stmt = conn.createStatement()) {
+
+            stmt.execute(sql);
+            System.out.println("Rensade Matches-tabellen (CASCADE).");
+
+        } catch (Exception e) {
+            System.err.println("Kunde inte rensa Matches: " + e.getMessage());
+        }
     }
 }

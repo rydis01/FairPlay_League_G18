@@ -1,14 +1,12 @@
 package FairplayLeagueG18.controller;
 
 import FairplayLeagueG18.model.*;
-import FairplayLeagueG18.service.CouponService;
-import FairplayLeagueG18.service.LeagueService;
-import FairplayLeagueG18.service.RoundService;
-import FairplayLeagueG18.service.UserService;
+import FairplayLeagueG18.service.*;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +19,14 @@ public class Controller {
     private final RoundService roundService;
     private final CouponService couponService;
     private final LeagueService leagueService;
+    private final MatchService matchService;
 
-    public Controller(UserService userService, RoundService roundService, CouponService couponService, LeagueService leagueService) {
+    public Controller(UserService userService, RoundService roundService, CouponService couponService, LeagueService leagueService, MatchService matchService) {
         this.userService = userService;
         this.roundService = roundService;
         this.couponService = couponService;
         this.leagueService = leagueService;
+        this.matchService = matchService;
     }
 
     //LOGIN & REGISTER
@@ -95,6 +95,12 @@ public class Controller {
     @GetMapping("/gameweek")
     public Round gameweekInfo(@RequestParam int roundId) {
         return roundService.getRound(roundId);
+    }
+
+    @PostMapping("/updateGameweek")
+    public String updateGameweek() {
+        matchService.startAutoUpdate();
+        return "OK";
     }
 
     // LEAGUE

@@ -2,11 +2,25 @@ console.log("gameweek.js LOADED");
 
 window.onload = function () {
     document.getElementById("getRoundBtn").onclick = loadRound;
+    document.getElementById("updateRoundBtn").onclick = updateRound;
     document.getElementById("submitTipsBtn").onclick = submitTips;
 };
 
 let currentMatches = [];
 let tips = [];
+
+function updateRound () {
+
+    fetch("/api/updateGameweek", {
+        method: "POST",
+        credentials: "include"
+    })
+        .then(response => response.text())
+        .then(msg => {
+            console.log("Signal skickad:", msg);
+        })
+        .catch(err => console.error("Fel vid signal:", err));
+}
 
 function loadRound() {
     const roundId = document.getElementById("roundid").value;
@@ -33,6 +47,14 @@ function renderMatches(matches) {
 
     const now = new Date();
 
+    const btn = document.getElementById("submitTipsBtn");
+    btn.disabled = false;
+    btn.textContent = "Skicka tips";
+    btn.style.background = "#22c55e";
+    btn.style.cursor = "pointer";
+
+    let hasPassedMatch = false;
+
     matches.forEach((m, index) => {
         const card = document.createElement("div");
         card.className = "match-card league-card";
@@ -51,6 +73,8 @@ function renderMatches(matches) {
         const isPassed = kickoffDate < now;
 
         if (isPassed) {
+            hasPassedMatch = true;
+
             card.classList.add("match-passed");
 
             const resultDiv = document.createElement("div");
@@ -87,6 +111,13 @@ function renderMatches(matches) {
 
         container.appendChild(card);
     });
+    if (hasPassedMatch) {
+        const btn = document.getElementById("submitTipsBtn");
+        btn.textContent = "Kupongen är låst";
+        btn.style.background = "#ef4444";
+        btn.style.cursor = "not-allowed";
+        btn.disabled = true;
+    }
 }
 
 function selectTip(matchIndex, value) {

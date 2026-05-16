@@ -10,14 +10,11 @@ public class TestingDatabase {
     public static void main(String[] args) {
 
         String[] sqlCommands = {
-                "TRUNCATE TABLE Picks RESTART IDENTITY CASCADE",
-                "TRUNCATE TABLE Gameweek_scores RESTART IDENTITY CASCADE",
-                "TRUNCATE TABLE Coupons RESTART IDENTITY CASCADE",
-                "TRUNCATE TABLE Matches RESTART IDENTITY CASCADE",
-                "TRUNCATE TABLE Gameweeks RESTART IDENTITY CASCADE",
-                "TRUNCATE TABLE User_Leagues RESTART IDENTITY CASCADE",
-                "TRUNCATE TABLE Leagues RESTART IDENTITY CASCADE",
-                "TRUNCATE TABLE Users RESTART IDENTITY CASCADE"
+
+                // 🔵 Ändra ALLA matcher
+                "UPDATE Matches SET Home_team = 'Hej';"
+
+                // 👉 Lägg fler UPDATE här om du vill
         };
 
         try (Connection conn = DatabaseManager.getConnection();
@@ -29,7 +26,7 @@ public class TestingDatabase {
             }
 
         } catch (Exception e) {
-            System.out.println("Fel vid nollställning: " + e.getMessage());
+            System.out.println("Fel vid ändring: " + e.getMessage());
         }
     }
 }
