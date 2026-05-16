@@ -6,7 +6,7 @@ window.onload = function () {
 };
 
 let currentMatches = [];
-let tips = []; // här lagras 1/X/2 för varje match
+let tips = [];
 
 function loadRound() {
     const roundId = document.getElementById("roundid").value;
@@ -21,7 +21,7 @@ function loadRound() {
         .then(r => r.json())
         .then(round => {
             currentMatches = round.matches || [];
-            tips = []; // nollställ tips
+            tips = [];
             renderMatches(currentMatches);
         })
         .catch(err => console.error("Kunde inte hämta gameweek:", err));
@@ -35,7 +35,7 @@ function renderMatches(matches) {
 
     matches.forEach((m, index) => {
         const card = document.createElement("div");
-        card.className = "match-card";
+        card.className = "match-card league-card";
 
         const timeDiv = document.createElement("div");
         timeDiv.className = "match-time";
@@ -141,3 +141,22 @@ function formatKickoff(raw) {
 
     return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.remove("fade-out");
+});
+
+document.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", e => {
+        const url = link.getAttribute("href");
+
+        if (!url || url.startsWith("#")) return;
+
+        e.preventDefault();
+        document.body.classList.add("fade-out");
+
+        setTimeout(() => {
+            window.location = url;
+        }, 350);
+    });
+});

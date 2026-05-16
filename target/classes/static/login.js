@@ -31,10 +31,10 @@ document.getElementById("togglePassword").onclick = function () {
 
     if (passField.type === "password") {
         passField.type = "text";
-        this.src = "allsvenskan.png";
+        this.src = "fairplayleague.png";
     } else {
         passField.type = "password";
-        this.src = "allsvenskan.png";
+        this.src = "fairplayleague.png";
     }
 };
 
@@ -42,3 +42,22 @@ document.getElementById("togglePassword").onclick = function () {
 document.getElementById("registerBtn").onclick = function () {
     window.location.href = "registerUser.html";
 };
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.remove("fade-out");
+});
+
+document.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", e => {
+        const url = link.getAttribute("href");
+
+        if (!url || url.startsWith("#")) return;
+
+        e.preventDefault();
+        document.body.classList.add("fade-out");
+
+        setTimeout(() => {
+            window.location = url;
+        }, 350);
+    });
+});

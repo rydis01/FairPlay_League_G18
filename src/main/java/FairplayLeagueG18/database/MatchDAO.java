@@ -110,7 +110,7 @@ public class MatchDAO {
         try {
             int home = Integer.parseInt(match.getHomeScore());
             int away = Integer.parseInt(match.getAwayScore());
-            if (home > away) return "1";
+            if (home > away) return "org";
             if (home == away) return "X";
             return "2";
         } catch (NumberFormatException e) {

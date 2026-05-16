@@ -48,10 +48,12 @@ function renderCouponMatches(tips) {
     const container = document.getElementById("couponDetails");
     container.innerHTML = "";
 
+    const cards = [];
+
     tips.forEach(tip => {
 
         const card = document.createElement("div");
-        card.className = "match-card";
+        card.className = "match-card fade-in";
 
         const teamsDiv = document.createElement("div");
         teamsDiv.className = "match-teams";
@@ -69,8 +71,16 @@ function renderCouponMatches(tips) {
         card.appendChild(resultDiv);
 
         container.appendChild(card);
+        cards.push(card);
+    });
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            cards.forEach(card => card.classList.add("show"));
+        });
     });
 }
+
 
 function loadUserinfo() {
     fetch("/api/userinfo", {
@@ -104,3 +114,22 @@ function logout() {
             window.location.href = "/login.html";
         });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.remove("fade-out");
+});
+
+document.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", e => {
+        const url = link.getAttribute("href");
+
+        if (!url || url.startsWith("#")) return;
+
+        e.preventDefault();
+        document.body.classList.add("fade-out");
+
+        setTimeout(() => {
+            window.location = url;
+        }, 350);
+    });
+});

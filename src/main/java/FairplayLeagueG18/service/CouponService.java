@@ -33,7 +33,7 @@ public class CouponService {
 
         // Validera innehåll
         for (String tip : tips.values()) {
-            if (!tip.equals("1") && !tip.equals("X") && !tip.equals("2")) {
+            if (!tip.equals("org") && !tip.equals("X") && !tip.equals("2")) {
                 System.out.println("Ogiltigt tips: " + tip + ". Måste vara 1, X eller 2.");
                 return;
             }

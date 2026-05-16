@@ -24,3 +24,22 @@ document.getElementById("registerBtn").onclick = function () {
             }
         });
 };
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.remove("fade-out");
+});
+
+document.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", e => {
+        const url = link.getAttribute("href");
+
+        if (!url || url.startsWith("#")) return;
+
+        e.preventDefault();
+        document.body.classList.add("fade-out");
+
+        setTimeout(() => {
+            window.location = url;
+        }, 350);
+    });
+});

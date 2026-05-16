@@ -1,110 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap');
+
+* { box-sizing: border-box; }
+
 body {
+    font-family: 'Barlow', sans-serif;
+    background: url("fotbollsplan.jpg") no-repeat center center fixed;
+    color: #f0f4f8;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
 }
 
 .layout {
     display: grid;
     grid-template-columns: 2fr 1fr;
     width: 100%;
-    min-height: calc(100vh - 70px);
+    min-height: calc(100vh - 68px);
 }
 
 .left-column {
     padding: 20px;
-    background: #fafafa;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
     overflow-y: auto;
-    max-height: calc(100vh - 100px);
+    max-height: calc(100vh - 68px);
 }
-
 
 .right-column {
     padding: 20px;
-    background: #fafafa;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
+h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 16px;
+}
 
+.coupon-select {
+    width: 100%;
+    max-width: 500px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: #243040;
+    color: #f0f4f8;
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    margin-bottom: 20px;
+    outline: none;
+}
+.coupon-select:focus {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+}
 
 .matches-list {
     width: 100%;
     max-width: 500px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-}
-
-#couponSelect {
-    width: 100%;
-    max-width: 500px;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-bottom: 20px;
-    font-size: 16px;
+    gap: 12px;
 }
 
 .match-card {
-    background: white;
+    background: #1e2d3d;
     padding: 15px;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 }
 
 .match-teams {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.match-time {
-    font-size: 14px;
-    color: #666;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
     margin-bottom: 6px;
 }
 
-.match-result {
-    font-size: 16px;
-    font-weight: bold;
-    color: #d9534f;
-    margin-top: 8px;
+.match-time { font-size: 13px; color: #8899aa; margin-bottom: 4px; }
+
+.match-result { font-size: 15px; font-weight: 600; color: #ef4444; margin-top: 6px; }
+
+.profile-container { margin-top: 4px; }
+
+h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 16px;
 }
 
-.profile-container {
-    background: white;
-    padding: 20px;
+.profile-card {
+    background: #1e2d3d;
+    padding: 18px;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-
-    width: 100%;
-    max-width: 300px;
-    margin-top: 67px;
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    margin-bottom: 16px;
 }
 
+.profile-card p {
+    margin: 0 0 12px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.profile-card p:last-child { margin-bottom: 0; }
+
+.profile-card strong {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8899aa;
+    font-weight: 600;
+}
+
+.profile-card span {
+    font-size: 16px;
+    color: #f0f4f8;
+    font-weight: 500;
+}
 
 .logout-btn {
     width: 100%;
-    padding: 12px;
-    background: #d9534f;
-    color: white;
+    padding: 13px 16px;
+    background: #ef4444;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Barlow Condensed', sans-serif;
     font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     cursor: pointer;
-    margin-top: 15px;
+    transition: background 0.15s;
 }
-
-.logout-btn:hover {
-    background: #c9302c;
-}
+.logout-btn:hover { background: #dc2626; }
 
 .bottom-nav {
     position: fixed;
@@ -114,10 +149,12 @@ body {
     height: 70px;
     background: #ffffff;
     border-top: 1px solid #ddd;
+
     display: flex;
     justify-content: space-around;
     align-items: center;
-    z-index: 9999;
+
+    z-index: 999;
 }
 
 .nav-item {
@@ -135,3 +172,10 @@ body {
     margin-bottom: 4px;
     opacity: 0.8;
 }
+
+.nav-item.active, .nav-item:hover { color: #22c55e; }
+
+.fade { opacity: 1; transition: opacity 0.35s ease; }
+.fade.fade-out { opacity: 0; }
+.fade-in { opacity: 0; transform: scale(0.98); transition: opacity 0.25s ease, transform 0.25s ease; }
+.fade-in.show { opacity: 1; transform: scale(1); }

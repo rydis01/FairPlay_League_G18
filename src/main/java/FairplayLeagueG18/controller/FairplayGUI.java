@@ -1,11 +1,7 @@
 package FairplayLeagueG18.controller;
 
-import FairplayLeagueG18.service.CouponService;
-import FairplayLeagueG18.service.RoundService;
 import FairplayLeagueG18.service.UserService;
 import FairplayLeagueG18.database.DatabaseManager;
-import FairplayLeagueG18.model.Round;
-import FairplayLeagueG18.model.RoundStatus;
 
 import javax.swing.*;
 import java.awt.*;
@@ -335,7 +331,7 @@ public class FairplayGUI {
                         matchLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
 
                         // skapar radioknappar
-                        JRadioButton btn1 = new JRadioButton("1");
+                        JRadioButton btn1 = new JRadioButton("org");
                         JRadioButton btnX = new JRadioButton("X");
                         JRadioButton btn2 = new JRadioButton("2");
 
@@ -349,7 +345,7 @@ public class FairplayGUI {
                         group.add(btn2);
                         buttonGroups.add(group);
 
-                        btn1.setActionCommand("1");
+                        btn1.setActionCommand("org");
                         btnX.setActionCommand("X");
                         btn2.setActionCommand("2");
 

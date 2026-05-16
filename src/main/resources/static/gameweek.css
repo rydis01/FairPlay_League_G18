@@ -1,160 +1,149 @@
-:root {
-    --gw-width: 500px;
-}
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap');
+
+* { box-sizing: border-box; }
 
 body {
+    font-family: 'Barlow', sans-serif;
+    background: url("fotbollsplan.jpg") no-repeat center center fixed;
+    color: #f0f4f8;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-
     display: flex;
     justify-content: center;
     align-items: flex-start;
 }
 
 .gw-container {
-    width: var(--gw-width);
+    width: 500px;
     max-width: 90vw;
-    margin: 20px auto 100px;
+    margin: 24px auto 100px;
     padding: 20px;
-    box-sizing: border-box;
 }
 
 h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     text-align: center;
     margin-bottom: 20px;
 }
 
 #roundid {
-    width: var(--gw-width);
-    max-width: 90vw;
-    padding: 10px;
-    margin: 10px auto 15px;
-
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background: white;
+    width: 100%;
+    padding: 11px 14px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: #243040;
+    color: #f0f4f8;
+    font-family: 'Barlow', sans-serif;
     font-size: 16px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
-
-    box-sizing: border-box;
+    outline: none;
     display: block;
 }
+#roundid:focus {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+}
 
-#getRoundBtn,
-#submitTipsBtn {
-    width: var(--gw-width);
-    max-width: 90vw;
-
+#getRoundBtn, #submitTipsBtn {
+    width: 100%;
     padding: 12px;
     border: none;
-    border-radius: 8px;
-    font-size: 16px;
+    border-radius: 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     cursor: pointer;
-    color: white;
-
-    box-sizing: border-box;
     display: block;
-    margin: 0 auto 20px;
+    transition: background 0.15s, transform 0.1s;
 }
+#getRoundBtn:active, #submitTipsBtn:active { transform: scale(0.97); }
 
 #getRoundBtn {
-    background: #007bff;
+    background: #3b82f6;
+    color: white;
+    margin-bottom: 20px;
 }
-#getRoundBtn:hover {
-    background: #005fcc;
-}
+#getRoundBtn:hover { background: #2563eb; }
 
 #submitTipsBtn {
-    background: #28a745;
+    background: #22c55e;
+    color: white;
     margin-top: 20px;
+    box-shadow: 0 0 16px rgba(34,197,94,0.25);
 }
-#submitTipsBtn:hover {
-    background: #218838;
-}
+#submitTipsBtn:hover { background: #16a34a; }
 
 .matches-list {
-    width: var(--gw-width);
-    max-width: 90vw;
-
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin: 0 auto;
+    gap: 12px;
 }
 
 .match-card {
-    width: var(--gw-width);
-    max-width: 90vw;
-
-    background: white;
-    padding: 15px;
+    background: #ffffff;
+    padding: 16px;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     height: 150px;
-    box-sizing: border-box;
-
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-.match-time {
-    font-size: 14px;
-    color: #666;
-}
+.match-time { font-size: 13px; color: #8899aa; }
 
 .match-teams {
-    font-size: 18px;
-    font-weight: bold;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .match-passed {
-    background: #ffe5e5;
-    border-left: 6px solid #d9534f;
+    background: rgba(239,68,68,0.08);
+    border-left: 4px solid #ef4444;
 }
 
 .match-result {
-    font-size: 16px;
-    font-weight: bold;
-    color: #d9534f;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ef4444;
 }
 
 .tip-box {
-    margin-top: 10px;
     display: flex;
     justify-content: space-between;
     gap: 10px;
 }
 
 .tip-choice {
-    width: 70px;
-    height: 70px;
-    background: #eaeaea;
-    border-radius: 10px;
-
+    flex: 1;
+    height: 44px;
+    background: #243040;
+    border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-
-    font-size: 26px;
-    font-weight: bold;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
     cursor: pointer;
-
-    border: 2px solid transparent;
-    transition: 0.2s;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #8899aa;
+    transition: background 0.15s, color 0.15s;
 }
-
-.tip-choice:hover {
-    background: #dcdcdc;
-}
-
+.tip-choice:hover { background: #2d3d50; color: #f0f4f8; }
 .tip-choice.active {
-    background: #007bff;
+    background: #22c55e;
+    border-color: #22c55e;
     color: white;
-    border-color: #005fcc;
+    box-shadow: 0 0 10px rgba(34,197,94,0.3);
 }
 
 .bottom-nav {
@@ -188,3 +177,7 @@ h1 {
     margin-bottom: 4px;
     opacity: 0.8;
 }
+.nav-item.active, .nav-item:hover { color: #22c55e; }
+
+.fade { opacity: 1; transition: opacity 0.35s ease; }
+.fade.fade-out { opacity: 0; }
