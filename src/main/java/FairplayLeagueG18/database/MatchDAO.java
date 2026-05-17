@@ -107,7 +107,7 @@ public class MatchDAO {
         try {
             int home = Integer.parseInt(match.getHomeScore());
             int away = Integer.parseInt(match.getAwayScore());
-            if (home > away) return "org";
+            if (home > away) return "1";
             if (home == away) return "X";
             return "2";
         } catch (NumberFormatException e) {
@@ -159,18 +159,5 @@ public class MatchDAO {
                 timeStr.substring(0, 4), timeStr.substring(4, 6), timeStr.substring(6, 8),
                 timeStr.substring(8, 10), timeStr.substring(10, 12), timeStr.substring(12, 14));
         return Timestamp.valueOf(formatted);
-    }
-    public void clearMatches() {
-        String sql = "TRUNCATE TABLE Matches RESTART IDENTITY CASCADE";
-
-        try (Connection conn = DatabaseManager.getConnection();
-             Statement stmt = conn.createStatement()) {
-
-            stmt.execute(sql);
-            System.out.println("Rensade Matches-tabellen (CASCADE).");
-
-        } catch (Exception e) {
-            System.err.println("Kunde inte rensa Matches: " + e.getMessage());
-        }
     }
 }

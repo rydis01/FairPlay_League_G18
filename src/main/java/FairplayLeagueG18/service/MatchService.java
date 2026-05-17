@@ -37,7 +37,6 @@ public class MatchService {
     }
 
     private void fetchAndProcessMatches() {
-        matchDao.clearMatches();
         try {
             String rawJsonData = apiService.fetchAllsvenskanData();
 
