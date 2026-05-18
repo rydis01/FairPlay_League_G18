@@ -114,7 +114,7 @@ public class ScoreService {
                 int share = tierPool / winners.size();
 
                 for (int userId : winners) {
-                    leagueDAO.addScoreToMember(leagueId, userId, share);
+                    //leagueDAO.addScoreToMember(leagueId, userId, share);
                 }
             }
         }
