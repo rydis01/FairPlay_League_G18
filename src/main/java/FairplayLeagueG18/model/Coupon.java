@@ -7,6 +7,7 @@ public class Coupon {
     private int id;
     private int userId;
     private int roundId;
+    private int leagueId;
     private Map<Integer, String> tips;
     private int correctCount;
     private boolean graded = false;
@@ -17,20 +18,23 @@ public class Coupon {
     }
 
     //Skapa ny kupong (en användares tips för en omgång)
-    public Coupon(int userId, int roundId) {
+    public Coupon(int userId, int roundId, int leaugeId) {
         this.userId = userId;
         this.roundId = roundId;
+        this.leagueId = leagueId;
         this.tips = new HashMap<>();
         this.correctCount = 0;
     }
 
     //läsafrån databasen
-    public Coupon(int id, int userId, int roundId, Map<Integer, String> tips, int correctCount) {
+    public Coupon(int id, int userId, int roundId, int leagueId, Map<Integer, String> tips, int correctCount) {
         this.id = id;
         this.userId = userId;
         this.roundId = roundId;
+        this.leagueId = leagueId;
         this.tips = tips;
         this.correctCount = correctCount;
+
     }
 
     public void setTip(int matchNumber, String tip) {

@@ -75,6 +75,7 @@ public class CouponDAO {
                     coupon = new Coupon(
                             rs.getInt("Coupon_ID"),
                             rs.getInt("User_ID"),
+                            rs.getInt("League_ID"),
                             rs.getInt("Gameweek_ID"),
                             new HashMap<>(),
                             rs.getInt("Correct_count")

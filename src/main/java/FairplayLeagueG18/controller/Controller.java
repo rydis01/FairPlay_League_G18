@@ -124,8 +124,20 @@ public class Controller {
     }
 
     @GetMapping("/loadAllLeagues")
-    public List<League> userInfo() {
+    public List<League> getAllLeaguesInfo() {
         return leagueService.getAllLeagues();
+    }
+
+    @GetMapping("/loadPlayerLeagues")
+    public List<League> getPlayerLeaguesInfo(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        return leagueService.getLeaguesByUserId(user.getId());
+    }
+
+    @GetMapping("/loadLeaderboard")
+    public List<LeagueMember> getLeagueLeaderboard(@RequestParam int leagueId){
+        return leagueService.getLeaderboard(leagueId);
     }
 
     // PROFILE
