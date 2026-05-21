@@ -398,9 +398,10 @@ public class FairplayGUI {
             try {
                 int roundId = Integer.parseInt(roundInput.getText());
                 int currentUserId = 1;
+                int leagueId = 1;
 
                 FairplayLeagueG18.service.CouponService couponService = new FairplayLeagueG18.service.CouponService();
-                couponService.submitCoupon(currentUserId, roundId, tips);
+                couponService.submitCoupon(currentUserId, roundId, leagueId, tips);
 
                 statusLabel.setForeground(new Color(34, 139, 34));
                 statusLabel.setText("Kupong inlämnad! Lycka till.");

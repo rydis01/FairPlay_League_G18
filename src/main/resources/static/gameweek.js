@@ -4,21 +4,20 @@ window.onload = function () {
     document.getElementById("getRoundBtn").onclick = loadRound;
     document.getElementById("updateRoundBtn").onclick = updateRound;
     document.getElementById("submitTipsBtn").onclick = submitTips;
+
+    loadLeagues();
 };
 
 let currentMatches = [];
 let tips = [];
 
 function updateRound () {
-
     fetch("/api/updateGameweek", {
         method: "POST",
         credentials: "include"
     })
-        .then(response => response.text())
-        .then(msg => {
-            console.log("Signal skickad:", msg);
-        })
+        .then(r => r.text())
+        .then(msg => console.log("Signal skickad:", msg))
         .catch(err => console.error("Fel vid signal:", err));
 }
 
@@ -29,9 +28,7 @@ function loadRound() {
         return;
     }
 
-    fetch("/api/gameweek?roundId=" + roundId, {
-        method: "GET"
-    })
+    fetch("/api/gameweek?roundId=" + roundId)
         .then(r => r.json())
         .then(round => {
             currentMatches = round.matches || [];
@@ -50,14 +47,13 @@ function renderMatches(matches) {
     const btn = document.getElementById("submitTipsBtn");
     btn.disabled = false;
     btn.textContent = "Skicka tips";
-    btn.style.background = "#22c55e";
-    btn.style.cursor = "pointer";
+    btn.classList.remove("btn-locked");
 
     let hasPassedMatch = false;
 
     matches.forEach((m, index) => {
         const card = document.createElement("div");
-        card.className = "match-card league-card";
+        card.className = "match-card";
 
         const timeDiv = document.createElement("div");
         timeDiv.className = "match-time";
@@ -111,11 +107,11 @@ function renderMatches(matches) {
 
         container.appendChild(card);
     });
+
     if (hasPassedMatch) {
         const btn = document.getElementById("submitTipsBtn");
         btn.textContent = "Kupongen är låst";
-        btn.style.background = "#ef4444";
-        btn.style.cursor = "not-allowed";
+        btn.classList.add("btn-locked");
         btn.disabled = true;
     }
 }
@@ -138,9 +134,16 @@ function submitTips() {
     }
 
     const roundId = document.getElementById("roundid").value;
+    const leagueId = document.getElementById("leagueSelect")?.value;
+
+    if (!leagueId) {
+        alert("Du måste välja en liga innan du kan skicka kupongen.");
+        return;
+    }
 
     const params = new URLSearchParams({
         roundId: roundId,
+        leagueId: leagueId,
         tip1: tips[0],
         tip2: tips[1],
         tip3: tips[2],
@@ -151,9 +154,7 @@ function submitTips() {
         tip8: tips[7]
     });
 
-    fetch("/api/submitTips?" + params.toString(), {
-        method: "GET"
-    })
+    fetch("/api/submitTips?" + params.toString())
         .then(r => r.text())
         .then(msg => alert(msg))
         .catch(err => console.error("Kunde inte skicka tips:", err));
@@ -191,3 +192,22 @@ document.querySelectorAll("a").forEach(link => {
         }, 350);
     });
 });
+
+function loadLeagues() {
+    fetch("/api/loadPlayerLeagues", { credentials: "include" })
+        .then(r => r.json())
+        .then(leagues => {
+            const select = document.getElementById("leagueSelect");
+            if (!select) return;
+
+            select.innerHTML = `<option value="">Välj liga...</option>`;
+
+            leagues.forEach(l => {
+                const opt = document.createElement("option");
+                opt.value = l.id;
+                opt.textContent = l.name;
+                select.appendChild(opt);
+            });
+        })
+        .catch(err => console.error("Kunde inte hämta ligor:", err));
+}

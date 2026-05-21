@@ -169,7 +169,7 @@ function loadLeaguesForLeaderboard() {
 }
 
 function loadLeaderboard(leagueId) {
-    fetch("/api/leaderboard?leagueId=" + leagueId, {
+    fetch("/api/loadLeaderboard?leagueId=" + leagueId, {
         method: "GET",
         credentials: "include"
     })

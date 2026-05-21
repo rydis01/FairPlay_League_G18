@@ -47,8 +47,6 @@ public class LeagueDAO {
                     memberStmt.executeUpdate();
                 }
             }
-
-            conn.commit();
             System.out.println("Ligan '" + leagueName + "' har skapats!");
 
         } catch (SQLException e) {
@@ -217,7 +215,6 @@ public class LeagueDAO {
                 stmt.executeUpdate();
             }
 
-            conn.commit();
         } catch (SQLException e) {
             System.out.println("Kunde inte lägga till medlem. Fel: " + e.getMessage());
         }
@@ -235,8 +232,6 @@ public class LeagueDAO {
                 stmt.setInt(2, userId);
                 stmt.executeUpdate();
             }
-
-            conn.commit();
         } catch (SQLException e) {
             System.out.println("Kunde inte ta bort medlem. Fel: " + e.getMessage());
         }
@@ -348,8 +343,6 @@ public class LeagueDAO {
                 stmt.setInt(3, userId);
                 stmt.executeUpdate();
             }
-
-            conn.commit();
         } catch (SQLException e) {
             System.out.println("Kunde inte uppdatera poäng. Fel: " + e.getMessage());
         }
