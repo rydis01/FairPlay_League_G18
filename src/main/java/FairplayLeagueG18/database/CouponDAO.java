@@ -47,7 +47,6 @@ public class CouponDAO {
                 stmt.executeBatch();
             }
 
-            conn.commit();
             System.out.println("Kupong + picks sparade!");
 
         } catch (SQLException e) {
@@ -75,6 +74,7 @@ public class CouponDAO {
                     coupon = new Coupon(
                             rs.getInt("Coupon_ID"),
                             rs.getInt("User_ID"),
+                            rs.getInt("League_ID"),
                             rs.getInt("Gameweek_ID"),
                             new HashMap<>(),
                             rs.getInt("Correct_count")
@@ -163,7 +163,6 @@ public class CouponDAO {
             stmt.setInt(2, coupon.getId());
 
             stmt.executeUpdate();
-            conn.commit();
 
         } catch (SQLException e) {
             System.out.println("Kunde inte uppdatera kupongen. Fel: " + e.getMessage());

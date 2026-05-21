@@ -16,7 +16,7 @@ public class LeagueDAO {
     // Skapar en liga och lägger till skaparen som första medlem
     public void createLeague(String leagueName, int adminUserId, String inviteCode) {
         String insertLeagueSql = "INSERT INTO Leagues (League_Name, Admin_User, Invite_Code) VALUES (?, ?, ?)";
-        String insertMemberSql = "INSERT INTO User_Leagues (User_ID, League_ID) VALUES (?, ?)";
+        String insertMemberSql = "INSERT INTO User_Leagues (User_ID, League_ID, Total_Score) VALUES (?, ?, 0)";
 
         try (Connection conn = DatabaseManager.getConnection()) {
             if (conn == null) {
@@ -47,8 +47,6 @@ public class LeagueDAO {
                     memberStmt.executeUpdate();
                 }
             }
-
-            conn.commit();
             System.out.println("Ligan '" + leagueName + "' har skapats!");
 
         } catch (SQLException e) {
@@ -217,7 +215,6 @@ public class LeagueDAO {
                 stmt.executeUpdate();
             }
 
-            conn.commit();
         } catch (SQLException e) {
             System.out.println("Kunde inte lägga till medlem. Fel: " + e.getMessage());
         }
@@ -235,8 +232,6 @@ public class LeagueDAO {
                 stmt.setInt(2, userId);
                 stmt.executeUpdate();
             }
-
-            conn.commit();
         } catch (SQLException e) {
             System.out.println("Kunde inte ta bort medlem. Fel: " + e.getMessage());
         }
@@ -302,18 +297,16 @@ public class LeagueDAO {
         return 0;
     }
 
-    // Hämtar leaderboard — alla medlemmar sorterade på totalpoäng
+    // Hämtar leaderboard — alla medlemmar sorterade på poäng, högst först
     public List<LeagueMember> getMembersByLeagueIdSortedByScore(int leagueId) {
         List<LeagueMember> members = new ArrayList<>();
 
         String sql =
-                "SELECT u.User_Id, u.Username, COALESCE(SUM(gs.Points_earned), 0) AS Total_Score " +
+                "SELECT ul.User_ID, u.Username, ul.Total_Score " +
                         "FROM User_Leagues ul " +
                         "JOIN Users u ON ul.User_ID = u.User_Id " +
-                        "LEFT JOIN Gameweek_scores gs ON gs.User_ID = u.User_Id AND gs.Leauge_ID = ul.League_ID " +
                         "WHERE ul.League_ID = ? " +
-                        "GROUP BY u.User_Id, u.Username " +
-                        "ORDER BY Total_Score DESC";
+                        "ORDER BY ul.Total_Score DESC";
 
         try (Connection conn = DatabaseManager.getConnection()) {
             if (conn == null) return members;
@@ -335,5 +328,23 @@ public class LeagueDAO {
         }
 
         return members;
+    }
+
+    // Adderar poäng till en spelares total — skriver inte över befintlig poäng
+    public void addScoreToMember(int leagueId, int userId, int pointsToAdd) {
+        String sql = "UPDATE User_Leagues SET Total_Score = Total_Score + ? WHERE League_ID = ? AND User_ID = ?";
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            if (conn == null) return;
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, pointsToAdd);
+                stmt.setInt(2, leagueId);
+                stmt.setInt(3, userId);
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.out.println("Kunde inte uppdatera poäng. Fel: " + e.getMessage());
+        }
     }
 }

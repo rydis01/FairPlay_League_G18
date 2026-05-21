@@ -18,7 +18,7 @@ CREATE TABLE Users(
 
 -- Hanterar det privata rummet
 CREATE TABLE Leagues(
-    League_Id SERIAL PRIMARY KEY,
+    League_ID SERIAL PRIMARY KEY,
     League_Name VARCHAR (20) NOT NULL,
     Admin_User INT,
     Invite_Code VARCHAR (10) UNIQUE NOT NULL,
@@ -95,8 +95,10 @@ CREATE TABLE Coupons (
     Gameweek_ID INT NOT NULL,
     Correct_count INT DEFAULT 0,
     Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    League_ID INT NOT NULL,
 
     CONSTRAINT fk_coupon_user FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
-    CONSTRAINT fk_coupon_gameweek FOREIGN KEY (Gameweek_ID) REFERENCES Gameweeks(Gameweek_ID)
+    CONSTRAINT fk_coupon_gameweek FOREIGN KEY (Gameweek_ID) REFERENCES Gameweeks(Gameweek_ID),
+    CONSTRAINT fk_coupon_league FOREIGN KEY (League_ID) REFERENCES Leagues(League_ID)
 );
 

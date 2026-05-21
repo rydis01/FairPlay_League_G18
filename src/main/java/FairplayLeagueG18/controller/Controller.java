@@ -61,6 +61,7 @@ public class Controller {
     @GetMapping("/submitTips")
     public String submitTips(HttpSession session,
                              @RequestParam int roundId,
+                             @RequestParam int leagueId,
                              @RequestParam String tip1,
                              @RequestParam String tip2,
                              @RequestParam String tip3,
@@ -87,7 +88,7 @@ public class Controller {
                 8, tip8
         );
 
-        couponService.submitCoupon(user.getId(), roundId, tips);
+        couponService.submitCoupon(user.getId(), roundId, leagueId, tips);
 
         return "Kupong sparad!";
     }
@@ -124,8 +125,20 @@ public class Controller {
     }
 
     @GetMapping("/loadAllLeagues")
-    public List<League> userInfo() {
+    public List<League> getAllLeaguesInfo() {
         return leagueService.getAllLeagues();
+    }
+
+    @GetMapping("/loadPlayerLeagues")
+    public List<League> getPlayerLeaguesInfo(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        return leagueService.getLeaguesByUserId(user.getId());
+    }
+
+    @GetMapping("/loadLeaderboard")
+    public List<LeagueMember> getLeagueLeaderboard(@RequestParam int leagueId){
+        return leagueService.getLeaderboard(leagueId);
     }
 
     // PROFILE

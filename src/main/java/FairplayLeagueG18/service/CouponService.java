@@ -23,7 +23,7 @@ public class CouponService {
     }
 
     // Skapa och spara en kupong med alla 8 tips
-    public void submitCoupon(int userId, int gameweekId, Map<Integer, String> tips) {
+    public void submitCoupon(int userId, int gameweekId, int leagueId, Map<Integer, String> tips) {
 
         // Validera antal tips
         if (tips.size() != 8) {
@@ -40,7 +40,7 @@ public class CouponService {
         }
 
         // Skapa kupongobjekt
-        Coupon coupon = new Coupon(userId, gameweekId);
+        Coupon coupon = new Coupon(userId, gameweekId, leagueId);
         coupon.setTips(tips);
 
         // Spara kupong + picks

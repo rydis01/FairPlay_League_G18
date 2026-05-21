@@ -25,6 +25,18 @@ document.getElementById("registerBtn").onclick = function () {
         });
 };
 
+document.getElementById("togglePassword").onclick = function () {
+    const passField = document.getElementById("password");
+
+    if (passField.type === "password") {
+        passField.type = "text";
+        this.src = "fairplayleague.png";
+    } else {
+        passField.type = "password";
+        this.src = "fairplayleague.png";
+    }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.remove("fade-out");
 });

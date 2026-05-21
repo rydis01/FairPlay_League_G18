@@ -7,30 +7,34 @@ public class Coupon {
     private int id;
     private int userId;
     private int roundId;
+    private int leagueId;
     private Map<Integer, String> tips;
     private int correctCount;
     private boolean graded = false;
-    private boolean locked = false;
+
 
     public Coupon() {
         this.tips = new HashMap<>();
     }
 
     //Skapa ny kupong (en användares tips för en omgång)
-    public Coupon(int userId, int roundId) {
+    public Coupon(int userId, int roundId, int leaugeId) {
         this.userId = userId;
         this.roundId = roundId;
+        this.leagueId = leagueId;
         this.tips = new HashMap<>();
         this.correctCount = 0;
     }
 
     //läsafrån databasen
-    public Coupon(int id, int userId, int roundId, Map<Integer, String> tips, int correctCount) {
+    public Coupon(int id, int userId, int roundId, int leagueId, Map<Integer, String> tips, int correctCount) {
         this.id = id;
         this.userId = userId;
         this.roundId = roundId;
+        this.leagueId = leagueId;
         this.tips = tips;
         this.correctCount = correctCount;
+
     }
 
     public void setTip(int matchNumber, String tip) {
@@ -64,13 +68,4 @@ public class Coupon {
     public boolean getGraded() { return graded; }
 
     public void setGraded(boolean graded) { this.graded = graded; }
-
-    public boolean isLocked() {
-        return locked;
-    }
-
-    public void setLocked(boolean locked) {
-        this.locked = locked;
-    }
-
 }
