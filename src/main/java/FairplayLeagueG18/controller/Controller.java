@@ -72,22 +72,28 @@ public class Controller {
                              @RequestParam String tip8) {
 
         User user = (User) session.getAttribute("user");
+        System.out.println("roundId: " + roundId + ", leagueId: " + leagueId);
 
         if (user == null) {
             return "Ingen användare inloggad";
         }
 
-        Map<Integer, String> tips = Map.of(
-                1, tip1,
-                2, tip2,
-                3, tip3,
-                4, tip4,
-                5, tip5,
-                6, tip6,
-                7, tip7,
-                8, tip8
-        );
+        List<Match> matches = matchService.getMatchesByGameweek(roundId);
+        if (matches.size() < 8) {
+            return "Fel antal matcher för omgången";
+        }
 
+        Map<Integer, String> tips = Map.of(
+                matches.get(0).getId(), tip1,
+                matches.get(1).getId(), tip2,
+                matches.get(2).getId(), tip3,
+                matches.get(3).getId(), tip4,
+                matches.get(4).getId(), tip5,
+                matches.get(5).getId(), tip6,
+                matches.get(6).getId(), tip7,
+                matches.get(7).getId(), tip8
+        );
+        
         couponService.submitCoupon(user.getId(), roundId, leagueId, tips);
 
         return "Kupong sparad!";

@@ -63,6 +63,8 @@ public class MatchDAO {
                 updateStmt.executeBatch();
                 insertStmt.executeBatch();
 
+                conn.commit();
+
                 System.out.println("-> Databasen är nu synkad med LiveScore!");
 
             } catch (Exception e) {
