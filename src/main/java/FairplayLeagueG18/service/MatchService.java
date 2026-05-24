@@ -49,4 +49,8 @@ public class MatchService {
             System.err.println("-> Ett fel uppstod i MatchService: " + e.getMessage());
         }
     }
+
+    public List<Match> getMatchesByGameweek(int gameweekId) {
+        return matchDao.getMatchesByGameweek(gameweekId);
+    }
 }

@@ -17,7 +17,7 @@ public class CouponDAO {
     public void saveCoupon(Coupon coupon) {
 
         String insertCouponSql =
-                "INSERT INTO Coupons (User_ID, Gameweek_ID, Correct_count) VALUES (?, ?, 0)";
+                "INSERT INTO Coupons (User_ID, Gameweek_ID, League_ID, Correct_count) VALUES (?, ?, ?, 0)";
 
         String insertPickSql =
                 "INSERT INTO Picks (Coupon_ID, Match_ID, Guess) VALUES (?, ?, ?)";
@@ -30,6 +30,7 @@ public class CouponDAO {
             try (PreparedStatement stmt = conn.prepareStatement(insertCouponSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, coupon.getUserId());
                 stmt.setInt(2, coupon.getRoundId());
+                stmt.setInt(3, coupon.getLeagueId());
                 stmt.executeUpdate();
 
                 ResultSet keys = stmt.getGeneratedKeys();
@@ -46,7 +47,7 @@ public class CouponDAO {
                 }
                 stmt.executeBatch();
             }
-
+            conn.commit();
             System.out.println("Kupong + picks sparade!");
 
         } catch (SQLException e) {

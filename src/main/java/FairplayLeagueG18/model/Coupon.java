@@ -18,7 +18,7 @@ public class Coupon {
     }
 
     //Skapa ny kupong (en användares tips för en omgång)
-    public Coupon(int userId, int roundId, int leaugeId) {
+    public Coupon(int userId, int roundId, int leagueId) {
         this.userId = userId;
         this.roundId = roundId;
         this.leagueId = leagueId;
@@ -68,4 +68,12 @@ public class Coupon {
     public boolean getGraded() { return graded; }
 
     public void setGraded(boolean graded) { this.graded = graded; }
+
+    public int getLeagueId(){
+        return leagueId;
+    }
+
+    public void setLeagueId(int leagueId){
+        this.leagueId = leagueId;
+    }
 }

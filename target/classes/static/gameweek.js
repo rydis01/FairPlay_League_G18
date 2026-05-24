@@ -136,6 +136,8 @@ function submitTips() {
     const roundId = document.getElementById("roundid").value;
     const leagueId = document.getElementById("leagueSelect")?.value;
 
+    console.log("leagueId som skickas:", leagueId);
+
     if (!leagueId) {
         alert("Du måste välja en liga innan du kan skicka kupongen.");
         return;
