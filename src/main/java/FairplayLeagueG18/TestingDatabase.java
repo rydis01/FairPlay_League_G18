@@ -13,14 +13,8 @@ public class TestingDatabase {
 
     public static void main(String[] args) {
 
-        // 4. Verifiera att det sparades
-        printTable("SELECT * FROM Gameweeks");
-        printTable("SELECT * FROM Matches");
 
-        printTable("SELECT * FROM Leagues");
-        printTable("SELECT * FROM User_Leagues");
-
-        printTable("SELECT * FROM Matches WHERE Gameweek_ID = 11 ORDER BY Match_ID");
+        printTable("SELECT * FROM Picks WHERE Coupon_ID = 15;");
     }
 
     private static void printTable(String sql) {

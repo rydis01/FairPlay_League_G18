@@ -75,8 +75,8 @@ public class CouponDAO {
                     coupon = new Coupon(
                             rs.getInt("Coupon_ID"),
                             rs.getInt("User_ID"),
-                            rs.getInt("League_ID"),
                             rs.getInt("Gameweek_ID"),
+                            rs.getInt("League_ID"),
                             new HashMap<>(),
                             rs.getInt("Correct_count")
                     );
@@ -88,9 +88,10 @@ public class CouponDAO {
                     stmt.setInt(1, couponId);
                     ResultSet rs = stmt.executeQuery();
 
-                    int matchNumber = 1;
                     while (rs.next()) {
-                        coupon.setTip(matchNumber++, rs.getString("Guess"));
+                        int matchId = rs.getInt("Match_ID");
+                        String guess = rs.getString("Guess");
+                        coupon.setTip(matchId, guess);
                     }
                 }
             }
@@ -151,7 +152,25 @@ public class CouponDAO {
         return list;
     }
 
+    // Kollar om det det redan finns en coupong av en användare i en liga.
+    public boolean couponExists(int userId, int gameweekId, int leagueId) {
+        String sql = "SELECT 1 FROM Coupons WHERE User_ID = ? AND Gameweek_ID = ? AND League_ID = ?";
 
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            stmt.setInt(2, gameweekId);
+            stmt.setInt(3, leagueId);
+
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+
+        } catch (SQLException e) {
+            System.out.println("Kunde inte kontrollera kupong: " + e.getMessage());
+            return false;
+        }
+    }
 
     // Uppdaterar en kupong med rätt antal poäng
     public void updateCorrectCountCoupon(Coupon coupon) {
@@ -170,4 +189,24 @@ public class CouponDAO {
         }
     }
 
+    // Hämtar alla liga-ID:n som har kuponger för en omgång
+    public List<Integer> getLeagueIdsForGameweek(int gameweekId) {
+        List<Integer> leagueIds = new ArrayList<>();
+        String sql = "SELECT DISTINCT League_ID FROM Coupons WHERE Gameweek_ID = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, gameweekId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                leagueIds.add(rs.getInt("League_ID"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Fel vid hämtning av ligor: " + e.getMessage());
+        }
+
+        return leagueIds;
+    }
 }
