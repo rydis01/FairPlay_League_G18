@@ -1,5 +1,3 @@
-console.log("gameweek.js LOADED");
-
 window.onload = function () {
     document.getElementById("getRoundBtn").onclick = loadRound;
     document.getElementById("updateRoundBtn").onclick = updateRound;
