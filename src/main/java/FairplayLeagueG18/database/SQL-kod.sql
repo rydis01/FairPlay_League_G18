@@ -44,7 +44,8 @@ CREATE TABLE User_Leagues(
 CREATE TABLE Gameweeks(
     Gameweek_ID SERIAL PRIMARY KEY,
     Round_number INT UNIQUE,
-    Lock_time TIMESTAMP
+    Lock_time TIMESTAMP,
+    Settled BOOLEAN DEFAULT FALSE
 );
 
 -- Spelschemat och verkligheten

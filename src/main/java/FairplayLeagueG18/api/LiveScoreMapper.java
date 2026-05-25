@@ -28,8 +28,8 @@ public class LiveScoreMapper {
             for (JsonElement element : events) {
                 JsonObject event = element.getAsJsonObject();
 
-                String homeTeam = event.getAsJsonArray("T1").get(0).getAsJsonObject().get("Nm").getAsString();
-                String awayTeam = event.getAsJsonArray("T2").get(0).getAsJsonObject().get("Nm").getAsString();
+                String homeTeam = fixTeamName(event.getAsJsonArray("T1").get(0).getAsJsonObject().get("Nm").getAsString());
+                String awayTeam = fixTeamName(event.getAsJsonArray("T2").get(0).getAsJsonObject().get("Nm").getAsString());
 
                 String homeScore = event.has("Tr1") ? event.get("Tr1").getAsString() : "-";
                 String awayScore = event.has("Tr2") ? event.get("Tr2").getAsString() : "-";
@@ -67,5 +67,16 @@ public class LiveScoreMapper {
         }
 
         return matchesList;
+    }
+
+    private static String fixTeamName(String name) {
+        if (name.equals("Malmo FF")) return "Malmö FF";
+        if (name.equals("IFK Gothenburg")) return "IFK Göteborg";
+        if (name.equals("Oergryte")) return "Örgryte";
+        if (name.equals("Vasteraas SK")) return "Västerås SK";
+        if (name.equals("Mjaellby")) return "Mjällby";
+        if (name.equals("BK Haecken")) return "BK Häcken";
+        if (name.equals("Djurgaarden")) return "Djurgården";
+        return name;
     }
 }

@@ -4,10 +4,7 @@ import FairplayLeagueG18.model.Match;
 import FairplayLeagueG18.model.Round;
 import FairplayLeagueG18.model.RoundStatus;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +62,28 @@ public class RoundDAO {
         return round;
     }
 
+    public boolean isLocked(int gameweekId) {
+        String sql = "SELECT Lock_time FROM Gameweeks WHERE Gameweek_ID = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, gameweekId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Timestamp lockTime = rs.getTimestamp("Lock_time");
+                if (lockTime == null) return false;
+                return lockTime.toLocalDateTime().isBefore(LocalDateTime.now());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Kunde inte kontrollera deadline: " + e.getMessage());
+        }
+
+        return false;
+    }
+
     private List<Match> getMatches(int gameweekId) {
         List<Match> matches = new ArrayList<>();
 
@@ -98,5 +117,68 @@ public class RoundDAO {
         }
 
         return matches;
+    }
+
+    // Markerar en omgång som rättad
+    public void markAsSettled(int gameweekId) {
+        String sql = "UPDATE Gameweeks SET Settled = TRUE WHERE Gameweek_ID = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, gameweekId);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Fel vid markering av settled: " + e.getMessage());
+        }
+    }
+
+    // Kollar om en omgång är markerad som rättad
+    public boolean isAlreadySettled(int gameweekId) {
+        String sql = "SELECT Settled FROM Gameweeks WHERE Gameweek_ID = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, gameweekId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getBoolean("Settled");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Fel vid kontroll av settled: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    // Hämtar alla omgångar där ALLA matcher har ett resultat
+    public List<Integer> getFinishedGameweekIds() {
+        List<Integer> ids = new ArrayList<>();
+
+        String sql =
+                "SELECT DISTINCT m.Gameweek_ID " +
+                        "FROM Matches m " +
+                        "WHERE NOT EXISTS (" +
+                        "SELECT 1 FROM Matches m2 " +
+                        "WHERE m2.Gameweek_ID = m.Gameweek_ID " +
+                        "AND m2.Actual_result IS NULL" +
+                        ")";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                ids.add(rs.getInt("Gameweek_ID"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Fel vid hämtning av färdiga omgångar: " + e.getMessage());
+        }
+
+        return ids;
     }
 }

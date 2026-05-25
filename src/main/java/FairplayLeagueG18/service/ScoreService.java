@@ -2,9 +2,11 @@ package FairplayLeagueG18.service;
 
 import FairplayLeagueG18.database.CouponDAO;
 import FairplayLeagueG18.database.LeagueDAO;
+import FairplayLeagueG18.database.MatchDAO;
 import FairplayLeagueG18.database.RoundDAO;
 import FairplayLeagueG18.model.Coupon;
 import FairplayLeagueG18.model.LeagueMember;
+import FairplayLeagueG18.model.Match;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,18 +23,19 @@ public class ScoreService {
     private CouponDAO couponDAO;
     private RoundDAO roundDAO;
     private LeagueDAO leagueDAO;
+    private MatchDAO matchDAO;
 
     public ScoreService() {
         this.couponDAO = new CouponDAO();
         this.roundDAO = new RoundDAO();
         this.leagueDAO = new LeagueDAO();
+        this.matchDAO = new MatchDAO();
 
     }
 
     // Rätta en kupong och returnera antalet rätt
     public void gradeCoupon(int couponId) {
 
-        // 1. Hämta kupongen
         Coupon userCoupon = couponDAO.getCoupon(couponId);
 
         if (userCoupon == null) {
@@ -46,15 +49,15 @@ public class ScoreService {
 
         int roundId = userCoupon.getRoundId();
 
-        List<String> correctResults = roundDAO.getResultsFromRound(roundId);
+        List<Match> matches = matchDAO.getMatchesByGameweek(roundId);
 
         Map<Integer, String> tips = userCoupon.getTips();
 
         int correctCount = 0;
 
-        for (int i = 1; i <= correctResults.size(); i++) {
-            String userTip = tips.get(i);
-            String correct = correctResults.get(i - 1);
+        for (Match m : matches) {
+            String userTip = tips.get(m.getId());
+            String correct = m.getResult();
 
             if (userTip != null && userTip.equals(correct)) {
                 correctCount++;

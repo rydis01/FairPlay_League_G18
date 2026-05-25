@@ -1,5 +1,7 @@
 package FairplayLeagueG18.controller;
 
+import FairplayLeagueG18.service.CouponService;
+import FairplayLeagueG18.service.ScoreService;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -20,7 +22,7 @@ public class MainServer {
 
     public static void main(String[] args) throws IOException {
         // 1. Starta skrapare i bakgrunden
-        MatchService matchService = new MatchService();
+        MatchService matchService = new MatchService(new ScoreService());
         matchService.startAutoUpdate();
 
         // 2. Skapa en webbserver på port 8080
@@ -63,7 +65,7 @@ public class MainServer {
     }
     public void updateGameweek() throws IOException {
         // 1. Starta skrapare i bakgrunden
-        MatchService matchService = new MatchService();
+        MatchService matchService = new MatchService(new ScoreService());
         matchService.startAutoUpdate();
 
         // 2. Skapa en webbserver på port 8080

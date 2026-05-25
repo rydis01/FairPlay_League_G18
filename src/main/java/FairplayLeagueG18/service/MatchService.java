@@ -3,8 +3,12 @@ package FairplayLeagueG18.service;
 import FairplayLeagueG18.api.LiveScoreService;
 import FairplayLeagueG18.api.LiveScoreMapper;
 
+import FairplayLeagueG18.database.CouponDAO;
+import FairplayLeagueG18.database.LeagueDAO;
 import FairplayLeagueG18.database.MatchDAO;
+import FairplayLeagueG18.database.RoundDAO;
 import FairplayLeagueG18.model.Match;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,11 +23,17 @@ public class MatchService {
     private final LiveScoreService apiService;
     private final MatchDAO matchDao;
     private final ScheduledExecutorService scheduler;
+    private final ScoreService scoreService;
+    private final RoundDAO roundDAO;
+    private final CouponDAO couponDAO;
 
-    public MatchService() {
+    public MatchService(ScoreService scoreService) {
         this.apiService = new LiveScoreService();
         this.matchDao = new MatchDAO();
+        this.roundDAO = new RoundDAO();
+        this.couponDAO = new CouponDAO();
         this.scheduler = Executors.newScheduledThreadPool(1);
+        this.scoreService = scoreService;
     }
 
     public void startAutoUpdate() {
@@ -47,6 +57,23 @@ public class MatchService {
             }
         } catch (Exception e) {
             System.err.println("-> Ett fel uppstod i MatchService: " + e.getMessage());
+        }
+    }
+
+    public void checkAndSettleFinishedRounds() {
+        List<Integer> finishedGameweeks = roundDAO.getFinishedGameweekIds();
+
+        for (int gameweekId : finishedGameweeks) {
+            if (!roundDAO.isAlreadySettled(gameweekId)) {
+                List<Integer> leagueIds = couponDAO.getLeagueIdsForGameweek(gameweekId);
+
+                for (int leagueId : leagueIds) {
+                    System.out.println("-> Rättar omgång " + gameweekId + " för liga " + leagueId);
+                    scoreService.settleRound(gameweekId, leagueId);
+                }
+
+                roundDAO.markAsSettled(gameweekId);
+            }
         }
     }
 
