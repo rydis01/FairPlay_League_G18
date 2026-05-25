@@ -54,15 +54,13 @@ public class MatchService {
                 List<Match> cleanMatches = LiveScoreMapper.parseMatches(rawJsonData);
                 matchDao.saveMatches(cleanMatches);
                 System.out.println("-> MatchService sparade " + cleanMatches.size() + " matcher till databasen.");
-
-                checkAndSettleFinishedRounds();
             }
         } catch (Exception e) {
             System.err.println("-> Ett fel uppstod i MatchService: " + e.getMessage());
         }
     }
 
-    private void checkAndSettleFinishedRounds() {
+    public void checkAndSettleFinishedRounds() {
         List<Integer> finishedGameweeks = roundDAO.getFinishedGameweekIds();
 
         for (int gameweekId : finishedGameweeks) {

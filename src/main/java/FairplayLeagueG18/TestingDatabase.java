@@ -5,6 +5,7 @@ import FairplayLeagueG18.api.LiveScoreService;
 import FairplayLeagueG18.database.DatabaseManager;
 import FairplayLeagueG18.database.MatchDAO;
 import FairplayLeagueG18.model.Match;
+import FairplayLeagueG18.service.ScoreService;
 
 import java.sql.*;
 import java.util.List;
@@ -13,8 +14,21 @@ public class TestingDatabase {
 
     public static void main(String[] args) {
 
+        int roundId = 8;     // Omgång 8
+        int leagueId = 1;    // Din liga
 
-        printTable("SELECT * FROM Picks WHERE Coupon_ID = 15;");
+        System.out.println("Kör settleRound för omgång " + roundId);
+
+        try {
+            ScoreService scoreService = new ScoreService();
+            scoreService.settleRound(roundId, leagueId);
+
+            System.out.println("Poängsystemet har körts!");
+            System.out.println("Kolla nu din profil/leaderboard.");
+
+        } catch (Exception e) {
+            System.out.println("Fel vid settleRound: " + e.getMessage());
+        }
     }
 
     private static void printTable(String sql) {

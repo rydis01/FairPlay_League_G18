@@ -42,7 +42,7 @@ public class Controller {
      * @param password  Användarens lösenord i klartext.
      * @return true om inloggningen lyckades, annars false.
      */
-    @GetMapping("/login")
+    @PostMapping("/login")
     public boolean login(HttpSession session,
                          @RequestParam String email,
                          @RequestParam String password) {
@@ -64,7 +64,7 @@ public class Controller {
      * @param password  Lösenord (minst 8 tecken).
      * @return true om registreringen lyckades, annars false.
      */
-    @GetMapping("/register")
+    @PostMapping("/register")
     public boolean register(@RequestParam String username,
                             @RequestParam String email,
                             @RequestParam String password) {
@@ -216,6 +216,10 @@ public class Controller {
      */
     @GetMapping("/loadLeaderboard")
     public List<LeagueMember> getLeagueLeaderboard(@RequestParam int leagueId){
+
+        //gör en rättning på alla möjliga kuponger innan leaderboard visas.
+        matchService.checkAndSettleFinishedRounds();
+
         return leagueService.getLeaderboard(leagueId);
     }
 
@@ -269,25 +273,6 @@ public class Controller {
     @GetMapping("/logout")
     public void logout(HttpSession session) {
         session.invalidate();
-    }
-
-    @GetMapping("/settleRound")
-    public String settleRound(HttpSession session,
-                              @RequestParam int roundId,
-                              @RequestParam int leagueId) {
-
-        User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            return "Ingen användare inloggad";
-        }
-
-        if (!user.getRole().equals(Role.Admin)) {
-            return "Endast admins kan avsluta en omgång";
-        }
-
-        scoreService.settleRound(roundId, leagueId);
-        return "Omgång " + roundId + " avslutad och poäng utdelade!";
     }
 }
 
