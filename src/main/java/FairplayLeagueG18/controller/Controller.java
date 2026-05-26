@@ -42,7 +42,7 @@ public class Controller {
      * @param password  Användarens lösenord i klartext.
      * @return true om inloggningen lyckades, annars false.
      */
-    @PostMapping("/login")
+    @GetMapping("/login")
     public boolean login(HttpSession session,
                          @RequestParam String email,
                          @RequestParam String password) {
@@ -64,7 +64,7 @@ public class Controller {
      * @param password  Lösenord (minst 8 tecken).
      * @return true om registreringen lyckades, annars false.
      */
-    @PostMapping("/register")
+    @GetMapping("/register")
     public boolean register(@RequestParam String username,
                             @RequestParam String email,
                             @RequestParam String password) {

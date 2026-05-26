@@ -1,6 +1,10 @@
 window.onload = function () {
     loadCoupons();
     loadUserinfo();
+
+    document.getElementById("couponSelect").onchange = function () {
+        loadCouponDetails(this.value);
+    };
 };
 
 function loadCoupons() {
@@ -26,10 +30,6 @@ function loadCoupons() {
         });
 }
 
-document.getElementById("couponSelect").onchange = function () {
-    loadCouponDetails(this.value);
-};
-
 function loadCouponDetails(couponId) {
     fetch("/api/getCoupon?couponId=" + couponId, {
         method: "GET",
@@ -44,7 +44,6 @@ function loadCouponDetails(couponId) {
 function renderCouponMatches(tips) {
     const container = document.getElementById("couponDetails");
     container.innerHTML = "";
-
     const cards = [];
 
     tips.forEach((tip, index) => {
@@ -58,23 +57,19 @@ function renderCouponMatches(tips) {
 
         const yourTip = document.createElement("div");
         yourTip.className = "match-time";
-
         let choice = tip.choice;
         if (typeof choice === "object" && choice !== null) {
             choice = choice.value ?? choice.guess ?? JSON.stringify(choice);
         }
-
         yourTip.textContent = "Ditt tips: " + (choice ?? "-");
         card.appendChild(yourTip);
 
         const resultDiv = document.createElement("div");
         resultDiv.className = "match-result";
-
         let correct = tip.correctResult;
         if (typeof correct === "object" && correct !== null) {
             correct = correct.value ?? correct.result ?? JSON.stringify(correct);
         }
-
         resultDiv.textContent = "Rätt resultat: " + (correct ?? "Ej klart");
         card.appendChild(resultDiv);
 
@@ -82,4 +77,55 @@ function renderCouponMatches(tips) {
         cards.push(card);
     });
 
-    requestAnimationFrame(()
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            cards.forEach(card => card.classList.add("show"));
+        });
+    });
+}
+
+function loadUserinfo() {
+    fetch("/api/userinfo", {
+        credentials: "include"
+    })
+        .then(response => response.json())
+        .then(user => {
+            document.getElementById("username").textContent = user.username;
+            document.getElementById("email").textContent = user.email;
+            document.getElementById("role").textContent = user.role;
+            document.getElementById("createdAt").textContent = formatDate(user.createdAt);
+        });
+}
+
+function formatDate(raw) {
+    const date = new Date(raw);
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    const hh = String(date.getHours()).padStart(2, "0");
+    const min = String(date.getMinutes()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+}
+
+function logout() {
+    fetch("/api/logout", { method: "GET", credentials: "include" })
+        .then(() => {
+            window.location.href = "/login.html";
+        });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.remove("fade-out");
+});
+
+document.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", e => {
+        const url = link.getAttribute("href");
+        if (!url || url.startsWith("#")) return;
+        e.preventDefault();
+        document.body.classList.add("fade-out");
+        setTimeout(() => {
+            window.location = url;
+        }, 350);
+    });
+});
