@@ -44,7 +44,6 @@ function showCreateLeagueView() {
         </div>
     `);
 
-    // Inget setTimeout behövs, elementet finns i DOM:en direkt efter fadeSwap
     document.getElementById("createLeagueBtn").addEventListener("click", () => {
         const leagueName = document.getElementById("leagueName").value;
 
@@ -55,7 +54,6 @@ function showCreateLeagueView() {
             return;
         }
 
-        // Använder encodeURIComponent för att undvika problem med mellanslag eller specialtecken i URL:en
         fetch(`/api/createLeague?leagueName=${encodeURIComponent(leagueName)}`, {
             method: "GET",
             credentials: "include"
@@ -159,7 +157,7 @@ function renderLeagues(leagues) {
 
     leagues.forEach(league => {
         const card = document.createElement("div");
-        card.className = "league-card fade-in"; // Ändrad från match-card för bättre semantik
+        card.className = "league-card fade-in";
 
         card.innerHTML = `
             <div class="match-teams">${league.name}</div>
@@ -221,7 +219,7 @@ function loadLeaguesForLeaderboard() {
                 if (select.value) {
                     loadLeaderboard(select.value);
                 } else {
-                    container.innerHTML = ""; // Rensa skärmen om användaren väljer "Välj liga..." igen
+                    container.innerHTML = "";
                 }
             });
         })
@@ -263,7 +261,6 @@ function renderLeaderboard(members) {
         const card = document.createElement("div");
         card.className = "league-card fade-in";
 
-        // Lade till en siffra (index + 1) framför användarnamnet för att faktiskt visa deras placering!
         card.innerHTML = `
             <div class="match-teams">${index + 1}. ${member.username}</div>
             <div class="match-time">ID: ${member.userId}</div>

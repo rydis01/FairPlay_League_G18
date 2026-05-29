@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
-console.log("gameweek.js LOADED");
-
 window.onload = function () {
     document.getElementById("getRoundBtn").onclick = loadRound;
     document.getElementById("updateRoundBtn").onclick = updateRound;
@@ -8,12 +5,10 @@ window.onload = function () {
 
     loadLeagues();
 };
-=======
 /**
  * Konstanter för att undvika "magiska nummer".
  */
 const REQUIRED_TIPS_COUNT = 8;
->>>>>>> Stashed changes
 
 let currentMatches = [];
 let tips = [];
@@ -70,7 +65,6 @@ function updateRound() {
  * Hämtar en specifik omgång från servern och renderar dess matcher.
  */
 function loadRound() {
-    // VIKTIGT: Ändrat 'roundid' till 'roundId' för att matcha din städade HTML!
     const roundId = document.getElementById("roundId").value;
     
     if (!roundId) {
@@ -183,11 +177,9 @@ function renderMatches(matches) {
 function selectTip(matchIndex, value) {
     tips[matchIndex] = value;
 
-    // Ta bort den aktiva klassen från alla knappar som tillhör denna match
     document.querySelectorAll(`.tip-choice[data-match-index="${matchIndex}"]`)
         .forEach(btn => btn.classList.remove("active"));
 
-    // Lägg till den aktiva klassen på den knapp som just klickades
     document.querySelector(`.tip-choice[data-match-index="${matchIndex}"][data-value="${value}"]`)
         .classList.add("active");
 }
@@ -239,8 +231,7 @@ function formatKickoff(raw) {
     if (!raw) return "Ingen tid";
     
     const date = new Date(raw);
-    
-    // Säkerhetskontroll ifall API:et returnerar ett ogiltigt datum
+
     if (isNaN(date.getTime())) return "Ogiltig tid";
 
     const yyyy = date.getFullYear();
