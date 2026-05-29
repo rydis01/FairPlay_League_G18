@@ -22,18 +22,13 @@ let tips = [];
  * Initierar sidan när DOM:en har laddats helt.
  */
 document.addEventListener("DOMContentLoaded", () => {
-    // Ta bort fade-out för att visa sidan mjukt
     document.body.classList.remove("fade-out");
-
-    // Koppla knappar till funktioner med moderna EventListeners
     document.getElementById("getRoundBtn").addEventListener("click", loadRound);
     document.getElementById("updateRoundBtn").addEventListener("click", updateRound);
     document.getElementById("submitTipsBtn").addEventListener("click", submitTips);
 
-    // Ladda in användarens ligor till dropdownen
     loadLeagues();
-    
-    // Sätt upp sidövergångar för navigeringslänkar
+
     setupPageTransitions();
 });
 
@@ -104,8 +99,7 @@ function renderMatches(matches) {
 
     const now = new Date();
     const submitBtn = document.getElementById("submitTipsBtn");
-    
-    // Återställ knappen till standardläge (upplåst)
+
     submitBtn.disabled = false;
     submitBtn.textContent = "Skicka tips";
     submitBtn.classList.remove("btn-locked");
@@ -202,7 +196,6 @@ function selectTip(matchIndex, value) {
  * Validerar och skickar in kupongen till servern.
  */
 function submitTips() {
-    // Kontrollerar att arrayen har rätt längd OCH att inga luckor (undefined) finns
     if (tips.length !== REQUIRED_TIPS_COUNT || tips.includes(undefined)) {
         alert(`Du måste välja 1/X/2 för alla ${REQUIRED_TIPS_COUNT} matcher.`);
         return;
@@ -217,7 +210,6 @@ function submitTips() {
         return;
     }
 
-    // Bygg parametrarna dynamiskt
     const params = new URLSearchParams({
         roundId: roundId,
         leagueId: leagueId,
