@@ -6,17 +6,21 @@ import FairplayLeagueG18.model.Role;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * DAO står för Data Access Object
- *      Namn för systemet där en FairplayLeagueG18.service-klass skickar en beställning denna klass för att komma åt data från DB
+ * Hanterar all databasåtkomst för användare.
+ * Kommunicerar med tabellen Users.
  */
-
 public class UserDAO {
 
-    // Metod för att skapa ny användare (INSERT into FairplayLeagueG18.database)
+    /**
+     * Sparar en ny användare i databasen.
+     *
+     * @param user User-objektet som ska sparas
+     * @throws RuntimeException om användaren inte kan sparas
+     */
     public void saveUser(User user) {
-
         String sql = "INSERT INTO Users (Username, Email, Password_Hash, Role) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DatabaseManager.getConnection();
@@ -28,13 +32,17 @@ public class UserDAO {
             stmt.setString(4, user.getRole().name());
 
             stmt.executeUpdate();
-            System.out.println("Användaren " + user.getUsername() + " lades till i databsen!");
 
         } catch (SQLException e) {
-            // System.out.println("Användaren kunde inte sparas. Fel: " + e.getMessage()); <– Avkommenterat för att skicka throw istället:
             throw new RuntimeException("Kunde inte spara användare: " + e.getMessage(), e);
         }
     }
+
+    /**
+     * Uppdaterar en befintlig användares uppgifter i databasen.
+     *
+     * @param user User-objektet med uppdaterade värden, måste ha ett giltigt ID
+     */
     public void updateUser(User user) {
         String sql = "UPDATE Users SET Username = ?, Email = ?, Password_Hash = ?, Role = ? WHERE User_ID = ?";
 
@@ -48,60 +56,46 @@ public class UserDAO {
             stmt.setInt(5, user.getId());
 
             stmt.executeUpdate();
-            System.out.println("Användaren " + user.getUsername() + " uppdaterades i databsen!");
 
         } catch (SQLException e) {
-            System.out.println("Användaren kunde inte uppdateras. Fel: " + e.getMessage());
+            System.err.println("Användaren kunde inte uppdateras. Fel: " + e.getMessage());
         }
     }
 
-    // Metod för att hämta en användare (SELECT from FairplayLeagueG18.database)
+    /**
+     * Hämtar en användare baserat på dess ID.
+     *
+     * @param userID ID:t för användaren som ska hämtas
+     * @return User-objekt om användaren hittas, annars null
+     */
     public User getUserByID(int userID) {
-
         String sql = "SELECT * FROM Users WHERE User_ID = ?";
         User user = null;
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setLong(1, userID);
-            ResultSet rs = stmt.executeQuery(); // Query används istället för Update när vi vill ha 'tillbaks' data
-
-            /**
-             * Förklaring till nedanstående:
-             *'rs' står för ResultSet, alltså kollar rs.next() om det finns någon rad med svar att läsa.
-             * Om den hittar data flyttar den pekaren dit och returnerar true, vi går då in i if-satsen och hämtar datan
-             * ===
-             */
-            if (rs.next()) {
-                /**
-                 * Extraherar skapandetiden (java.sql.Timestamp) från ResultSet och
-                 * konverterar den säkert till LocalDateTime. Förhindrar
-                 * NullPointerException om datum saknas i databasen.
-                 */
-                Timestamp timestamp = rs.getTimestamp("Created_at");
-                var createdAt = (timestamp != null) ? timestamp.toLocalDateTime() : null;
-
-                // Skapar användare-objektet som ska returneras
-               user = new User (
-                   rs.getInt("User_ID"),
-                   rs.getString("Username"),
-                   rs.getString("Email"),
-                   rs.getString("Password_Hash"),
-                       Role.valueOf(rs.getString("Role")),
-                   createdAt
-               );
+            stmt.setInt(1, userID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    user = mapUser(rs);
+                }
             }
 
         } catch (SQLException e) {
-            System.out.println("Användaren kunde inte hämtas. Fel: " + e.getMessage());
+            System.err.println("Användaren kunde inte hämtas. Fel: " + e.getMessage());
         }
 
-        return user; // Returnerar hela användare-objektet till 'Service-klassen'
+        return user;
     }
 
+    /**
+     * Hämtar en användare baserat på e-postadress.
+     *
+     * @param email e-postadressen för användaren som ska hämtas
+     * @return User-objekt om användaren hittas, annars null
+     */
     public User getUserByEmail(String email) {
-
         String sql = "SELECT * FROM Users WHERE Email = ?";
         User user = null;
 
@@ -109,45 +103,28 @@ public class UserDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, email);
-            ResultSet rs = stmt.executeQuery(); // Query används istället för Update när vi vill ha 'tillbaks' data
-
-            /**
-             * Förklaring till nedanstående:
-             *'rs' står för ResultSet, alltså kollar rs.next() om det finns någon rad med svar att läsa.
-             * Om den hittar data flyttar den pekaren dit och returnerar true, vi går då in i if-satsen och hämtar datan
-             * ===
-             */
-            if (rs.next()) {
-                /**
-                 * Extraherar skapandetiden (java.sql.Timestamp) från ResultSet och
-                 * konverterar den säkert till LocalDateTime. Förhindrar
-                 * NullPointerException om datum saknas i databasen.
-                 */
-                Timestamp timestamp = rs.getTimestamp("Created_at");
-                var createdAt = (timestamp != null) ? timestamp.toLocalDateTime() : null;
-
-                // Skapar användare-objektet som ska returneras
-                user = new User (
-                        rs.getInt("User_ID"),
-                        rs.getString("Username"),
-                        rs.getString("Email"),
-                        rs.getString("Password_Hash"),
-                        Role.valueOf(rs.getString("Role")),
-                        createdAt
-                );
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    user = mapUser(rs);
+                }
             }
 
         } catch (SQLException e) {
-            System.out.println("Användaren kunde inte hämtas. Fel: " + e.getMessage());
+            System.err.println("Användaren kunde inte hämtas. Fel: " + e.getMessage());
         }
 
-        return user; // Returnerar hela användare-objektet till 'Service-klassen'
+        return user;
     }
 
-    //FÖR TEST
-    public ArrayList<User> getAllUsers() {
-
-        ArrayList<User> users = new ArrayList<>();
+    /**
+     * Hämtar alla användare i systemet.
+     * Obs: Endast avsedd för teständamål — ska inte användas i produktion
+     * eftersom metoden exponerar lösenordshash för samtliga användare.
+     *
+     * @return lista med alla User-objekt
+     */
+    public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
 
         String sql = "SELECT * FROM Users";
 
@@ -156,27 +133,35 @@ public class UserDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-
-                Timestamp timestamp = rs.getTimestamp("Created_at");
-                LocalDateTime createdAt = (timestamp != null) ? timestamp.toLocalDateTime() : null;
-
-                User user = new User(
-                        rs.getInt("User_ID"),
-                        rs.getString("Username"),
-                        rs.getString("Email"),
-                        rs.getString("Password_Hash"),
-                        Role.valueOf(rs.getString("Role")),
-                        createdAt
-                );
-
-                users.add(user);
+                users.add(mapUser(rs));
             }
 
         } catch (SQLException e) {
-            System.out.println("Kunde inte hämta alla användare. Fel: " + e.getMessage());
+            System.err.println("Kunde inte hämta alla användare. Fel: " + e.getMessage());
         }
 
         return users;
     }
 
+    /**
+     * Skapar ett User-objekt från en rad i ett ResultSet.
+     * Hanterar null-värden för Created_at säkert.
+     *
+     * @param rs ResultSet positionerat på raden som ska läsas
+     * @return ett ifyllt User-objekt
+     * @throws SQLException om ett kolumnvärde inte kan läsas
+     */
+    private User mapUser(ResultSet rs) throws SQLException {
+        Timestamp timestamp = rs.getTimestamp("Created_at");
+        LocalDateTime createdAt = (timestamp != null) ? timestamp.toLocalDateTime() : null;
+
+        return new User(
+                rs.getInt("User_ID"),
+                rs.getString("Username"),
+                rs.getString("Email"),
+                rs.getString("Password_Hash"),
+                Role.valueOf(rs.getString("Role")),
+                createdAt
+        );
+    }
 }

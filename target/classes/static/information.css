@@ -1,13 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap');
 
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
 body {
     font-family: 'Barlow', sans-serif;
     color: #fdf6ee;
     margin: 0;
     padding: 0;
-    background-image: url('tegelvägg2.png');
+    background-image: url('tegelvägg.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -15,7 +17,6 @@ body {
     min-height: 100vh;
 }
 
-/* Mörk overlay över hela sidan för bättre läsbarhet */
 body::before {
     content: '';
     position: fixed;
@@ -44,7 +45,8 @@ body::before {
     padding: 20px;
 }
 
-.matches-list, #Leagues {
+.matches-list,
+#Leagues {
     width: 100%;
     max-width: 500px;
     display: flex;
@@ -53,7 +55,8 @@ body::before {
     margin: 0 auto;
 }
 
-.match-card, .league-card {
+.match-card,
+.league-card {
     background: rgba(28, 16, 10, 0.88);
     padding: 16px;
     border-radius: 12px;
@@ -140,6 +143,7 @@ body::before {
     font-size: 15px;
     outline: none;
 }
+
 .input-box input:focus {
     border-color: #22c55e;
     box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
@@ -161,11 +165,20 @@ body::before {
     cursor: pointer;
     transition: background 0.15s;
 }
-.input-box button:hover { background: #16a34a; }
 
-#result { margin-top: 12px; color: #ef4444; font-size: 14px; }
+.input-box button:hover {
+    background: #16a34a;
+}
 
-.profile-container { margin-top: 4px; }
+#result {
+    margin-top: 12px;
+    color: #ef4444;
+    font-size: 14px;
+}
+
+.profile-container {
+    margin-top: 4px;
+}
 
 .profile-card {
     display: flex;
@@ -189,6 +202,7 @@ body::before {
     text-align: left;
     transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
+
 .logout-btn:hover {
     background: rgba(28, 16, 10, 0.95);
     border-color: #22c55e;
@@ -257,11 +271,25 @@ body::before {
     margin-bottom: 4px;
     opacity: 0.8;
 }
-.nav-item svg { width: 22px; height: 22px; }
-.nav-item.active, .nav-item:hover { color: #22c55e; }
 
-.fade { opacity: 1; transition: opacity 0.35s ease; }
-.fade.fade-out { opacity: 0; }
+.nav-item svg {
+    width: 22px;
+    height: 22px;
+}
+
+.nav-item.active,
+.nav-item:hover {
+    color: #22c55e;
+}
+
+.fade {
+    opacity: 1;
+    transition: opacity 0.35s ease;
+}
+
+.fade.fade-out {
+    opacity: 0;
+}
 
 .fade-in {
     opacity: 0;

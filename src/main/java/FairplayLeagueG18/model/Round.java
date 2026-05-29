@@ -3,30 +3,53 @@ package FairplayLeagueG18.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Representerar en spelomgång (gameweek) i systemet.
+ * Innehåller information om omgångens status, deadline och dess tillhörande matcher.
+ */
 public class Round {
     private int id;
     private int leagueId;
     private int gameweek;
-    private FairplayLeagueG18.model.RoundStatus status;
+    private RoundStatus status;
     private LocalDateTime deadline;
     private LocalDateTime createdAt;
     private List<Match> matches;
 
+    /**
+     * Standardkonstruktor som skapar en tom omgång.
+     */
     public Round() {
     }
 
-    //Skapa ny omgång
+    /**
+     * Skapar en ny omgång. Används när en ny spelomgång initieras i systemet.
+     * Status sätts automatiskt till Open och skapandetid till aktuell tid.
+     *
+     * @param leagueId ID för ligan omgången tillhör
+     * @param gameweek omgångens nummer (t.ex. 1 för första omgången)
+     * @param deadline tidpunkt då omgången stängs för tipsläggning
+     */
     public Round(int leagueId, int gameweek, LocalDateTime deadline) {
         this.leagueId = leagueId;
         this.gameweek = gameweek;
-        this.status = RoundStatus.Open;
+        this.status = RoundStatus.Open; // (Notera: I loggen GP-05 rekommenderades UPPER_SNAKE_CASE för enums. Om ni ändrat enumen till OPEN, uppdatera även här).
         this.deadline = deadline;
         this.createdAt = LocalDateTime.now();
         this.matches = null;
     }
 
-    //Läsa från databasen
-    public Round(int id, int leagueId, int gameweek, FairplayLeagueG18.model.RoundStatus status, LocalDateTime deadline, LocalDateTime createdAt) {
+    /**
+     * Skapar ett befintligt omgångs-objekt. Används främst vid inläsning från databasen.
+     *
+     * @param id        omgångens unika ID i databasen
+     * @param leagueId  ID för ligan omgången tillhör
+     * @param gameweek  omgångens nummer
+     * @param status    aktuell status för omgången
+     * @param deadline  tidpunkt då omgången stängs
+     * @param createdAt tidpunkten då omgången skapades
+     */
+    public Round(int id, int leagueId, int gameweek, RoundStatus status, LocalDateTime deadline, LocalDateTime createdAt) {
         this.id = id;
         this.leagueId = leagueId;
         this.gameweek = gameweek;
@@ -44,8 +67,8 @@ public class Round {
     public int getGameweek() { return gameweek; }
     public void setGameweek(int gameweek) { this.gameweek = gameweek; }
 
-    public FairplayLeagueG18.model.RoundStatus getStatus() { return status; }
-    public void setStatus(FairplayLeagueG18.model.RoundStatus status) { this.status = status; }
+    public RoundStatus getStatus() { return status; }
+    public void setStatus(RoundStatus status) { this.status = status; }
 
     public LocalDateTime getDeadline() { return deadline; }
     public void setDeadline(LocalDateTime deadline) { this.deadline = deadline; }

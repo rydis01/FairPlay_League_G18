@@ -2,9 +2,13 @@ package FairplayLeagueG18.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Representerar en fotbollsmatch i systemet.
+ * Klassen används både för att hantera matchdata från databasen och
+ * för att mappa live-data (skrapad via API) från LiveScore.
+ */
 public class Match {
 
-    // Databasfält
     private int id;
     private int gameweekId;
     private String externalMatchId;
@@ -12,21 +16,31 @@ public class Match {
     private LocalDateTime kickOff;
     private String result;
 
-    // Gemensamma fält
     private String homeTeam;
     private String awayTeam;
 
-    // Fält från API-skrapning
     private String homeScore;
     private String awayScore;
     private String matchStatus;
     private String matchTime;
 
-    // 1. Tom konstruktor
+    /**
+     * Standardkonstruktor som skapar en tom match.
+     */
     public Match() {
     }
 
-    // 2. Konstruktor för API-skrapare
+    /**
+     * Skapar ett match-objekt utifrån data hämtad från LiveScore API.
+     * Används främst av API-skraparen för att mappa aktuell matchstatus.
+     *
+     * @param homeTeam    hemmalagets namn
+     * @param awayTeam    bortalagets namn
+     * @param homeScore   hemmalagets aktuella målskörd
+     * @param awayScore   bortalagets aktuella målskörd
+     * @param matchStatus status för matchen (t.ex. "NS" för Not Started, "FT" för Full Time)
+     * @param matchTime   matchtid hämtad från API:et
+     */
     public Match(String homeTeam, String awayTeam, String homeScore, String awayScore, String matchStatus, String matchTime) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
@@ -36,7 +50,16 @@ public class Match {
         this.matchTime = matchTime;
     }
 
-    // 3. Konstruktor: Skapa ny match
+    /**
+     * Skapar en ny match för att sparas i databasen.
+     *
+     * @param roundId         ID för omgången (gameweek) matchen tillhör
+     * @param externalMatchId match-ID från det externa API:et
+     * @param matchNumber     matchens nummer i kupongen (oftast 1-8)
+     * @param homeTeam        hemmalagets namn
+     * @param awayTeam        bortalagets namn
+     * @param kickOff         tidpunkt för avspark
+     */
     public Match(int roundId, String externalMatchId, int matchNumber, String homeTeam, String awayTeam, LocalDateTime kickOff) {
         this.gameweekId = roundId;
         this.externalMatchId = externalMatchId;
@@ -46,7 +69,18 @@ public class Match {
         this.kickOff = kickOff;
     }
 
-    // 4. Konstruktor: Läsa från databasen
+    /**
+     * Skapar ett befintligt match-objekt. Används vid inläsning från databasen.
+     *
+     * @param id              matchens unika ID i systemets databas
+     * @param roundId         ID för omgången matchen tillhör
+     * @param externalMatchId match-ID från det externa API:et
+     * @param matchNumber     matchens nummer i kupongen (oftast 1-8)
+     * @param homeTeam        hemmalagets namn
+     * @param awayTeam        bortalagets namn
+     * @param kickOff         tidpunkt för avspark
+     * @param result          matchens slutgiltiga resultattecken ("1", "X", eller "2")
+     */
     public Match(int id, int roundId, String externalMatchId, int matchNumber, String homeTeam, String awayTeam, LocalDateTime kickOff, String result) {
         this.id = id;
         this.gameweekId = roundId;
@@ -57,8 +91,6 @@ public class Match {
         this.kickOff = kickOff;
         this.result = result;
     }
-
-    // getters and setters
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
