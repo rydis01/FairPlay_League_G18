@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonParseException;
 import FairplayLeagueG18.model.Match;
 
 import java.util.ArrayList;
@@ -11,8 +12,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Ansvarar för att tolka JSON-data från LiveScore API:et och omvandla den till Match-objekt.
+ * Hanterar även omgångslogik och normalisering av svenska lagnamn.
+ */
 public class LiveScoreMapper {
 
+    /**
+     * Tolkar en JSON-sträng från LiveScore API:et och returnerar en lista med Match-objekt.
+     * Räknar ut omgångsnummer antingen från API-fältet ErnInf eller baserat på
+     * hur många matcher varje lag redan spelat.
+     *
+     * @param jsonString rådata i JSON-format från LiveScore API:et
+     * @return lista med parsade Match-objekt, eller tom lista om parsing misslyckas
+     */
     public static List<Match> parseMatches(String jsonString) {
         List<Match> matchesList = new ArrayList<>();
 
@@ -62,13 +75,22 @@ public class LiveScoreMapper {
 
                 matchesList.add(match);
             }
-        } catch (Exception e) {
-            System.err.println("Kunde inte tolka JSON-filen: " + e.getMessage());
+        } catch (JsonParseException e) {
+            System.err.println("Ogiltig JSON från LiveScore API: " + e.getMessage());
+        } catch (IllegalStateException | IndexOutOfBoundsException e) {
+            System.err.println("Oväntat JSON-format från LiveScore API: " + e.getMessage());
         }
 
         return matchesList;
     }
 
+    /**
+     * Normaliserar lagnamn från LiveScore API:ets engelska format till svenska namn.
+     * Returnerar namnet oförändrat om det inte finns i mappningen.
+     *
+     * @param name lagnamn som det returneras av API:et
+     * @return korrekt stavat svenskt lagnamn
+     */
     private static String fixTeamName(String name) {
         if (name.equals("Malmo FF")) return "Malmö FF";
         if (name.equals("IFK Gothenburg")) return "IFK Göteborg";

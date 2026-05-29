@@ -6,105 +6,77 @@ import FairplayLeagueG18.model.Role;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 /**
- * Handles users and authentication.
- * Responsible for registration, login and user management.
- *
- * @author Carl
+ * Hanterar användare och autentisering.
+ * Ansvarar för registrering, inloggning, utloggning och användarhantering.
  */
 @Service
 public class UserService {
-    private UserDAO userDAO;
 
+    // Konstant för att undvika magiska nummer i valideringen
+    private static final int MIN_PASSWORD_LENGTH = 8;
+
+    private final UserDAO userDAO;
+
+    /**
+     * Standardkonstruktor som initierar dataåtkomstlagret för användare.
+     */
     public UserService() {
         this.userDAO = new UserDAO();
     }
 
-    // Registration
-
     /**
-     * Registers a new user in the system.
+     * Registrerar en ny användare i systemet.
+     * Lösenordet hashas med BCrypt innan det sparas.
      *
-     * @param username The username for the new user
-     * @param email The email address for the new user (must be unique)
-     * @param password The password for the new user
-     * @author Carl & Hugo
+     * @param username användarnamnet för den nya användaren
+     * @param email    e-postadressen för den nya användaren (måste vara unik)
+     * @param password lösenordet i klartext
+     * @return true om registreringen lyckades, annars false
      */
     public boolean registerUser(String username, String email, String password) {
-        // TODO:  Add password check - must be at least 8 characters long.
-        // Fixas här nedan:
-
-        if (password.length() < 8) {
-            System.out.println("Lösenordet måste vara minst 8 tecken långt.");
+        if (password.length() < MIN_PASSWORD_LENGTH) {
+            System.err.println("Lösenordet måste vara minst " + MIN_PASSWORD_LENGTH + " tecken långt.");
             return false;
         }
 
-
-        // TODO: Password hashing.
-        // Fixas här nedan:
-
-        // Vi ber BCrypt att generera en unik "salt" och hasha lösenordet.
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-
-
-        // TODO: Add check so email doesn't already exist in database since email is unique.
-        // Fixas här nedan:
 
         try {
             User newUser = new User(username, email, hashedPassword, Role.Player);
             userDAO.saveUser(newUser);
-            System.out.println("TEST GODKÄNT: Användaren skapades i databasen!");
-
-        } catch (Exception e) {
-            System.out.println("TEST MISSLYCKADES (Databasfel): " + e.getMessage());
+        } catch (RuntimeException e) {
+            System.err.println("Kunde inte registrera användare: " + e.getMessage());
             return false;
-            // Om e.getMessage() klagar på "duplicate key value violates unique constraint",
-            // –> Krav F-REG-1.1 = Godkänt!
         }
+
         return true;
     }
 
-    // Login
-
     /**
-     * Logs in a user by verifying email and password.
+     * Loggar in en användare genom att verifiera e-post och lösenord mot databasen.
      *
-     * @param email The email address of the user
-     * @param password The password of the user
-     * @return true if login succeeds, false otherwise
-     * @author Carl
+     * @param email    användarens e-postadress
+     * @param password lösenordet i klartext som ska verifieras
+     * @return true om inloggningen lyckades, annars false
      */
     public boolean loginUser(String email, String password) {
         User user = userDAO.getUserByEmail(email);
         if (user != null) {
-            // TODO: Hash the entered password and compare it with the hashed password in the database
             return BCrypt.checkpw(password, user.getPasswordHash());
         }
         return false;
     }
 
     /**
-     * Logs out a user from the system.
+     * Byter lösenord för en användare.
+     * Det nya lösenordet hashas med BCrypt innan det sparas.
      *
-     * @param userId The ID of the user to be logged out
-     * @return true if logout succeeds
-     * @author Carl
-     */
-    public boolean logoutUser(int userId) {
-        return true;
-    }
-
-    /**
-     * Changes the password for a user.
-     *
-     * @param userId The ID of the user whose password will be changed
-     * @param newPassword The new password
-     * @author Carl
+     * @param userId      ID:t för användaren vars lösenord ska bytas
+     * @param newPassword det nya lösenordet i klartext
      */
     public void changePassword(int userId, String newPassword) {
-        User user = userDAO.getUserByID(userId);
+        User user = getUserById(userId);
         if (user != null) {
             String hashed = BCrypt.hashpw(newPassword, BCrypt.gensalt());
             user.setPasswordHash(hashed);
@@ -112,17 +84,14 @@ public class UserService {
         }
     }
 
-    // Profile
-
     /**
-     * Displays the user's profile as a formatted string.
+     * Returnerar en användares profilinformation som en formaterad sträng.
      *
-     * @param userId The ID of the user whose profile will be displayed
-     * @return A formatted string with the user's profile information, or an error message if the user is not found
-     * @author Carl
+     * @param userId ID:t för användaren vars profil ska visas
+     * @return formaterad sträng med profilinformation, eller felmeddelande om användaren inte hittas
      */
     public String viewUserProfile(int userId) {
-        User user = userDAO.getUserByID(userId);
+        User user = getUserById(userId);
         if (user != null) {
             return "Användarprofil:\n" +
                     "ID: " + user.getId() + "\n" +
@@ -134,48 +103,33 @@ public class UserService {
         return "Användaren hittades inte.";
     }
 
-    // Get / Set / Helpers
-
     /**
-     * Retrieves a user based on user ID.
+     * Hämtar en användare baserat på användar-ID.
      *
-     * @param userId The ID of the user to retrieve
-     * @return The User object if it exists, null otherwise
-     * @author Carl
+     * @param userId ID:t för användaren som ska hämtas
+     * @return User-objekt om användaren finns, annars null
      */
     public User getUserById(int userId) {
         return userDAO.getUserByID(userId);
     }
 
-    public User getUserByEmail(String email){
+    /**
+     * Hämtar en användare baserat på e-postadress.
+     *
+     * @param email e-postadressen för användaren som ska hämtas
+     * @return User-objekt om användaren finns, annars null
+     */
+    public User getUserByEmail(String email) {
         return userDAO.getUserByEmail(email);
     }
 
     /**
-     * Checks if a user exists in the system.
+     * Kontrollerar om en användare med given e-postadress finns i systemet.
      *
-     * @param email The email of the user to check
-     * @return true if the user exists, false otherwise
-     * @author Carl
+     * @param email e-postadressen som ska kontrolleras
+     * @return true om användaren finns, annars false
      */
-
     public boolean userExists(String email) {
-        User user = userDAO.getUserByEmail(email);
-        return user != null;
-    }
-
-    public StringBuilder getUsers() {
-        StringBuilder string = new StringBuilder();
-        ArrayList<User> users = new ArrayList<User>();
-
-        users = userDAO.getAllUsers();
-
-        for (User us : users) {
-            string.append(us.getEmail())
-                    .append(" : ")
-                    .append(us.getPasswordHash())
-                    .append("\n");
-        }
-        return string;
+        return userDAO.getUserByEmail(email) != null;
     }
 }

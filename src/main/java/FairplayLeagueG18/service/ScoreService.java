@@ -20,26 +20,41 @@ import java.util.Map;
  */
 @Service
 public class ScoreService {
-    private CouponDAO couponDAO;
-    private RoundDAO roundDAO;
-    private LeagueDAO leagueDAO;
-    private MatchDAO matchDAO;
 
+    // Konstanter för poängberäkning och prispott för att undvika magiska nummer
+    private static final int POT_CONTRIBUTION_PER_PLAYER = 100;
+    private static final int TIPS_PER_ROUND = 8;
+    private static final int TIER_8_PERCENT = 60;
+    private static final int TIER_7_PERCENT = 30;
+    private static final int TIER_6_PERCENT = 10;
+
+    private final CouponDAO couponDAO;
+    private final RoundDAO roundDAO;
+    private final LeagueDAO leagueDAO;
+    private final MatchDAO matchDAO;
+
+    /**
+     * Standardkonstruktor som initierar nödvändiga DAO-klasser.
+     */
     public ScoreService() {
         this.couponDAO = new CouponDAO();
         this.roundDAO = new RoundDAO();
         this.leagueDAO = new LeagueDAO();
         this.matchDAO = new MatchDAO();
-
     }
 
-    // Rätta en kupong och returnera antalet rätt
+    /**
+     * Rättar en specifik kupong genom att jämföra användarens tips med de faktiska matchresultaten.
+     * Uppdaterar kupongens antal rätt och markerar den som rättad i databasen.
+     *
+     * @param couponId ID för kupongen som ska rättas
+     */
     public void gradeCoupon(int couponId) {
 
         Coupon userCoupon = couponDAO.getCoupon(couponId);
 
         if (userCoupon == null) {
-            System.out.println("Kupong saknas");
+            System.err.println("Kupong saknas för id: " + couponId);
             return;
         }
 
@@ -48,9 +63,7 @@ public class ScoreService {
         }
 
         int roundId = userCoupon.getRoundId();
-
         List<Match> matches = matchDAO.getMatchesByGameweek(roundId);
-
         Map<Integer, String> tips = userCoupon.getTips();
 
         int correctCount = 0;
@@ -69,17 +82,23 @@ public class ScoreService {
 
         couponDAO.updateCorrectCountCoupon(userCoupon);
     }
-    // Rättar alla kuponger i en omgång och fördelar potten för en liga
-    // Pott = antal spelare × 100
-    // 8 rätt → 60%, 7 rätt → 30%, 6 rätt → 10%
+
+    /**
+     * Rättar alla kuponger i en omgång och fördelar potten för en specifik liga.
+     * Potten baseras på antalet medlemmar (antal spelare × 100).
+     * Poängutdelning sker procentuellt: 8 rätt → 60%, 7 rätt → 30%, 6 rätt → 10%.
+     *
+     * @param roundId  ID för omgången som rättas
+     * @param leagueId ID för ligan där potten och poängen ska fördelas
+     */
     public void settleRound(int roundId, int leagueId) {
 
-        // 1. Hämta alla medlemmar i ligan
+        // 1. Hämta alla medlemmar i ligan och beräkna potten
         List<LeagueMember> members = leagueDAO.getMembersByLeagueIdSortedByScore(leagueId);
         int playerCount = members.size();
-        int pot = playerCount * 100;
+        int pot = playerCount * POT_CONTRIBUTION_PER_PLAYER;
 
-        // 2. Hämta alla kuponger för omgången
+        // 2. Hämta alla kuponger för omgången och rätta dem
         Map<Integer, Integer> userToCoupon = couponDAO.getCouponIdsForRound(roundId);
 
         for (LeagueMember member : members) {
@@ -91,6 +110,7 @@ public class ScoreService {
             }
         }
 
+        // 3. Gruppera användare baserat på antal rätta tips
         Map<Integer, List<Integer>> groups = new HashMap<>();
 
         for (LeagueMember member : members) {
@@ -105,7 +125,12 @@ public class ScoreService {
             }
         }
 
-        Map<Integer, Integer> tierPercent = Map.of(8, 60, 7, 30, 6, 10);
+        // 4. Fördela poäng baserat på definierade procentnivåer
+        Map<Integer, Integer> tierPercent = Map.of(
+                TIPS_PER_ROUND, TIER_8_PERCENT,
+                TIPS_PER_ROUND - 1, TIER_7_PERCENT,
+                TIPS_PER_ROUND - 2, TIER_6_PERCENT
+        );
 
         for (Map.Entry<Integer, Integer> tier : tierPercent.entrySet()) {
             int correctNeeded = tier.getKey();

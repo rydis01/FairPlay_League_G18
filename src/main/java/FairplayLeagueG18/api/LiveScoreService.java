@@ -2,12 +2,17 @@ package FairplayLeagueG18.api;
 
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
+/**
+ * Ansvarar för att hämta matchdata från LiveScore API:et.
+ * Skickar HTTP-anrop mot Allsvenskan-endpointen och returnerar rådata som JSON-sträng.
+ */
 @Service
 public class LiveScoreService {
 
@@ -20,6 +25,13 @@ public class LiveScoreService {
                 .build();
     }
 
+    /**
+     * Hämtar aktuell matchdata för Allsvenskan från LiveScore API:et.
+     *
+     * @return JSON-sträng med matchdata, eller null om anropet misslyckas
+     * @throws IOException om ett nätverksfel uppstår
+     * @throws InterruptedException om tråden avbryts under anropet
+     */
     public String fetchAllsvenskanData() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -37,8 +49,12 @@ public class LiveScoreService {
                 System.err.println("Fel från LiveScore: " + response.statusCode());
                 return null;
             }
-        } catch (Exception e) {
-            System.err.println("Nätverksfel: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Nätverksfel vid anrop till LiveScore: " + e.getMessage());
+            return null;
+        } catch (InterruptedException e) {
+            System.err.println("Anropet till LiveScore avbröts: " + e.getMessage());
+            Thread.currentThread().interrupt();
             return null;
         }
     }

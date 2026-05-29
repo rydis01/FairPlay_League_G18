@@ -10,36 +10,45 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-// Hanterar all kommunikation med tabellerna Leagues och User_Leagues
+/**
+ * Hanterar all databasåtkomst för ligor och ligamedlemskap.
+ * Kommunicerar med tabellerna Leagues och User_Leagues.
+ */
 public class LeagueDAO {
 
-    // Skapar en liga och lägger till skaparen som första medlem
+    /**
+     * Skapar en ny liga och lägger till skaparen som första medlem.
+     * Utförs som två separata INSERT-operationer mot Leagues och User_Leagues.
+     *
+     * @param leagueName  namnet på den nya ligan
+     * @param adminUserId ID:t för användaren som skapar ligan
+     * @param inviteCode  den unika invite-koden för ligan
+     */
     public void createLeague(String leagueName, int adminUserId, String inviteCode) {
         String insertLeagueSql = "INSERT INTO Leagues (League_Name, Admin_User, Invite_Code) VALUES (?, ?, ?)";
         String insertMemberSql = "INSERT INTO User_Leagues (User_ID, League_ID, Total_Score) VALUES (?, ?, 0)";
 
         try (Connection conn = DatabaseManager.getConnection()) {
             if (conn == null) {
-                System.out.println("Kunde inte ansluta till databasen!");
+                System.err.println("Kunde inte ansluta till databasen!");
                 return;
             }
 
             int generatedLeagueId = -1;
 
-            // Skapa ligan och hämta det autogenererade id:t
             try (PreparedStatement leagueStmt = conn.prepareStatement(insertLeagueSql, Statement.RETURN_GENERATED_KEYS)) {
                 leagueStmt.setString(1, leagueName);
                 leagueStmt.setInt(2, adminUserId);
                 leagueStmt.setString(3, inviteCode);
                 leagueStmt.executeUpdate();
 
-                ResultSet rs = leagueStmt.getGeneratedKeys();
-                if (rs.next()) {
-                    generatedLeagueId = rs.getInt(1);
+                try (ResultSet rs = leagueStmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        generatedLeagueId = rs.getInt(1);
+                    }
                 }
             }
 
-            // Lägg till skaparen som medlem
             if (generatedLeagueId != -1) {
                 try (PreparedStatement memberStmt = conn.prepareStatement(insertMemberSql)) {
                     memberStmt.setInt(1, adminUserId);
@@ -47,14 +56,17 @@ public class LeagueDAO {
                     memberStmt.executeUpdate();
                 }
             }
-            System.out.println("Ligan '" + leagueName + "' har skapats!");
 
         } catch (SQLException e) {
-            System.out.println("Kunde inte skapa ligan. Fel: " + e.getMessage());
+            System.err.println("Kunde inte skapa ligan. Fel: " + e.getMessage());
         }
     }
-    //Hämtar alla ligor.
 
+    /**
+     * Hämtar alla ligor i systemet.
+     *
+     * @return lista med alla League-objekt, eller tom lista om inga finns
+     */
     public List<League> getAllLeagues() {
         List<League> leagues = new ArrayList<>();
 
@@ -65,32 +77,33 @@ public class LeagueDAO {
         try (Connection conn = DatabaseManager.getConnection()) {
             if (conn == null) return leagues;
 
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                ResultSet rs = stmt.executeQuery();
+            try (PreparedStatement stmt = conn.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    int leagueId = rs.getInt("League_Id");
-
                     League league = new League(
-                            leagueId,
+                            rs.getInt("League_Id"),
                             rs.getString("League_Name"),
                             rs.getString("Invite_Code"),
                             rs.getInt("Admin_User"),
                             rs.getTimestamp("Created_at").toLocalDateTime()
                     );
-
                     leagues.add(league);
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Kunde inte hämta ligorna. Fel: " + e.getMessage());
+            System.err.println("Kunde inte hämta ligorna. Fel: " + e.getMessage());
         }
 
         return leagues;
     }
 
-
-    // Hämtar en liga baserat på id
+    /**
+     * Hämtar en liga baserat på dess ID, inklusive sorterad medlemslista.
+     *
+     * @param leagueId ID:t för ligan
+     * @return League-objekt med medlemmar ifyllda, eller null om ligan inte hittas
+     */
     public League getLeagueById(int leagueId) {
         League league = null;
 
@@ -104,31 +117,32 @@ public class LeagueDAO {
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, leagueId);
-                ResultSet rs = stmt.executeQuery();
-
-                if (rs.next()) {
-                    league = new League(
-                            rs.getInt("League_Id"),
-                            rs.getString("League_Name"),
-                            rs.getString("Invite_Code"),
-                            rs.getInt("Admin_User"),
-                            rs.getTimestamp("Created_at").toLocalDateTime()
-                    );
-
-                    List<LeagueMember> members =
-                            getMembersByLeagueIdSortedByScore(leagueId);
-
-                    league.setMembers(members);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        league = new League(
+                                rs.getInt("League_Id"),
+                                rs.getString("League_Name"),
+                                rs.getString("Invite_Code"),
+                                rs.getInt("Admin_User"),
+                                rs.getTimestamp("Created_at").toLocalDateTime()
+                        );
+                        league.setMembers(getMembersByLeagueIdSortedByScore(leagueId));
+                    }
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Kunde inte hämta ligan. Fel: " + e.getMessage());
+            System.err.println("Kunde inte hämta ligan. Fel: " + e.getMessage());
         }
 
         return league;
     }
 
-    // Hämtar en liga baserat på invite code — returnerar null om koden inte finns
+    /**
+     * Hämtar en liga baserat på dess invite-kod, inklusive sorterad medlemslista.
+     *
+     * @param inviteCode ligens unika invite-kod
+     * @return League-objekt med medlemmar ifyllda, eller null om koden inte finns
+     */
     public League getLeagueByInviteCode(String inviteCode) {
         League league = null;
 
@@ -142,31 +156,32 @@ public class LeagueDAO {
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, inviteCode);
-                ResultSet rs = stmt.executeQuery();
-
-                if (rs.next()) {
-                    league = new League(
-                            rs.getInt("League_Id"),
-                            rs.getString("League_Name"),
-                            rs.getString("Invite_Code"),
-                            rs.getInt("Admin_User"),
-                            rs.getTimestamp("Created_at").toLocalDateTime()
-                    );
-
-                    List<LeagueMember> members =
-                            getMembersByLeagueIdSortedByScore(rs.getInt("League_Id"));
-
-                    league.setMembers(members);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        league = new League(
+                                rs.getInt("League_Id"),
+                                rs.getString("League_Name"),
+                                rs.getString("Invite_Code"),
+                                rs.getInt("Admin_User"),
+                                rs.getTimestamp("Created_at").toLocalDateTime()
+                        );
+                        league.setMembers(getMembersByLeagueIdSortedByScore(rs.getInt("League_Id")));
+                    }
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Kunde inte hämta liga med inbjudningskod. Fel: " + e.getMessage());
+            System.err.println("Kunde inte hämta liga med inbjudningskod. Fel: " + e.getMessage());
         }
 
         return league;
     }
 
-    // Hämtar alla ligor som en användare är med i via JOIN
+    /**
+     * Hämtar alla ligor som en given användare är medlem i.
+     *
+     * @param userId ID:t för användaren
+     * @return lista med League-objekt, eller tom lista om användaren inte är med i någon liga
+     */
     public List<League> getLeaguesByUserId(int userId) {
         List<League> userLeagues = new ArrayList<>();
 
@@ -181,28 +196,33 @@ public class LeagueDAO {
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, userId);
-                ResultSet rs = stmt.executeQuery();
-
-                while (rs.next()) {
-                    League league = new League(
-                            rs.getInt("League_Id"),
-                            rs.getString("League_Name"),
-                            rs.getString("Invite_Code"),
-                            rs.getInt("Admin_User"),
-                            rs.getTimestamp("Created_at").toLocalDateTime()
-                    );
-                    league.setMembers(getMembersByLeagueIdSortedByScore(rs.getInt("League_Id")));
-                    userLeagues.add(league);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        League league = new League(
+                                rs.getInt("League_Id"),
+                                rs.getString("League_Name"),
+                                rs.getString("Invite_Code"),
+                                rs.getInt("Admin_User"),
+                                rs.getTimestamp("Created_at").toLocalDateTime()
+                        );
+                        league.setMembers(getMembersByLeagueIdSortedByScore(rs.getInt("League_Id")));
+                        userLeagues.add(league);
+                    }
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Kunde inte hämta användarens ligor. Fel: " + e.getMessage());
+            System.err.println("Kunde inte hämta användarens ligor. Fel: " + e.getMessage());
         }
 
         return userLeagues;
     }
 
-    // Lägger till en användare som medlem med 0 poäng
+    /**
+     * Lägger till en användare som medlem i en liga med 0 poäng.
+     *
+     * @param leagueId ID:t för ligan
+     * @param userId   ID:t för användaren som ska läggas till
+     */
     public void addMember(int leagueId, int userId) {
         String sql = "INSERT INTO User_Leagues (User_ID, League_ID) VALUES (?, ?)";
 
@@ -216,11 +236,16 @@ public class LeagueDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Kunde inte lägga till medlem. Fel: " + e.getMessage());
+            System.err.println("Kunde inte lägga till medlem. Fel: " + e.getMessage());
         }
     }
 
-    // Tar bort en användare från en liga
+    /**
+     * Tar bort en användare från en liga.
+     *
+     * @param leagueId ID:t för ligan
+     * @param userId   ID:t för användaren som ska tas bort
+     */
     public void removeMember(int leagueId, int userId) {
         String sql = "DELETE FROM User_Leagues WHERE League_ID = ? AND User_ID = ?";
 
@@ -233,10 +258,16 @@ public class LeagueDAO {
                 stmt.executeUpdate();
             }
         } catch (SQLException e) {
-            System.out.println("Kunde inte ta bort medlem. Fel: " + e.getMessage());
+            System.err.println("Kunde inte ta bort medlem. Fel: " + e.getMessage());
         }
     }
 
+    /**
+     * Kontrollerar om en liga med ett givet namn redan existerar.
+     *
+     * @param leagueName namnet som ska kontrolleras
+     * @return true om ligan finns, annars false
+     */
     public boolean leagueExists(String leagueName) {
         String sql = "SELECT 1 FROM Leagues WHERE League_Name = ?";
 
@@ -245,18 +276,25 @@ public class LeagueDAO {
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, leagueName);
-                ResultSet rs = stmt.executeQuery();
-
-                return rs.next();
+                try (ResultSet rs = stmt.executeQuery()) {
+                    return rs.next();
+                }
             }
 
         } catch (SQLException e) {
-            System.out.println("Kunde inte kontrollera om liga finns. Fel: " + e.getMessage());
+            System.err.println("Kunde inte kontrollera om liga finns. Fel: " + e.getMessage());
             return false;
         }
     }
 
-    // Kollar om en användare redan är med i en liga — förhindrar dubbelmedlemskap
+    /**
+     * Kontrollerar om en användare redan är medlem i en liga.
+     * Används för att förhindra dubbelmedlemskap.
+     *
+     * @param leagueId ID:t för ligan
+     * @param userId   ID:t för användaren
+     * @return true om användaren redan är medlem, annars false
+     */
     public boolean isMember(int leagueId, int userId) {
         String sql = "SELECT 1 FROM User_Leagues WHERE League_ID = ? AND User_ID = ?";
 
@@ -266,17 +304,24 @@ public class LeagueDAO {
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, leagueId);
                 stmt.setInt(2, userId);
-                ResultSet rs = stmt.executeQuery();
-                return rs.next();
+                try (ResultSet rs = stmt.executeQuery()) {
+                    return rs.next();
+                }
             }
         } catch (SQLException e) {
-            System.out.println("Kunde inte kontrollera medlemskap. Fel: " + e.getMessage());
+            System.err.println("Kunde inte kontrollera medlemskap. Fel: " + e.getMessage());
         }
 
         return false;
     }
 
-    // Räknar antal medlemmar i en liga — används för att beräkna potten
+    /**
+     * Räknar antalet medlemmar i en liga.
+     * Används för att beräkna potten inför poängutdelning.
+     *
+     * @param leagueId ID:t för ligan
+     * @return antal medlemmar, eller 0 om ligan inte hittas
+     */
     public int countMembersByLeagueId(int leagueId) {
         String sql = "SELECT COUNT(*) FROM User_Leagues WHERE League_ID = ?";
 
@@ -285,19 +330,26 @@ public class LeagueDAO {
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, leagueId);
-                ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    return rs.getInt(1);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Kunde inte räkna medlemmar. Fel: " + e.getMessage());
+            System.err.println("Kunde inte räkna medlemmar. Fel: " + e.getMessage());
         }
 
         return 0;
     }
 
-    // Hämtar leaderboard — alla medlemmar sorterade på poäng, högst först
+    /**
+     * Hämtar alla medlemmar i en liga sorterade efter totalpoäng, högst först.
+     * Används för att visa leaderboard.
+     *
+     * @param leagueId ID:t för ligan
+     * @return lista med LeagueMember-objekt sorterade efter totalpoäng
+     */
     public List<LeagueMember> getMembersByLeagueIdSortedByScore(int leagueId) {
         List<LeagueMember> members = new ArrayList<>();
 
@@ -313,24 +365,31 @@ public class LeagueDAO {
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, leagueId);
-                ResultSet rs = stmt.executeQuery();
-
-                while (rs.next()) {
-                    LeagueMember member = new LeagueMember();
-                    member.setUserId(rs.getInt("User_ID"));
-                    member.setUsername(rs.getString("Username"));
-                    member.setTotalScore(rs.getInt("Total_Score"));
-                    members.add(member);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        LeagueMember member = new LeagueMember();
+                        member.setUserId(rs.getInt("User_ID"));
+                        member.setUsername(rs.getString("Username"));
+                        member.setTotalScore(rs.getInt("Total_Score"));
+                        members.add(member);
+                    }
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Kunde inte hämta leaderboard. Fel: " + e.getMessage());
+            System.err.println("Kunde inte hämta leaderboard. Fel: " + e.getMessage());
         }
 
         return members;
     }
 
-    // Adderar poäng till en spelares total — skriver inte över befintlig poäng
+    /**
+     * Adderar poäng till en spelares totalsumma i en liga.
+     * Skriver inte över befintlig poäng utan lägger till ovanpå.
+     *
+     * @param leagueId    ID:t för ligan
+     * @param userId      ID:t för användaren
+     * @param pointsToAdd antal poäng som ska adderas
+     */
     public void addScoreToMember(int leagueId, int userId, int pointsToAdd) {
         String sql = "UPDATE User_Leagues SET Total_Score = Total_Score + ? WHERE League_ID = ? AND User_ID = ?";
 
@@ -344,7 +403,7 @@ public class LeagueDAO {
                 stmt.executeUpdate();
             }
         } catch (SQLException e) {
-            System.out.println("Kunde inte uppdatera poäng. Fel: " + e.getMessage());
+            System.err.println("Kunde inte uppdatera poäng. Fel: " + e.getMessage());
         }
     }
 }

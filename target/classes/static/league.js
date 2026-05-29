@@ -1,5 +1,21 @@
 const leftContent = document.getElementById("leftDynamicContent");
 
+/**
+ * Initierar event listeners när sidan har laddats.
+ */
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("btnCreateLeague").addEventListener("click", showCreateLeagueView);
+    document.getElementById("btnJoinLeague").addEventListener("click", showJoinLeagueView);
+    document.getElementById("btnAllLeagues").addEventListener("click", showAllLeaguesView);
+    document.getElementById("btnMyLeagues").addEventListener("click", showMyLeaguesView);
+    document.getElementById("btnLeaderboard").addEventListener("click", showLeaderboardView);
+});
+
+/**
+ * Byter ut innehållet i den vänstra kolumnen med en mjuk övergång (fade).
+ *
+ * @param {string} html HTML-strängen som ska renderas
+ */
 function fadeSwap(html) {
     leftContent.innerHTML = html;
 
@@ -15,68 +31,85 @@ function fadeSwap(html) {
     });
 }
 
-document.getElementById("btnCreateLeague").addEventListener("click", showCreateLeagueView);
-document.getElementById("btnJoinLeague").addEventListener("click", showJoinLeagueView);
-document.getElementById("btnAllLeagues").addEventListener("click", showAllLeaguesView);
-document.getElementById("btnMyLeagues").addEventListener("click", showMyLeaguesView);
-document.getElementById("btnLeaderboard").addEventListener("click", showLeaderboardView);
-
+/**
+ * Renderar vyn för att skapa en ny liga.
+ */
 function showCreateLeagueView() {
     fadeSwap(`
         <div class="input-box">
             <h2>Skapa liga</h2>
-            <input id="leagueName" type="text" placeholder="Liganamn">
+            <input id="leagueName" type="text" placeholder="Liganamn" aria-label="Liganamn">
             <button id="createLeagueBtn">Skapa liga</button>
-            <p id="result"></p>
+            <p id="result" aria-live="polite"></p>
         </div>
     `);
 
-    setTimeout(() => {
-        document.getElementById("createLeagueBtn").onclick = () => {
-            const leagueName = document.getElementById("leagueName").value;
+    // Inget setTimeout behövs, elementet finns i DOM:en direkt efter fadeSwap
+    document.getElementById("createLeagueBtn").addEventListener("click", () => {
+        const leagueName = document.getElementById("leagueName").value;
 
-            fetch("/api/createLeague?leagueName=" + leagueName, {
-                method: "GET",
-                credentials: "include"
+        if (!leagueName) {
+            const result = document.getElementById("result");
+            result.style.color = "#ef4444";
+            result.textContent = "Ange ett liganamn.";
+            return;
+        }
+
+        // Använder encodeURIComponent för att undvika problem med mellanslag eller specialtecken i URL:en
+        fetch(`/api/createLeague?leagueName=${encodeURIComponent(leagueName)}`, {
+            method: "GET",
+            credentials: "include"
+        })
+            .then(res => res.json())
+            .then(success => {
+                const result = document.getElementById("result");
+                result.style.color = success ? "#22c55e" : "#ef4444"; // Matchar era CSS-variabler
+                result.textContent = success ? "Ligan skapades!" : "Ligan kunde inte skapas.";
             })
-                .then(r => r.json())
-                .then(success => {
-                    const result = document.getElementById("result");
-                    result.style.color = success ? "green" : "red";
-                    result.textContent = success ? "Ligan skapades!" : "Ligan kunde inte skapas.";
-                });
-        };
-    }, 50);
+            .catch(err => console.error("Kunde inte skapa liga:", err));
+    });
 }
 
+/**
+ * Renderar vyn för att gå med i en befintlig liga via invite-kod.
+ */
 function showJoinLeagueView() {
     fadeSwap(`
         <div class="input-box">
             <h2>Gå med i liga</h2>
-            <input id="inviteCode" type="text" placeholder="Invite-kod">
+            <input id="inviteCode" type="text" placeholder="Invite-kod" aria-label="Invite-kod">
             <button id="joinLeagueBtn">Gå med</button>
-            <p id="result"></p>
+            <p id="result" aria-live="polite"></p>
         </div>
     `);
 
-    setTimeout(() => {
-        document.getElementById("joinLeagueBtn").onclick = () => {
-            const inviteCode = document.getElementById("inviteCode").value;
+    document.getElementById("joinLeagueBtn").addEventListener("click", () => {
+        const inviteCode = document.getElementById("inviteCode").value;
 
-            fetch("/api/joinLeague?inviteCode=" + inviteCode, {
-                method: "GET",
-                credentials: "include"
+        if (!inviteCode) {
+            const result = document.getElementById("result");
+            result.style.color = "#ef4444";
+            result.textContent = "Ange en invite-kod.";
+            return;
+        }
+
+        fetch(`/api/joinLeague?inviteCode=${encodeURIComponent(inviteCode)}`, {
+            method: "GET",
+            credentials: "include"
+        })
+            .then(res => res.json())
+            .then(success => {
+                const result = document.getElementById("result");
+                result.style.color = success ? "#22c55e" : "#ef4444";
+                result.textContent = success ? "Du gick med i ligan!" : "Fel kod eller du är redan medlem.";
             })
-                .then(r => r.json())
-                .then(success => {
-                    const result = document.getElementById("result");
-                    result.style.color = success ? "green" : "red";
-                    result.textContent = success ? "Du gick med i ligan!" : "Fel kod eller du är redan medlem.";
-                });
-        };
-    }, 50);
+            .catch(err => console.error("Kunde inte gå med i liga:", err));
+    });
 }
 
+/**
+ * Renderar vyn som visar användarens egna ligor.
+ */
 function showMyLeaguesView() {
     fadeSwap(`
         <div class="gw-container">
@@ -86,10 +119,14 @@ function showMyLeaguesView() {
     `);
 
     fetch("/api/loadPlayerLeagues", { credentials: "include" })
-        .then(r => r.json())
-        .then(leagues => renderLeagues(leagues));
+        .then(res => res.json())
+        .then(leagues => renderLeagues(leagues))
+        .catch(err => console.error("Kunde inte hämta dina ligor:", err));
 }
 
+/**
+ * Renderar vyn som visar alla ligor i systemet.
+ */
 function showAllLeaguesView() {
     fadeSwap(`
         <div class="gw-container">
@@ -99,19 +136,30 @@ function showAllLeaguesView() {
     `);
 
     fetch("/api/loadAllLeagues", { credentials: "include" })
-        .then(r => r.json())
-        .then(leagues => renderLeagues(leagues));
+        .then(res => res.json())
+        .then(leagues => renderLeagues(leagues))
+        .catch(err => console.error("Kunde inte hämta alla ligor:", err));
 }
 
+/**
+ * Bygger och lägger in ligakorten i gränssnittet.
+ *
+ * @param {Array} leagues En lista med liga-objekt
+ */
 function renderLeagues(leagues) {
     const container = document.getElementById("Leagues");
     container.innerHTML = "";
+
+    if (!leagues || leagues.length === 0) {
+        container.innerHTML = "<p>Inga ligor hittades.</p>";
+        return;
+    }
 
     const cards = [];
 
     leagues.forEach(league => {
         const card = document.createElement("div");
-        card.className = "match-card fade-in";
+        card.className = "league-card fade-in"; // Ändrad från match-card för bättre semantik
 
         card.innerHTML = `
             <div class="match-teams">${league.name}</div>
@@ -130,12 +178,15 @@ function renderLeagues(leagues) {
     });
 }
 
+/**
+ * Renderar vyn för leaderboard och laddar tillgängliga ligor till menyn.
+ */
 function showLeaderboardView() {
     fadeSwap(`
         <div class="gw-container">
             <h2>Leaderboard</h2>
 
-            <select id="leagueSelect" class="coupon-select">
+            <select id="leagueSelect" class="coupon-select" aria-label="Välj liga">
                 <option value="">Välj liga...</option>
             </select>
 
@@ -143,16 +194,19 @@ function showLeaderboardView() {
         </div>
     `);
 
-    setTimeout(() => loadLeaguesForLeaderboard(), 50);
+    loadLeaguesForLeaderboard();
 }
 
-
+/**
+ * Laddar användarens ligor och fyller dropdown-menyn för leaderboard.
+ */
 function loadLeaguesForLeaderboard() {
     fetch("/api/loadPlayerLeagues", { credentials: "include" })
-        .then(r => r.json())
+        .then(res => res.json())
         .then(leagues => {
-
             const select = document.getElementById("leagueSelect");
+            if (!select) return;
+
             select.innerHTML = `<option value="">Välj liga...</option>`;
 
             leagues.forEach(l => {
@@ -162,33 +216,56 @@ function loadLeaguesForLeaderboard() {
                 select.appendChild(opt);
             });
 
-            select.onchange = () => {
-                if (select.value) loadLeaderboard(select.value);
-            };
-        });
+            select.addEventListener("change", () => {
+                const container = document.getElementById("leaderboardContainer");
+                if (select.value) {
+                    loadLeaderboard(select.value);
+                } else {
+                    container.innerHTML = ""; // Rensa skärmen om användaren väljer "Välj liga..." igen
+                }
+            });
+        })
+        .catch(err => console.error("Kunde inte hämta ligor för leaderboard:", err));
 }
 
+/**
+ * Hämtar och renderar topplistan för den valda ligan.
+ *
+ * @param {string|number} leagueId ID för ligan som ska visas
+ */
 function loadLeaderboard(leagueId) {
-    fetch("/api/loadLeaderboard?leagueId=" + leagueId, {
+    fetch(`/api/loadLeaderboard?leagueId=${encodeURIComponent(leagueId)}`, {
         method: "GET",
         credentials: "include"
     })
-        .then(r => r.json())
-        .then(members => renderLeaderboard(members));
+        .then(res => res.json())
+        .then(members => renderLeaderboard(members))
+        .catch(err => console.error("Kunde inte hämta leaderboard:", err));
 }
 
+/**
+ * Bygger och lägger in leaderboard-korten i gränssnittet.
+ *
+ * @param {Array} members En lista med medlemmar sorterade efter poäng
+ */
 function renderLeaderboard(members) {
     const container = document.getElementById("leaderboardContainer");
     container.innerHTML = "";
 
+    if (!members || members.length === 0) {
+        container.innerHTML = "<p>Inga medlemmar i denna liga ännu.</p>";
+        return;
+    }
+
     const cards = [];
 
-    members.forEach(member => {
+    members.forEach((member, index) => {
         const card = document.createElement("div");
-        card.className = "match-card fade-in";
+        card.className = "league-card fade-in";
 
+        // Lade till en siffra (index + 1) framför användarnamnet för att faktiskt visa deras placering!
         card.innerHTML = `
-            <div class="match-teams">${member.username}</div>
+            <div class="match-teams">${index + 1}. ${member.username}</div>
             <div class="match-time">ID: ${member.userId}</div>
             <div class="match-time">${member.totalScore} poäng</div>
          `;
@@ -202,5 +279,3 @@ function renderLeaderboard(members) {
         });
     });
 }
-
-

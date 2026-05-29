@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 console.log("gameweek.js LOADED");
 
 window.onload = function () {
@@ -7,29 +8,83 @@ window.onload = function () {
 
     loadLeagues();
 };
+=======
+/**
+ * Konstanter för att undvika "magiska nummer".
+ */
+const REQUIRED_TIPS_COUNT = 8;
+>>>>>>> Stashed changes
 
 let currentMatches = [];
 let tips = [];
 
-function updateRound () {
+/**
+ * Initierar sidan när DOM:en har laddats helt.
+ */
+document.addEventListener("DOMContentLoaded", () => {
+    // Ta bort fade-out för att visa sidan mjukt
+    document.body.classList.remove("fade-out");
+
+    // Koppla knappar till funktioner med moderna EventListeners
+    document.getElementById("getRoundBtn").addEventListener("click", loadRound);
+    document.getElementById("updateRoundBtn").addEventListener("click", updateRound);
+    document.getElementById("submitTipsBtn").addEventListener("click", submitTips);
+
+    // Ladda in användarens ligor till dropdownen
+    loadLeagues();
+    
+    // Sätt upp sidövergångar för navigeringslänkar
+    setupPageTransitions();
+});
+
+/**
+ * Sätter upp mjuka övergångar (fade) när användaren klickar på länkar.
+ */
+function setupPageTransitions() {
+    document.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", e => {
+            const url = link.getAttribute("href");
+
+            // Ignorera tomma länkar eller ankarlänkar
+            if (!url || url.startsWith("#")) return;
+
+            e.preventDefault();
+            document.body.classList.add("fade-out");
+
+            setTimeout(() => {
+                window.location = url;
+            }, 350);
+        });
+    });
+}
+
+/**
+ * Skickar en signal till servern att uppdatera matchdata från externa API:er.
+ */
+function updateRound() {
     fetch("/api/updateGameweek", {
         method: "POST",
         credentials: "include"
     })
-        .then(r => r.text())
+        .then(res => res.text())
         .then(msg => console.log("Signal skickad:", msg))
         .catch(err => console.error("Fel vid signal:", err));
 }
 
+/**
+ * Hämtar en specifik omgång från servern och renderar dess matcher.
+ */
 function loadRound() {
-    const roundId = document.getElementById("roundid").value;
+    // VIKTIGT: Ändrat 'roundid' till 'roundId' för att matcha din städade HTML!
+    const roundId = document.getElementById("roundId").value;
+    
     if (!roundId) {
         alert("Ange omgång först");
         return;
     }
 
-    fetch("/api/gameweek?roundId=" + roundId)
-        .then(r => r.json())
+    fetch(`/api/gameweek?roundId=${roundId}`)
+        .then(res => res.json())
         .then(round => {
             currentMatches = round.matches || [];
             tips = [];
@@ -38,16 +93,22 @@ function loadRound() {
         .catch(err => console.error("Kunde inte hämta gameweek:", err));
 }
 
+/**
+ * Renderar matchkorten i gränssnittet baserat på hämtad data.
+ *
+ * @param {Array} matches Lista med matchobjekt från servern
+ */
 function renderMatches(matches) {
     const container = document.getElementById("matches");
     container.innerHTML = "";
 
     const now = new Date();
-
-    const btn = document.getElementById("submitTipsBtn");
-    btn.disabled = false;
-    btn.textContent = "Skicka tips";
-    btn.classList.remove("btn-locked");
+    const submitBtn = document.getElementById("submitTipsBtn");
+    
+    // Återställ knappen till standardläge (upplåst)
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Skicka tips";
+    submitBtn.classList.remove("btn-locked");
 
     let hasPassedMatch = false;
 
@@ -68,9 +129,9 @@ function renderMatches(matches) {
         const kickoffDate = new Date(m.kickOff);
         const isPassed = kickoffDate < now;
 
+        // Hantering av passerade matcher
         if (isPassed) {
             hasPassedMatch = true;
-
             card.classList.add("match-passed");
 
             const resultDiv = document.createElement("div");
@@ -78,7 +139,8 @@ function renderMatches(matches) {
 
             let resultText = "Resultat saknas";
 
-            if (m.homeScore && m.awayScore) {
+            // En säkerhetskontroll så att 0-0 inte tolkas som 'false'
+            if (m.homeScore !== undefined && m.awayScore !== undefined) {
                 resultText = `Resultat: ${m.homeScore}-${m.awayScore}`;
             } else if (m.result) {
                 resultText = `Resultat: ${m.result}`;
@@ -86,6 +148,8 @@ function renderMatches(matches) {
 
             resultDiv.textContent = resultText;
             card.appendChild(resultDiv);
+            
+        // Hantering av öppna matcher
         } else {
             const tipBox = document.createElement("div");
             tipBox.className = "tip-box";
@@ -97,7 +161,7 @@ function renderMatches(matches) {
                 btn.dataset.matchIndex = index;
                 btn.dataset.value = choice;
 
-                btn.onclick = () => selectTip(index, choice);
+                btn.addEventListener("click", () => selectTip(index, choice));
 
                 tipBox.appendChild(btn);
             });
@@ -108,41 +172,52 @@ function renderMatches(matches) {
         container.appendChild(card);
     });
 
+    // Om någon match i omgången har startat, spärra inlämningen
     if (hasPassedMatch) {
-        const btn = document.getElementById("submitTipsBtn");
-        btn.textContent = "Kupongen är låst";
-        btn.classList.add("btn-locked");
-        btn.disabled = true;
+        submitBtn.textContent = "Kupongen är låst";
+        submitBtn.classList.add("btn-locked");
+        submitBtn.disabled = true;
     }
 }
 
+/**
+ * Hanterar användarens val av tipstecken för en specifik match.
+ *
+ * @param {number} matchIndex Matchens indexering i tips-arrayen
+ * @param {string} value Det valda tecknet ("1", "X" eller "2")
+ */
 function selectTip(matchIndex, value) {
     tips[matchIndex] = value;
 
+    // Ta bort den aktiva klassen från alla knappar som tillhör denna match
     document.querySelectorAll(`.tip-choice[data-match-index="${matchIndex}"]`)
         .forEach(btn => btn.classList.remove("active"));
 
-    document.querySelector(
-        `.tip-choice[data-match-index="${matchIndex}"][data-value="${value}"]`
-    ).classList.add("active");
+    // Lägg till den aktiva klassen på den knapp som just klickades
+    document.querySelector(`.tip-choice[data-match-index="${matchIndex}"][data-value="${value}"]`)
+        .classList.add("active");
 }
 
+/**
+ * Validerar och skickar in kupongen till servern.
+ */
 function submitTips() {
-    if (tips.length !== 8 || tips.includes(undefined)) {
-        alert("Du måste välja 1/X/2 för alla 8 matcher.");
+    // Kontrollerar att arrayen har rätt längd OCH att inga luckor (undefined) finns
+    if (tips.length !== REQUIRED_TIPS_COUNT || tips.includes(undefined)) {
+        alert(`Du måste välja 1/X/2 för alla ${REQUIRED_TIPS_COUNT} matcher.`);
         return;
     }
 
-    const roundId = document.getElementById("roundid").value;
-    const leagueId = document.getElementById("leagueSelect")?.value;
-
-    console.log("leagueId som skickas:", leagueId);
+    const roundId = document.getElementById("roundId").value;
+    const leagueSelect = document.getElementById("leagueSelect");
+    const leagueId = leagueSelect ? leagueSelect.value : null;
 
     if (!leagueId) {
         alert("Du måste välja en liga innan du kan skicka kupongen.");
         return;
     }
 
+    // Bygg parametrarna dynamiskt
     const params = new URLSearchParams({
         roundId: roundId,
         leagueId: leagueId,
@@ -156,48 +231,41 @@ function submitTips() {
         tip8: tips[7]
     });
 
-    fetch("/api/submitTips?" + params.toString())
-        .then(r => r.text())
+    fetch(`/api/submitTips?${params.toString()}`)
+        .then(res => res.text())
         .then(msg => alert(msg))
         .catch(err => console.error("Kunde inte skicka tips:", err));
 }
 
+/**
+ * Formaterar en rå datumsträng (från API/Databas) till YYYY-MM-DD HH:mm.
+ *
+ * @param {string} raw Den oformaterade tidssträngen
+ * @returns {string} Den formaterade tiden
+ */
 function formatKickoff(raw) {
     if (!raw) return "Ingen tid";
+    
     const date = new Date(raw);
+    
+    // Säkerhetskontroll ifall API:et returnerar ett ogiltigt datum
+    if (isNaN(date.getTime())) return "Ogiltig tid";
 
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, "0");
     const dd = String(date.getDate()).padStart(2, "0");
-
     const hh = String(date.getHours()).padStart(2, "0");
     const min = String(date.getMinutes()).padStart(2, "0");
 
     return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    document.body.classList.remove("fade-out");
-});
-
-document.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", e => {
-        const url = link.getAttribute("href");
-
-        if (!url || url.startsWith("#")) return;
-
-        e.preventDefault();
-        document.body.classList.add("fade-out");
-
-        setTimeout(() => {
-            window.location = url;
-        }, 350);
-    });
-});
-
+/**
+ * Hämtar och renderar listan över ligor som inloggad användare tillhör.
+ */
 function loadLeagues() {
     fetch("/api/loadPlayerLeagues", { credentials: "include" })
-        .then(r => r.json())
+        .then(res => res.json())
         .then(leagues => {
             const select = document.getElementById("leagueSelect");
             if (!select) return;

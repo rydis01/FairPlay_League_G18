@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+
 /**
  * REST-kontroller som hanterar alla inkommande HTTP-anrop från frontend.
  * Exponerar endpoints för inloggning, registrering, kuponger, ligor och användarprofil.
@@ -35,7 +36,7 @@ public class Controller {
     //LOGIN & REGISTER
 
     /**
-     * Loggar in en användare
+     * Loggar in en användare.
      *
      * @param session   HTTP-sessionen där användaren sparas vid lyckad inloggning.
      * @param email     Användarens e-postadress.
@@ -84,8 +85,15 @@ public class Controller {
      * @param session   HTTP-sessionen för att identifiera inloggad användare.
      * @param roundId   ID:t för den omgång kupongen gäller.
      * @param leagueId  ID:t för den liga kupongen tillhör.
-     * @param tip1      Tips för match 1–8 ("1", "X" eller "2").
-     * @return Bekräftelsemeddelande eller felmeddelande.
+     * @param tip1      Tips för match 1 ("1", "X" eller "2").
+     * @param tip2      Tips för match 2 ("1", "X" eller "2").
+     * @param tip3      Tips för match 3 ("1", "X" eller "2").
+     * @param tip4      Tips för match 4 ("1", "X" eller "2").
+     * @param tip5      Tips för match 5 ("1", "X" eller "2").
+     * @param tip6      Tips för match 6 ("1", "X" eller "2").
+     * @param tip7      Tips för match 7 ("1", "X" eller "2").
+     * @param tip8      Tips för match 8 ("1", "X" eller "2").
+     * @return bekräftelsemeddelande eller felmeddelande.
      */
     @GetMapping("/submitTips")
     public String submitTips(HttpSession session,
@@ -101,7 +109,6 @@ public class Controller {
                              @RequestParam String tip8) {
 
         User user = (User) session.getAttribute("user");
-        System.out.println("roundId: " + roundId + ", leagueId: " + leagueId);
 
         if (user == null) {
             return "Ingen användare inloggad";
@@ -122,7 +129,7 @@ public class Controller {
                 matches.get(6).getId(), tip7,
                 matches.get(7).getId(), tip8
         );
-        
+
         couponService.submitCoupon(user.getId(), roundId, leagueId, tips);
 
         return "Kupong sparad!";
@@ -132,7 +139,7 @@ public class Controller {
      * Hämtar matchdata för en specifik omgång.
      *
      * @param roundId ID:t för omgången.
-     * @return Ett Round-objekt med matchinformation.
+     * @return ett Round-objekt med matchinformation.
      */
     @GetMapping("/gameweek")
     public Round gameweekInfo(@RequestParam int roundId) {
@@ -142,7 +149,7 @@ public class Controller {
     /**
      * Triggar en manuell uppdatering av matchdata från LiveScore API:et.
      *
-     * @return Bekräftelsesträng "OK".
+     * @return bekräftelsesträng "OK".
      */
     @PostMapping("/updateGameweek")
     public String updateGameweek() {
@@ -154,6 +161,7 @@ public class Controller {
 
     /**
      * Skapar en ny liga med automatiskt genererad invite-kod.
+     * Returnerar false om användaren inte är inloggad, namnet är null eller ligan redan finns.
      *
      * @param session     HTTP-sessionen för att identifiera skaparen.
      * @param leagueName  Namnet på den nya ligan.
@@ -163,16 +171,21 @@ public class Controller {
     public boolean createLeague(HttpSession session, @RequestParam String leagueName) {
         User user = (User) session.getAttribute("user");
 
-        if(leagueName == null || leagueService.leagueExists(leagueName)){
+        if (user == null) {
             return false;
         }
-        leagueService.createLeague(leagueName, user.getId());
 
+        if (leagueName == null || leagueService.leagueExists(leagueName)) {
+            return false;
+        }
+
+        leagueService.createLeague(leagueName, user.getId());
         return true;
     }
 
     /**
      * Låter en inloggad användare gå med i en liga via invite-kod.
+     * Returnerar false om användaren inte är inloggad eller koden är ogiltig.
      *
      * @param session     HTTP-sessionen för att identifiera användaren.
      * @param inviteCode  Ligens unika invite-kod.
@@ -182,13 +195,17 @@ public class Controller {
     public boolean joinLeague(HttpSession session, @RequestParam String inviteCode) {
         User user = (User) session.getAttribute("user");
 
+        if (user == null) {
+            return false;
+        }
+
         return leagueService.joinLeague(inviteCode, user.getId());
     }
 
     /**
      * Hämtar alla ligor i systemet.
      *
-     * @return En lista med alla League-objekt.
+     * @return en lista med alla League-objekt.
      */
     @GetMapping("/loadAllLeagues")
     public List<League> getAllLeaguesInfo() {
@@ -197,29 +214,32 @@ public class Controller {
 
     /**
      * Hämtar alla ligor som den inloggade användaren är med i.
+     * Returnerar en tom lista om användaren inte är inloggad.
      *
      * @param session HTTP-sessionen för att identifiera användaren.
-     * @return En lista med {@link League}-objekt som användaren tillhör.
+     * @return en lista med {@link League}-objekt som användaren tillhör.
      */
     @GetMapping("/loadPlayerLeagues")
     public List<League> getPlayerLeaguesInfo(HttpSession session) {
         User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return List.of();
+        }
 
         return leagueService.getLeaguesByUserId(user.getId());
     }
 
     /**
      * Hämtar leaderboard för en specifik liga, sorterad på poäng.
+     * Rättar automatiskt avslutade omgångar innan listan returneras.
      *
      * @param leagueId ID:t för ligan.
-     * @return En lista med LeagueMember-objekt sorterade efter totalpoäng.
+     * @return en lista med LeagueMember-objekt sorterade efter totalpoäng.
      */
     @GetMapping("/loadLeaderboard")
-    public List<LeagueMember> getLeagueLeaderboard(@RequestParam int leagueId){
-
-        //gör en rättning på alla möjliga kuponger innan leaderboard visas.
+    public List<LeagueMember> getLeagueLeaderboard(@RequestParam int leagueId) {
         matchService.checkAndSettleFinishedRounds();
-
         return leagueService.getLeaderboard(leagueId);
     }
 
@@ -229,11 +249,10 @@ public class Controller {
      * Hämtar alla kuponger för den inloggade användaren.
      *
      * @param session HTTP-sessionen för att identifiera användaren.
-     * @return En lista med Coupon-objekt, eller tom lista om ingen är inloggad.
+     * @return en lista med Coupon-objekt, eller tom lista om ingen är inloggad.
      */
     @GetMapping("/getCoupons")
     public List<Coupon> couponsList(HttpSession session) {
-
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
@@ -247,7 +266,7 @@ public class Controller {
      * Hämtar detaljerad information om en specifik kupong, inklusive matchnamn och tips.
      *
      * @param couponId ID:t för kupongen.
-     * @return En Map med kupongdetaljer (id, roundId, tips).
+     * @return en Map med kupongdetaljer (id, roundId, tips).
      */
     @GetMapping("/getCoupon")
     public Map<String, Object> getCoupon(@RequestParam int couponId) {
@@ -275,5 +294,3 @@ public class Controller {
         session.invalidate();
     }
 }
-
-

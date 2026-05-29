@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap');
 
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
 body {
     font-family: 'Barlow', sans-serif;
@@ -18,15 +20,15 @@ body {
     border-radius: 16px;
     width: 320px;
     text-align: center;
-    border: 1px solid rgba(255,255,255,0.07);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .login-box img.logo {
     width: 64px;
     height: 64px;
     margin-bottom: 16px;
-    filter: drop-shadow(0 0 10px rgba(34,197,94,0.3));
+    filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.3));
 }
 
 .login-box h2 {
@@ -44,7 +46,7 @@ input {
     padding: 11px 14px;
     margin-top: 10px;
     border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     background: #243040;
     color: #f0f4f8;
     font-family: 'Barlow', sans-serif;
@@ -54,10 +56,12 @@ input {
 
 input:focus {
     border-color: #22c55e;
-    box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
 }
 
-input::placeholder { color: #8899aa; }
+input::placeholder {
+    color: #8899aa;
+}
 
 button {
     margin-top: 14px;
@@ -74,22 +78,30 @@ button {
     transition: background 0.15s, transform 0.1s;
 }
 
-button:active { transform: scale(0.97); }
+button:active {
+    transform: scale(0.97);
+}
 
 #loginBtn {
     background: #22c55e;
     color: white;
-    box-shadow: 0 0 16px rgba(34,197,94,0.25);
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.25);
 }
-#loginBtn:hover { background: #16a34a; }
+
+#loginBtn:hover {
+    background: #16a34a;
+}
 
 #registerBtn {
     background: #243040;
     color: #f0f4f8;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     margin-top: 8px;
 }
-#registerBtn:hover { background: #2d3d50; }
+
+#registerBtn:hover {
+    background: #2d3d50;
+}
 
 .password-wrapper {
     position: relative;
@@ -108,11 +120,14 @@ button:active { transform: scale(0.97); }
     filter: invert(1);
     transition: opacity 0.2s;
 }
-.toggle-icon:hover { opacity: 0.9; }
+
+.toggle-icon:hover {
+    opacity: 0.9;
+}
 
 .divider {
     height: 1px;
-    background: rgba(255,255,255,0.07);
+    background: rgba(255, 255, 255, 0.07);
     margin: 14px 0 4px;
 }
 
@@ -122,5 +137,11 @@ button:active { transform: scale(0.97); }
     font-size: 14px;
 }
 
-.fade { opacity: 1; transition: opacity 0.35s ease; }
-.fade.fade-out { opacity: 0; }
+.fade {
+    opacity: 1;
+    transition: opacity 0.35s ease;
+}
+
+.fade.fade-out {
+    opacity: 0;
+}
