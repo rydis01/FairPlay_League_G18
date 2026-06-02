@@ -7,9 +7,13 @@
 body {
     font-family: 'Barlow', sans-serif;
     background: url("fotbollsplan.jpg") no-repeat center center fixed;
+    background-size: cover;
     color: #f0f4f8;
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .layout {

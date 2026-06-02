@@ -1,10 +1,3 @@
-window.onload = function () {
-    document.getElementById("getRoundBtn").onclick = loadRound;
-    document.getElementById("updateRoundBtn").onclick = updateRound;
-    document.getElementById("submitTipsBtn").onclick = submitTips;
-
-    loadLeagues();
-};
 /**
  * Konstanter för att undvika "magiska nummer".
  */

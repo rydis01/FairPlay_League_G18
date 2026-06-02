@@ -80,7 +80,7 @@ CREATE TABLE Picks(
 CREATE TABLE Gameweek_scores(
     Score_ID SERIAL PRIMARY KEY,
     User_ID INT,
-    Leauge_ID INT,
+    League_ID INT,
     Gameweek_ID INT,
     Correct_picks_count INT NOT NULL,
     Points_earned INT,
