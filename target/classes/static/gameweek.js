@@ -111,6 +111,7 @@ function renderMatches(matches) {
         const isPassed = kickoffDate < now;
 
         // Hantering av passerade matcher
+        // Hantering av passerade matcher
         if (isPassed) {
             hasPassedMatch = true;
             card.classList.add("match-passed");
@@ -120,8 +121,11 @@ function renderMatches(matches) {
 
             let resultText = "Resultat saknas";
 
-            // En säkerhetskontroll så att 0-0 inte tolkas som 'false'
-            if (m.homeScore !== undefined && m.awayScore !== undefined) {
+            const hasScores =
+                m.homeScore !== null && m.homeScore !== undefined &&
+                m.awayScore !== null && m.awayScore !== undefined;
+
+            if (hasScores) {
                 resultText = `Resultat: ${m.homeScore}-${m.awayScore}`;
             } else if (m.result) {
                 resultText = `Resultat: ${m.result}`;
@@ -129,7 +133,7 @@ function renderMatches(matches) {
 
             resultDiv.textContent = resultText;
             card.appendChild(resultDiv);
-            
+
         // Hantering av öppna matcher
         } else {
             const tipBox = document.createElement("div");
