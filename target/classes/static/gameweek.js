@@ -1,3 +1,4 @@
+/* Author Carl Rydengård */
 /**
  * Konstanter för att undvika "magiska nummer".
  */
@@ -110,7 +111,6 @@ function renderMatches(matches) {
         const kickoffDate = new Date(m.kickOff);
         const isPassed = kickoffDate < now;
 
-        // Hantering av passerade matcher
         // Hantering av passerade matcher
         if (isPassed) {
             hasPassedMatch = true;

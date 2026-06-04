@@ -17,11 +17,11 @@ import java.util.Map;
 /**
  * Hanterar poängberäkning och leaderboards.
  * Ansvarar för att räkna ut poäng efter varje omgång och visa topplistan.
+ * @author Carl Rydengård & Gustav Johnsson
  */
 @Service
 public class ScoreService {
 
-    // Konstanter för poängberäkning och prispott för att undvika magiska nummer
     private static final int POT_CONTRIBUTION_PER_PLAYER = 100;
     private static final int TIPS_PER_ROUND = 8;
     private static final int TIER_8_PERCENT = 60;

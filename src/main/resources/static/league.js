@@ -1,3 +1,5 @@
+/* Author Carl Rydengård */
+
 const leftContent = document.getElementById("leftDynamicContent");
 
 /**

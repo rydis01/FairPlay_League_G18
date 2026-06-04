@@ -15,6 +15,7 @@ import java.util.Map;
 /**
  * Ansvarar för att tolka JSON-data från LiveScore API:et och omvandla den till Match-objekt.
  * Hanterar även omgångslogik och normalisering av svenska lagnamn.
+ * @author Theo Andersson
  */
 public class LiveScoreMapper {
 
@@ -90,6 +91,7 @@ public class LiveScoreMapper {
      *
      * @param name lagnamn som det returneras av API:et
      * @return korrekt stavat svenskt lagnamn
+     * @author carl
      */
     private static String fixTeamName(String name) {
         if (name.equals("Malmo FF")) return "Malmö FF";

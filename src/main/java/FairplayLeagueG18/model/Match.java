@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
  * Representerar en fotbollsmatch i systemet.
  * Klassen används både för att hantera matchdata från databasen och
  * för att mappa live-data (skrapad via API) från LiveScore.
+ * @author Theo Andersson, Carl Rydengård & Gustav Johnsson
  */
 public class Match {
 

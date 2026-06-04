@@ -12,6 +12,7 @@ import java.util.Map;
 /**
  * REST-kontroller som hanterar alla inkommande HTTP-anrop från frontend.
  * Exponerar endpoints för inloggning, registrering, kuponger, ligor och användarprofil.
+ * @author Carl Rydengård
  */
 @RestController
 @RequestMapping("/api")

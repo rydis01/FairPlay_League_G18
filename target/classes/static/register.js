@@ -1,11 +1,11 @@
+/* Author Carl Rydengård */
 /**
  * Initierar event listeners när sidan har laddats.
  */
 document.addEventListener("DOMContentLoaded", () => {
-    // Ta bort fade-out för att visa sidan mjukt
     document.body.classList.remove("fade-out");
 
-    // Koppla knappar till funktioner med moderna EventListeners
+    // Koppla knappar till funktioner med EventListeners
     document.getElementById("registerBtn").addEventListener("click", handleRegistration);
     document.getElementById("togglePassword").addEventListener("click", togglePasswordVisibility);
 

@@ -1,3 +1,4 @@
+/* Author Carl Rydengård */
 /**
  * Initierar event listeners och laddar in data när sidan har laddats.
  */

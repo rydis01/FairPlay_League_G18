@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  * Hanterar affärslogiken för matcher.
  * Ansvarar för att regelbundet hämta in matchuppdateringar från externa API:er
  * samt för att trigga rättning av omgångar när alla matcher är färdigspelade.
+ * @author Theo Andersson & Carl Rydengård
  */
 @Service
 public class MatchService {

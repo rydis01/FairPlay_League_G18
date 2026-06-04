@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 /**
  * Hanterar användare och autentisering.
  * Ansvarar för registrering, inloggning, utloggning och användarhantering.
+ * @author Hugo Werntoft, Carl Rydengård & Gustav Johnsson
  */
 @Service
 public class UserService {
 
-    // Konstant för att undvika magiska nummer i valideringen
     private static final int MIN_PASSWORD_LENGTH = 8;
 
     private final UserDAO userDAO;

@@ -12,6 +12,7 @@ import java.time.Duration;
 /**
  * Ansvarar för att hämta matchdata från LiveScore API:et.
  * Skickar HTTP-anrop mot Allsvenskan-endpointen och returnerar rådata som JSON-sträng.
+ * @author Theo Andersson
  */
 @Service
 public class LiveScoreService {

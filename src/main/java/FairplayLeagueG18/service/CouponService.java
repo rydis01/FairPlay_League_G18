@@ -15,11 +15,10 @@ import java.util.Map;
 /**
  * Hanterar affärslogiken för inlämning och hämtning av kuponger.
  * Fungerar som bryggan mellan kontrollern och databaslagret (CouponDAO, MatchDAO, RoundDAO).
+ * @author Carl Rydengård & Gustav Johnsson
  */
 @Service
 public class CouponService {
-
-    // Ersätter det "magiska numret" 8 i valideringen
     private static final int REQUIRED_TIPS_COUNT = 8;
 
     private final CouponDAO couponDAO;

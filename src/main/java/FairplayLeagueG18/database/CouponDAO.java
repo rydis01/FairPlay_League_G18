@@ -14,6 +14,7 @@ import java.util.Map;
 /**
  * Hanterar all databasåtkomst för kuponger och tillhörande tips (picks).
  * Kommunicerar med tabellerna Coupons och Picks.
+ * @author Hugo Werntoft, Carl Rydengård & Gustav Johnsson
  */
 public class CouponDAO {
 

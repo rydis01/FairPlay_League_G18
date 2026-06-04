@@ -6,6 +6,7 @@ import java.util.Map;
 /**
  * Representerar en användares inlämnade kupong (tips) för en specifik omgång och liga.
  * Innehåller användarens gissningar per match samt resultat efter att omgången rättats.
+ * @author Carl Rydengård & Gustav Johnsson
  */
 public class Coupon {
     private int id;

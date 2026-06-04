@@ -10,6 +10,7 @@ import java.util.Properties;
 /**
  * Hanterar databasanslutningar för applikationen.
  * Läser anslutningsinformation från konfigurationsfilen configDatabase.properties.
+ * @author Carl Rydengård
  */
 public class DatabaseManager {
 

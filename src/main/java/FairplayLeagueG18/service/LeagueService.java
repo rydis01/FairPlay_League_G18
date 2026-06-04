@@ -11,6 +11,7 @@ import java.util.UUID;
 /**
  * Hanterar affärslogik för ligor och ligamedlemskap.
  * Kommunicerar med LeagueDAO för databasoperationer.
+ * @author Carl Rydengård & Gustav Johnsson
  */
 @Service
 public class LeagueService {

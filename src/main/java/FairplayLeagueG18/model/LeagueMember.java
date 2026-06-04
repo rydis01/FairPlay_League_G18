@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 /**
  * Representerar en användares medlemskap i en specifik liga.
  * Innehåller information om användarens aktuella poäng och när de gick med i ligan.
+ * @author Gustav Johnsson
  */
 public class LeagueMember {
     private int userId;

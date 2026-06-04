@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Hanterar all databasåtkomst för matcher.
  * Kommunicerar med tabellerna Matches och Gameweeks.
+ * @author Carl Rydengård
  */
 public class MatchDAO {
 

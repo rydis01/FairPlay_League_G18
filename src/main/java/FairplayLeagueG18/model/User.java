@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 /**
  * Representerar en användare i systemet.
  * Innehåller inloggningsuppgifter, roll (t.ex. spelare eller admin) och grundläggande profilinformation.
+ * @author Carl Rydengård & Gustav Johnsson
  */
 public class User {
     private int id;

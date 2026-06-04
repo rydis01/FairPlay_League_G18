@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * Representerar en liga i systemet där användare kan tävla mot varandra.
  * Innehåller ligans grunduppgifter samt en lista över dess medlemmar.
+ * @author Carl Rydengård & Gustav Johnsson
  */
 public class League {
     private int id;

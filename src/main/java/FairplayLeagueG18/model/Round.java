@@ -6,6 +6,7 @@ import java.util.List;
 /**
  * Representerar en spelomgång (gameweek) i systemet.
  * Innehåller information om omgångens status, deadline och dess tillhörande matcher.
+ * @author Carl Rydengård & Gustav Johnsson
  */
 public class Round {
     private int id;
