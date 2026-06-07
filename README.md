@@ -56,4 +56,4 @@ Skapa filen configDatabase.properties enligt instruktionerna ovan.
 Skapa databasens tabeller genom att köra SQL-koden i SQL-kod.sql.
 Öppna klassen Application (i src/main/java/FairplayLeagueG18/) och klicka på den gröna Run-pilen bredvid main-metoden.
 När applikationen startat, öppna webbläsaren och gå till:
-http://localhost:8080/
+http://localhost:8080/login.html
