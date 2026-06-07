@@ -1,4 +1,4 @@
-/* Author Carl Rydengård */
+/* Author Carl Rydengård and Theo Andersson */
 /**
  * Konstanter för att undvika "magiska nummer".
  */
