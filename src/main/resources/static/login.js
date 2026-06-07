@@ -1,4 +1,4 @@
-/* Author Carl Rydengård */
+/* Author Carl Rydengård and Gustav Johnsson */
 /**
  * Initierar event listeners när sidan har laddats.
  */

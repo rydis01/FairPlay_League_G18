@@ -1,4 +1,4 @@
-/* Author Carl Rydengård */
+/* Author Carl Rydengård and Theo Andersson */
 
 const leftContent = document.getElementById("leftDynamicContent");
 
