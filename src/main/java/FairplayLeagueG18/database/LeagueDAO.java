@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Hanterar all databasåtkomst för ligor och ligamedlemskap.
  * Kommunicerar med tabellerna Leagues och User_Leagues.
- * @author Hugo Werntoft, Carl Rydengård & Gustav Johnsson
+ * @author Hugo Bergman Werntoft, Carl Rydengård & Gustav Johnsson
  */
 public class LeagueDAO {
 

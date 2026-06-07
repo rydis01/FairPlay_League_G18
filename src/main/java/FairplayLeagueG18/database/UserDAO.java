@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Hanterar all databasåtkomst för användare.
  * Kommunicerar med tabellen Users.
- * @author Hugo Werntoft & Carl Rydengård
+ * @author Hugo Bergman Werntoft & Carl Rydengård
  */
 public class UserDAO {
 

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Hanterar all databasåtkomst för spelomgångar (gameweeks) och tillhörande matcher.
  * Kommunicerar med tabellerna Gameweeks och Matches.
- * @author Carl Rydengård
+ * @author Carl Rydengård & Hugo Bergman Werntoft
  */
 public class RoundDAO {
 
